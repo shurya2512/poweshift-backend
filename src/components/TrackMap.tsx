@@ -39,9 +39,11 @@ export function TrackMap({ geometry, carState, color }: TrackMapProps) {
         <path
           d={pathData}
           fill="none"
-          stroke="#333"
-          strokeWidth="20"
+          stroke="#666"
+          strokeWidth="4"
+          vectorEffect="non-scaling-stroke"
           strokeLinejoin="round"
+          strokeLinecap="round"
         />
 
         {/* Car Marker */}
@@ -50,7 +52,7 @@ export function TrackMap({ geometry, carState, color }: TrackMapProps) {
             <circle
               cx={carState.x}
               cy={carState.y}
-              r="30"
+              r={width * 0.015} // Scale dot radius relative to track size
               fill={color}
               style={{
                 filter: `drop-shadow(0 0 10px ${color})`,
@@ -63,20 +65,35 @@ export function TrackMap({ geometry, carState, color }: TrackMapProps) {
       
       {/* Overlay Stats */}
       {carState && (
-        <div className="absolute top-4 left-4 bg-black/80 p-3 rounded border border-neutral-800 font-mono text-sm shadow-xl backdrop-blur-sm z-10 transition-colors hover:border-neutral-600">
-          <div className="flex justify-between gap-4 border-b border-neutral-800 pb-1 mb-1">
-            <span className="text-neutral-500 text-xs">SPEED</span>
-            <span className="text-white font-bold">{Math.round(carState.v)} km/h</span>
-          </div>
-          <div className="flex justify-between gap-4 border-b border-neutral-800 pb-1 mb-1">
-            <span className="text-neutral-500 text-xs">POWER</span>
-            <span className={carState.p_kw > 0 ? 'text-red-400 font-bold' : carState.p_kw < 0 ? 'text-green-400 font-bold' : 'text-neutral-400'}>
-              {Math.abs(carState.p_kw) > 0 ? (carState.p_kw > 0 ? '▼ ' : '▲ ') : ''}{Math.round(Math.abs(carState.p_kw))} kW
-            </span>
-          </div>
-          <div className="flex justify-between gap-4">
-            <span className="text-neutral-500 text-xs">BATTERY</span>
-            <span className="text-white">{carState.soc.toFixed(2)} MJ</span>
+        <div className="absolute top-4 left-4 bg-[#0a0a0a]/90 p-3 rounded-md border border-neutral-800 font-mono shadow-xl z-10 transition-colors hover:border-neutral-600 min-w-[200px] backdrop-blur-sm">
+          <div className="grid grid-cols-[auto_20px_1fr_40px] items-center text-[13px]">
+            
+            {/* SPEED */}
+            <div className="text-neutral-500 text-xs tracking-wider">SPEED</div>
+            <div></div>
+            <div className="text-white font-bold text-right pr-2 text-[15px]">{Math.round(carState.v)}</div>
+            <div className="text-white font-bold">km/h</div>
+            
+            <div className="col-span-4 border-b border-neutral-800/80 my-2"></div>
+
+            {/* POWER */}
+            <div className="text-neutral-500 text-xs tracking-wider">POWER</div>
+            <div className={`text-right text-[11px] ${carState.p_kw > 0 ? 'text-red-500' : carState.p_kw < 0 ? 'text-[#00e676]' : ''}`}>
+              {Math.abs(carState.p_kw) > 1 ? (carState.p_kw > 0 ? '▼' : '▲') : ''}
+            </div>
+            <div className={`font-bold text-right pr-2 text-[15px] ${carState.p_kw > 0 ? 'text-red-500' : carState.p_kw < 0 ? 'text-[#00e676]' : 'text-neutral-500'}`}>
+              {Math.round(Math.abs(carState.p_kw))}
+            </div>
+            <div className={`font-bold ${carState.p_kw > 0 ? 'text-red-500' : carState.p_kw < 0 ? 'text-[#00e676]' : 'text-neutral-500'}`}>kW</div>
+            
+            <div className="col-span-4 border-b border-neutral-800/80 my-2"></div>
+
+            {/* BATTERY */}
+            <div className="text-neutral-500 text-xs tracking-wider">BATTERY</div>
+            <div></div>
+            <div className="text-neutral-200 text-right pr-2 text-[15px]">{carState.soc.toFixed(2)}</div>
+            <div className="text-neutral-200">MJ</div>
+
           </div>
         </div>
       )}
