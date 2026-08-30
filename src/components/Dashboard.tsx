@@ -458,7 +458,7 @@ export function Dashboard({
                 className="fixed inset-0 z-[100] flex items-center justify-center p-8 bg-black/80 backdrop-blur-3xl"
               >
                 <SubtleGridBackground id="strategy-grid" />
-                <div className="relative z-10 w-full h-full max-w-6xl max-h-[800px] bg-neutral-950/80 border border-white/10 rounded-3xl p-10 flex flex-col shadow-[0_40px_100px_rgba(0,0,0,0.8)]">
+                <div className="relative z-10 w-full h-full max-w-6xl max-h-[800px] bg-neutral-950/80 border border-white/10 rounded-3xl p-10 flex flex-col shadow-[0_40px_100px_rgba(0,0,0,0.8)] overflow-y-auto">
                   <button
                     onClick={() => setExpandedTrack(null)}
                     className="absolute top-8 right-8 p-3 bg-white/10 hover:bg-white/20 text-white rounded-full transition-colors"
@@ -469,17 +469,21 @@ export function Dashboard({
                     {isRef ? 'Team Strategy (Reference)' : `AI Strategy (${policy})`}
                   </h2>
 
-                  <div className="flex-1 w-full min-h-0 overflow-y-auto flex items-center justify-center">
-                    <div className="w-full max-w-3xl">
-                      <TrackMap geometry={state.initData?.track || null} carState={car || null} color={color} />
-                      <BatteryMeter
-                        label={isRef ? 'Team Battery' : 'AI Battery'}
-                        socMj={car?.soc ?? 4.0}
-                        p_kw={car?.p_kw ?? 0}
-                        color={color}
-                        ghostSocMj={ghost?.soc}
-                        isFinished={car?.finished}
-                      />
+                  <div className="flex-1 w-full min-h-0 flex flex-col items-center justify-center pb-6">
+                    <div className="w-full max-w-[90vh] mx-auto flex flex-col">
+                      <div className="w-full">
+                        <TrackMap geometry={state.initData?.track || null} carState={car || null} color={color} />
+                      </div>
+                      <div className="shrink-0 mt-4">
+                        <BatteryMeter
+                          label={isRef ? 'Team Battery' : 'AI Battery'}
+                          socMj={car?.soc ?? 4.0}
+                          p_kw={car?.p_kw ?? 0}
+                          color={color}
+                          ghostSocMj={ghost?.soc}
+                          isFinished={car?.finished}
+                        />
+                      </div>
                     </div>
                   </div>
                 </div>
