@@ -24,6 +24,7 @@ import { useRouter } from 'next/navigation';
 import { MapPin, User, Cpu, Check } from 'lucide-react';
 import { LimelightNav } from './ui/limelight-nav';
 import { CONFIG_ITEMS } from './ui/setup-panel';
+import { SubtleGridBackground } from './ui/the-infinite-grid';
 
 export function Dashboard({ 
   year = '2026', 
@@ -411,7 +412,8 @@ export function Dashboard({
               transition={{ type: "spring", damping: 25, stiffness: 300 }}
               className="fixed inset-0 z-[100] flex items-center justify-center p-8 bg-black/80 backdrop-blur-3xl"
             >
-              <div className="w-full h-full max-w-6xl max-h-[800px] bg-neutral-950/80 border border-white/10 rounded-3xl p-10 flex flex-col shadow-[0_40px_100px_rgba(0,0,0,0.8)] relative">
+              <SubtleGridBackground id="chart-grid" />
+              <div className="relative z-10 w-full h-full max-w-6xl max-h-[800px] bg-neutral-950/80 border border-white/10 rounded-3xl p-10 flex flex-col shadow-[0_40px_100px_rgba(0,0,0,0.8)]">
                 <button 
                   onClick={() => setExpandedChart(null)}
                   className="absolute top-8 right-8 p-3 bg-white/10 hover:bg-white/20 text-white rounded-full transition-colors"
@@ -455,7 +457,8 @@ export function Dashboard({
                 transition={{ type: "spring", damping: 25, stiffness: 300 }}
                 className="fixed inset-0 z-[100] flex items-center justify-center p-8 bg-black/80 backdrop-blur-3xl"
               >
-                <div className="w-full h-full max-w-6xl max-h-[800px] bg-neutral-950/80 border border-white/10 rounded-3xl p-10 flex flex-col shadow-[0_40px_100px_rgba(0,0,0,0.8)] relative">
+                <SubtleGridBackground id="strategy-grid" />
+                <div className="relative z-10 w-full h-full max-w-6xl max-h-[800px] bg-neutral-950/80 border border-white/10 rounded-3xl p-10 flex flex-col shadow-[0_40px_100px_rgba(0,0,0,0.8)]">
                   <button
                     onClick={() => setExpandedTrack(null)}
                     className="absolute top-8 right-8 p-3 bg-white/10 hover:bg-white/20 text-white rounded-full transition-colors"
