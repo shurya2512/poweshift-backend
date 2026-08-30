@@ -7,13 +7,23 @@ import { BatteryMeter } from './BatteryMeter';
 import { Play, Pause, Square, FastForward, Rewind } from 'lucide-react';
 import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, ReferenceLine } from 'recharts';
 
-export function Dashboard() {
+import { ArrowLeft } from 'lucide-react';
+import Link from 'next/link';
+
+interface DashboardProps {
+  year?: string;
+  track?: string;
+  driver?: string;
+  policy?: string;
+}
+
+export function Dashboard({ 
+  year = '2026', 
+  track = 'Monaco Grand Prix', 
+  driver = 'VER', 
+  policy = 'learned' 
+}: DashboardProps) {
   const { state, connectAndStart, pause, resume, stop, setSpeed, seek } = useSimulation();
-  
-  const [year, setYear] = useState('2026');
-  const [track, setTrack] = useState('Monaco Grand Prix');
-  const [driver, setDriver] = useState('VER');
-  const [policy, setPolicy] = useState('learned');
 
   const isPlaying = state.status === 'playing';
   const isPaused = state.status === 'paused';
@@ -35,7 +45,7 @@ export function Dashboard() {
   const currentPol = state.currentFrame?.policy;
 
   return (
-    <div className="min-h-screen bg-black text-white p-4 font-sans relative">
+    <div className="flex-1 w-full bg-transparent text-white p-4 font-sans relative z-10">
       {/* Computing Overlay */}
       {state.status === 'computing' && (
         <div className="absolute inset-0 z-50 flex flex-col items-center justify-center bg-black/60 backdrop-blur-sm">
@@ -51,24 +61,17 @@ export function Dashboard() {
         <div className="flex flex-col md:flex-row flex-wrap items-start md:items-center justify-between bg-neutral-900 p-4 rounded border border-neutral-800 gap-4">
           <div className="flex flex-col md:flex-row md:items-center gap-4 w-full md:w-auto">
             <h1 className="text-xl font-bold italic tracking-wider md:pr-4 md:border-r border-neutral-700">TRACK-SHIFT</h1>
-            <div className="flex flex-wrap items-center gap-2">
-              <select className="bg-neutral-800 border border-neutral-700 rounded p-1 text-sm" value={track} onChange={e => setTrack(e.target.value)}>
-                <option value="Monaco Grand Prix">Monaco (Held-out)</option>
-                <option value="Canadian Grand Prix">Canadian (Held-out)</option>
-                <option value="Miami Grand Prix">Miami (Held-out)</option>
-                <option value="Belgian Grand Prix">Belgian (Held-out)</option>
-              </select>
-              <select className="bg-neutral-800 border border-neutral-700 rounded p-1 text-sm" value={driver} onChange={e => setDriver(e.target.value)}>
-                <option value="VER">VER</option>
-                <option value="HAM">HAM</option>
-                <option value="LEC">LEC</option>
-              </select>
-              <select className="bg-neutral-800 border border-neutral-700 rounded p-1 text-sm" value={policy} onChange={e => setPolicy(e.target.value)}>
-                <option value="learned">Learned Policy</option>
-                <option value="dp">DP (Reference)</option>
-                <option value="ecms">ECMS</option>
-                <option value="greedy">Greedy</option>
-              </select>
+            <div className="flex flex-wrap items-center gap-4">
+              <Link href="/setup" className="flex items-center gap-2 text-sm text-neutral-400 hover:text-white transition-colors bg-neutral-800 px-3 py-1.5 rounded">
+                <ArrowLeft size={16} /> Setup
+              </Link>
+              <div className="flex gap-3 text-sm font-mono text-neutral-300 bg-neutral-950 px-3 py-1.5 rounded border border-neutral-800">
+                <span>{track}</span>
+                <span className="text-neutral-600">|</span>
+                <span className="text-blue-400">{driver}</span>
+                <span className="text-neutral-600">|</span>
+                <span className="text-green-400 uppercase">{policy}</span>
+              </div>
             </div>
           </div>
           
@@ -123,7 +126,7 @@ export function Dashboard() {
         )}
 
         <div className="text-[10px] text-neutral-500 font-mono flex flex-col md:flex-row items-start md:items-center justify-between px-2 gap-2">
-          <span>* Only the four held-out circuits are selectable because they contributed zero rows to the AI's training data. This proves the AI can generalize to tracks it has never seen.</span>
+          <span>* Only the four held-out circuits are selectable because they contributed zero rows to the AI&apos;s training data. This proves the AI can generalize to tracks it has never seen.</span>
           <span>* Driver selection changes the <i>lap</i> being replayed, not the <i>car model</i> (all cars use the same aerodynamics/mass formula).</span>
         </div>
 
