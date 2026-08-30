@@ -8,7 +8,7 @@ const DefaultBellIcon = (props: React.SVGProps<SVGSVGElement>) => <svg {...props
 
 export type NavItem = {
   id: string | number;
-  icon: React.ReactElement;
+  icon: React.ReactElement<{ className?: string }>;
   label?: string;
   onClick?: () => void;
 };
@@ -77,7 +77,9 @@ export const LimelightNav = ({
       {items.map(({ id, icon, label, onClick }, index) => (
           <a
             key={id}
-            ref={el => (navItemRefs.current[index] = el)}
+            ref={el => {
+              navItemRefs.current[index] = el;
+            }}
             className={`relative z-20 flex h-full cursor-pointer items-center justify-center px-4 py-2 ${iconContainerClassName}`}
             onClick={() => handleItemClick(index, onClick)}
             aria-label={label}
