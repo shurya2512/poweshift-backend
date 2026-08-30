@@ -2,6 +2,7 @@
 
 import React from 'react';
 import { useRouter } from 'next/navigation';
+import { ArrowLeft } from 'lucide-react';
 import SetupPanel from '@/components/ui/setup-panel';
 
 export default function SetupPage() {
@@ -21,6 +22,15 @@ export default function SetupPage() {
 
       {/* Page content */}
       <div className="max-w-7xl mx-auto px-6 lg:px-10 py-10 lg:py-14">
+        {/* Back Button */}
+        <button 
+          onClick={() => router.push('/')} 
+          className="flex items-center gap-2 text-white/50 hover:text-white transition-colors text-xs font-semibold tracking-wider uppercase mb-10 group"
+        >
+          <ArrowLeft size={14} className="group-hover:-translate-x-1 transition-transform" />
+          Return to Home
+        </button>
+
         {/* Page title */}
         <div className="mb-10">
           <p className="text-[10px] font-medium tracking-widest text-blue-400 uppercase mb-3">
