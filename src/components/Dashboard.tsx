@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 import { useSimulation } from '../lib/useSimulation';
 import { TrackMap } from './TrackMap';
 import { BatteryMeter } from './BatteryMeter';
-import { Play, Pause, Square, FastForward, Rewind, ArrowLeft, X, RotateCcw } from 'lucide-react';
+import { Play, Pause, Square, FastForward, Rewind, ArrowLeft, X, RotateCcw, Maximize2 } from 'lucide-react';
 import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, ReferenceLine } from 'recharts';
 import { motion, AnimatePresence } from 'framer-motion';
 import Link from 'next/link';
@@ -35,6 +35,7 @@ export function Dashboard({
   const { state, connectAndStart, pause, resume, stop, setSpeed, seek } = useSimulation();
 
   const [expandedChart, setExpandedChart] = useState<'speed' | 'soc' | null>(null);
+  const [expandedTrack, setExpandedTrack] = useState<'reference' | 'policy' | null>(null);
   const [activeConfigId, setActiveConfigId] = useState<string | null>(null);
 
   const isPlaying = state.status === 'playing';
@@ -242,7 +243,16 @@ export function Dashboard({
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {/* Reference (Team) */}
           <div className="bg-neutral-950/60 backdrop-blur-2xl border border-white/[0.08] rounded-3xl p-6 shadow-[0_12px_40px_rgba(0,0,0,0.5)]">
-            <EyebrowLabel className="text-blue-400 mb-4">Team Strategy (Reference)</EyebrowLabel>
+            <div className="flex items-center justify-between mb-4">
+              <EyebrowLabel className="text-blue-400">Team Strategy (Reference)</EyebrowLabel>
+              <button
+                onClick={() => setExpandedTrack('reference')}
+                aria-label="Expand team strategy"
+                className="p-2 rounded-full bg-white/[0.05] hover:bg-white/[0.14] border border-white/[0.08] text-white/40 hover:text-white transition-colors"
+              >
+                <Maximize2 size={13} />
+              </button>
+            </div>
             <TrackMap geometry={state.initData?.track || null} carState={currentRef || null} color={teamColor} />
             <div className="mt-4">
               <BatteryMeter 
@@ -258,7 +268,16 @@ export function Dashboard({
 
           {/* Policy (Learned) */}
           <div className="bg-neutral-950/60 backdrop-blur-2xl border border-white/[0.08] rounded-3xl p-6 shadow-[0_12px_40px_rgba(0,0,0,0.5)]">
-            <EyebrowLabel className="text-red-400 mb-4">AI Strategy ({policy})</EyebrowLabel>
+            <div className="flex items-center justify-between mb-4">
+              <EyebrowLabel className="text-red-400">AI Strategy ({policy})</EyebrowLabel>
+              <button
+                onClick={() => setExpandedTrack('policy')}
+                aria-label="Expand AI strategy"
+                className="p-2 rounded-full bg-white/[0.05] hover:bg-white/[0.14] border border-white/[0.08] text-white/40 hover:text-white transition-colors"
+              >
+                <Maximize2 size={13} />
+              </button>
+            </div>
             <TrackMap geometry={state.initData?.track || null} carState={currentPol || null} color={policyColor} />
             <div className="mt-4">
               <BatteryMeter 
@@ -419,6 +438,51 @@ export function Dashboard({
               </div>
             </motion.div>
           )}
+        </AnimatePresence>
+
+        {/* Full-Screen Strategy Modal */}
+        <AnimatePresence>
+          {expandedTrack && (() => {
+            const isRef = expandedTrack === 'reference';
+            const car = isRef ? currentRef : currentPol;
+            const ghost = isRef ? currentPol : currentRef;
+            const color = isRef ? teamColor : policyColor;
+            return (
+              <motion.div
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.95 }}
+                transition={{ type: "spring", damping: 25, stiffness: 300 }}
+                className="fixed inset-0 z-[100] flex items-center justify-center p-8 bg-black/80 backdrop-blur-3xl"
+              >
+                <div className="w-full h-full max-w-6xl max-h-[800px] bg-neutral-950/80 border border-white/10 rounded-3xl p-10 flex flex-col shadow-[0_40px_100px_rgba(0,0,0,0.8)] relative">
+                  <button
+                    onClick={() => setExpandedTrack(null)}
+                    className="absolute top-8 right-8 p-3 bg-white/10 hover:bg-white/20 text-white rounded-full transition-colors"
+                  >
+                    <X size={24} />
+                  </button>
+                  <h2 className={`text-3xl font-black tracking-tight mb-8 ${isRef ? 'text-blue-400' : 'text-red-400'}`}>
+                    {isRef ? 'Team Strategy (Reference)' : `AI Strategy (${policy})`}
+                  </h2>
+
+                  <div className="flex-1 w-full min-h-0 overflow-y-auto flex items-center justify-center">
+                    <div className="w-full max-w-3xl">
+                      <TrackMap geometry={state.initData?.track || null} carState={car || null} color={color} />
+                      <BatteryMeter
+                        label={isRef ? 'Team Battery' : 'AI Battery'}
+                        socMj={car?.soc ?? 4.0}
+                        p_kw={car?.p_kw ?? 0}
+                        color={color}
+                        ghostSocMj={ghost?.soc}
+                        isFinished={car?.finished}
+                      />
+                    </div>
+                  </div>
+                </div>
+              </motion.div>
+            );
+          })()}
         </AnimatePresence>
 
         {/* Disclaimer Footer */}
