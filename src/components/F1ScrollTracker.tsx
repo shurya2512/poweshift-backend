@@ -26,7 +26,7 @@ export default function F1ScrollTracker() {
   });
 
   return (
-    <div className="fixed bottom-0 left-0 w-full h-16 z-[9999] pointer-events-none overflow-visible">
+    <div className="fixed bottom-0 left-0 w-full h-10 z-[9999] pointer-events-none overflow-visible bg-neutral-950/50 backdrop-blur-md border-t border-white/[0.05]">
 
       {/* Laser Progress Trail */}
       <motion.div 
@@ -39,7 +39,7 @@ export default function F1ScrollTracker() {
       
       {/* Car Indicator */}
       <motion.div 
-        className="absolute w-24 h-10 top-1/2 -mt-[20px]"
+        className="absolute w-36 h-14 top-1/2 -mt-[28px]"
         style={{ x }}
       >
         {/* Percentage on the left of the car */}

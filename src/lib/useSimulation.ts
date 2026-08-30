@@ -87,6 +87,7 @@ export function useSimulation() {
     };
 
     ws.onmessage = (event) => {
+      if (wsRef.current !== ws) return;
       const data = JSON.parse(event.data) as WebSocketMessage;
 
       switch (data.type) {
@@ -111,8 +112,10 @@ export function useSimulation() {
     };
 
     ws.onerror = (err) => {
-      console.error('WebSocket error:', err);
-      dispatch({ type: 'ERROR', message: 'WebSocket connection failed' });
+      console.warn('WebSocket error (often caused by component remounts):', err);
+      if (wsRef.current === ws) {
+        dispatch({ type: 'ERROR', message: 'WebSocket connection failed' });
+      }
     };
 
     ws.onclose = () => {

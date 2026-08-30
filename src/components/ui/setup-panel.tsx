@@ -28,7 +28,7 @@ interface SetupPanelProps {
 
 // ── Static Data ──────────────────────────────────────────────────────────────
 
-const CONFIG_ITEMS: ConfigItem[] = [
+export const CONFIG_ITEMS: ConfigItem[] = [
   {
     id: 'track',
     label: 'Circuit',
@@ -62,21 +62,20 @@ const CONFIG_ITEMS: ConfigItem[] = [
     note: 'The learned policy is the AI model — others are reference baselines.',
     options: [
       { value: 'learned', label: 'Learned Policy',      sublabel: 'AI Model (HistGBM)',     badge: 'AI' },
-      { value: 'dp',      label: 'Dynamic Programming', sublabel: 'Reference baseline',     badge: 'DP' },
       { value: 'ecms',    label: 'ECMS',                sublabel: 'Equivalent Consumption', badge: 'EC' },
       { value: 'greedy',  label: 'Greedy',              sublabel: 'Threshold-based',        badge: 'GR' },
     ],
   },
 ];
 
-const CIRCUIT_META: Record<string, { laps: number; length: string; turns: number; lapRecord: string; country: string }> = {
-  'Monaco Grand Prix':   { laps: 78, length: '3.337 km', turns: 19, lapRecord: '1:12.909', country: 'MC' },
-  'Canadian Grand Prix': { laps: 70, length: '4.361 km', turns: 14, lapRecord: '1:13.078', country: 'CA' },
-  'Miami Grand Prix':    { laps: 57, length: '5.412 km', turns: 19, lapRecord: '1:29.708', country: 'US' },
-  'Belgian Grand Prix':  { laps: 44, length: '7.004 km', turns: 20, lapRecord: '1:46.286', country: 'BE' },
+export const CIRCUIT_META: Record<string, { laps: number; length: string; turns: number; lapRecord: string; country: string; mapUrl: string }> = {
+  'Monaco Grand Prix':   { laps: 78, length: '3.337 km', turns: 19, lapRecord: '1:12.909', country: 'MC', mapUrl: '/monaco.jpg' },
+  'Canadian Grand Prix': { laps: 70, length: '4.361 km', turns: 14, lapRecord: '1:13.078', country: 'CA', mapUrl: '/canada.jpg' },
+  'Miami Grand Prix':    { laps: 57, length: '5.412 km', turns: 19, lapRecord: '1:29.708', country: 'US', mapUrl: '/miami.jpg' },
+  'Belgian Grand Prix':  { laps: 44, length: '7.004 km', turns: 20, lapRecord: '1:46.286', country: 'BE', mapUrl: '/belgium.jpg' },
 };
 
-const DRIVER_META: Record<string, { number: number; team: string; wdc: number; color: string; nationality: string; bio: string }> = {
+export const DRIVER_META: Record<string, { number: number; team: string; wdc: number; color: string; nationality: string; bio: string }> = {
   VER: { 
     number: 1,  
     team: 'Red Bull Racing', 
@@ -103,14 +102,7 @@ const DRIVER_META: Record<string, { number: number; team: string; wdc: number; c
   },
 };
 
-const CIRCUIT_PATHS: Record<string, string> = {
-  'Monaco Grand Prix':   `M 148 162 L 52 158 Q 22 154 20 124 L 20 72 Q 20 42 52 32 L 148 18 Q 182 14 202 34 L 238 66 Q 256 86 240 106 L 210 118 Q 192 124 186 144 L 182 162 Z`,
-  'Canadian Grand Prix': `M 28 148 L 28 106 Q 28 80 52 68 L 90 60 L 148 58 L 200 60 L 244 62 Q 274 70 276 96 L 276 114 Q 274 136 250 142 L 200 148 L 148 150 Q 122 152 110 140 L 102 128 Q 96 116 78 116 Q 60 116 52 128 L 48 140 Q 40 154 28 148 Z`,
-  'Miami Grand Prix':    `M 24 104 Q 24 36 96 24 L 208 24 Q 280 24 280 82 L 280 106 Q 280 138 248 144 L 214 150 Q 196 154 192 138 L 190 118 Q 190 104 168 104 L 96 104 Q 58 104 58 132 L 58 148 Q 58 172 24 166 Z`,
-  'Belgian Grand Prix':  `M 18 108 L 60 78 Q 82 62 106 74 L 122 50 Q 146 24 180 28 L 256 38 Q 290 50 290 86 L 286 110 Q 280 132 252 138 L 198 146 L 152 154 L 108 162 L 68 152 L 36 132 Z`,
-};
-
-const POLICY_META: Record<string, { type: string; speed: string; compute: string; desc: string }> = {
+export const POLICY_META: Record<string, { type: string; speed: string; compute: string; desc: string }> = {
   greedy:  { type: 'Heuristic', speed: 'Ultra-fast', compute: 'O(1)', desc: 'Rule-based logic: spends available power whenever traction and regulations allow, with zero lookahead. Acts as the cheap baseline floor that every other policy must beat.' },
   dp:      { type: 'Oracle',    speed: 'Offline',    compute: 'O(N²)', desc: 'Dynamic programming over a discretised speed × energy grid, backward-solved for the globally optimal lap. Acts as the oracle generating training labels — far too slow to run at inference.' },
   ecms:    { type: 'Online',    speed: 'Fast',       compute: 'O(K)', desc: 'Equivalent Consumption Minimisation Strategy: prices stored energy with an equivalence factor and picks the locally cheapest deployment via a one-segment lookahead. Near-optimal without requiring a global solve.' },
@@ -135,13 +127,25 @@ const GradientBlur = () => (
   </div>
 );
 
-const CircuitMap = ({ circuit }: { circuit: string }) => (
-  <svg viewBox="0 0 300 180" className="w-full h-full" fill="none">
-    <path d={CIRCUIT_PATHS[circuit]} stroke="rgba(59,130,246,0.20)" strokeWidth="10" strokeLinejoin="round" strokeLinecap="round" />
-    <path d={CIRCUIT_PATHS[circuit]} stroke="rgba(255,255,255,0.55)" strokeWidth="3.5" strokeLinejoin="round" strokeLinecap="round" />
-    <line x1="148" y1="155" x2="148" y2="168" stroke="#3b82f6" strokeWidth="2.5" strokeLinecap="round" />
-  </svg>
-);
+const CircuitMap = ({ circuit }: { circuit: string }) => {
+  const url = CIRCUIT_META[circuit].mapUrl;
+  return (
+    <div className="w-full h-full relative">
+      <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img 
+          src={url} 
+          alt={circuit} 
+          className="w-full h-full object-cover opacity-90"
+          onError={(e) => { e.currentTarget.style.opacity = '0'; }}
+        />
+        <div className="absolute inset-0 flex flex-col items-center justify-center -z-10 bg-neutral-900/40">
+          <p className="text-[10px] font-medium uppercase tracking-widest text-white/20">Missing ({url})</p>
+        </div>
+      </div>
+    </div>
+  );
+};
 
 // No icons — just label/value pairs
 const StatChip = ({ label, value }: { label: string; value: string }) => (
@@ -285,7 +289,7 @@ export default function SetupPanel({ onStart }: SetupPanelProps) {
           </div>
 
           {/* Circuit SVG Map */}
-          <div className="relative bg-neutral-950/40 mx-5 mt-4 mb-2 rounded-2xl overflow-hidden border border-white/[0.05]" style={{ height: '160px' }}>
+          <div className="relative bg-neutral-950/40 mx-5 mt-4 mb-2 rounded-2xl overflow-hidden border border-white/[0.05]" style={{ height: '360px' }}>
             <AnimatePresence mode="wait">
               <motion.div
                 key={selections.track}
@@ -528,15 +532,15 @@ export default function SetupPanel({ onStart }: SetupPanelProps) {
                 <div className="relative w-full h-64 bg-neutral-950 border-b border-white/[0.05] z-10">
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img 
-                    src={`/${selections.driver}.jpg`} 
+                    src={`/${selections.driver}.png`} 
                     alt={selections.driver} 
-                    className="absolute inset-0 w-full h-full object-cover opacity-90 z-10"
+                    className="absolute inset-0 w-full h-full object-contain object-bottom opacity-90 z-10"
                     onError={(e) => { e.currentTarget.style.opacity = '0'; }} 
                   />
                   {/* Fallback if no image */}
                   <div className="absolute inset-0 flex flex-col items-center justify-center z-0 bg-neutral-900/50">
                     <User size={48} className="text-white/10 mb-4" />
-                    <p className="text-[10px] font-medium uppercase tracking-widest text-white/20">Photo missing (/{selections.driver}.jpg)</p>
+                    <p className="text-[10px] font-medium uppercase tracking-widest text-white/20">Photo missing (/{selections.driver}.png)</p>
                   </div>
                   
                   {/* Gradient Overlay at bottom of photo */}
