@@ -57,7 +57,7 @@ export default function FeaturesGrid() {
           >
             <feature.icon className={`${feature.color} mb-4`} size={32} />
             <h3 className="text-lg font-bold mb-2">{feature.title}</h3>
-            <p className="text-neutral-500 text-sm">{feature.description}</p>
+            <p className="text-neutral-500 text-sm break-words">{feature.description}</p>
           </div>
         ))}
       </div>
@@ -88,7 +88,7 @@ export default function FeaturesGrid() {
               
               <selectedFeature.icon className={`${selectedFeature.color} mb-6`} size={48} />
               <h2 className="text-2xl font-bold mb-4 text-white">{selectedFeature.title}</h2>
-              <p className="text-neutral-300 leading-relaxed text-lg">
+              <p className="text-neutral-300 leading-relaxed text-lg break-words">
                 {selectedFeature.description}
               </p>
               
