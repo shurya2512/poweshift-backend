@@ -177,6 +177,16 @@ export function Dashboard({
             <ArrowLeft size={16} /> Setup
           </Link>
           
+          <Link
+            href="/full-race"
+            className="absolute right-0 flex items-center gap-2 text-sm text-white/50 hover:text-white transition-colors bg-white/[0.03] hover:bg-white/[0.08] border border-white/[0.05] h-10 px-4 rounded-[14px] font-medium shadow-lg backdrop-blur-md"
+          >
+            Full race
+            <span className="text-[9px] uppercase tracking-widest text-white/30 border border-white/10 rounded-full px-1.5 py-0.5">
+              Preview
+            </span>
+          </Link>
+
           <LimelightNav 
             className="shadow-lg backdrop-blur-md"
             items={[

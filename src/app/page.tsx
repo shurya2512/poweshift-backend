@@ -30,7 +30,7 @@ export default function LandingPage() {
           </p>
         </div>
         
-        <div className="flex pointer-events-auto mt-12 mb-16">
+        <div className="flex flex-col items-center pointer-events-auto mt-12 mb-16 gap-5">
           <Link
             href="/setup"
             passHref
@@ -49,6 +49,19 @@ export default function LandingPage() {
               <span className="text-lg md:text-xl">INITIALIZE SIMULATION</span>
               <ArrowRight size={24} className="group-hover:translate-x-1 transition-transform" />
             </div>
+          </Link>
+
+          {/* Full-race comparison — fixture data, no backend attached yet. */}
+          <Link
+            href="/full-race"
+            className="group flex items-center gap-2.5 text-sm font-medium text-white/45 hover:text-white transition-colors"
+          >
+            <span className="h-1.5 w-1.5 rounded-full bg-emerald-400/70" aria-hidden="true" />
+            <span className="tracking-wide uppercase text-xs">Full-race comparison</span>
+            <span className="text-[10px] uppercase tracking-widest text-white/25 border border-white/10 rounded-full px-2 py-0.5">
+              Preview
+            </span>
+            <ArrowRight size={14} className="group-hover:translate-x-0.5 transition-transform" />
           </Link>
         </div>
 
