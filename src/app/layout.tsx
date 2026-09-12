@@ -20,6 +20,7 @@ export const metadata: Metadata = {
 
 import { TheInfiniteGrid } from "@/components/ui/the-infinite-grid";
 import F1ScrollTracker from "@/components/F1ScrollTracker";
+import ClickWatermark from "@/components/ClickWatermark";
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
@@ -31,6 +32,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <TheInfiniteGrid>
           {children}
         </TheInfiniteGrid>
+        <ClickWatermark />
         <F1ScrollTracker />
       </body>
     </html>
