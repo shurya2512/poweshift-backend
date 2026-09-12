@@ -3,6 +3,7 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { Check, X, ChevronRight, ChevronDown, MapPin, User, Cpu, Flag, Loader2 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { SpinningBorderButton } from '@/components/ui/spinning-border-button';
 
 // ── Types ────────────────────────────────────────────────────────────────────
 
@@ -314,6 +315,32 @@ export default function SetupPanel({ onStart }: SetupPanelProps) {
         </div>
       </div>
 
+      {/* ── Ego Car — the simulated vehicle the AI controls ───────────────── */}
+      <div className="bg-neutral-950/60 backdrop-blur-2xl border border-white/[0.08] rounded-3xl shadow-[0_12px_40px_rgba(0,0,0,0.6)] overflow-hidden">
+        <div className="grid grid-cols-1 md:grid-cols-3">
+
+          <div className="px-6 py-6 border-b md:border-b-0 md:border-r border-white/[0.06] flex flex-col justify-center">
+            <EyebrowLabel className="text-red-400 mb-2">Simulated Vehicle</EyebrowLabel>
+            <h2 className="text-2xl font-black tracking-tight text-white mb-2 drop-shadow-md">Ego Car</h2>
+            <p className="text-xs font-medium leading-relaxed text-white/35">
+              The car the AI drives. Only energy deployment is controlled — the physics follow the 2026 spec.
+            </p>
+          </div>
+
+          <div className="relative min-h-[140px] flex items-center justify-center px-6 py-6 border-b md:border-b-0 md:border-r border-white/[0.06]">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src="/haas_car2.png" alt="Ego car" className="w-full max-w-[320px] object-contain drop-shadow-[0_10px_30px_rgba(0,0,0,0.8)]" />
+          </div>
+
+          <div className="grid grid-cols-2 gap-3 p-5">
+            <StatChip label="Mass"    value="798 kg" />
+            <StatChip label="Max ERS" value="350 kW" />
+            <StatChip label="Battery" value="4 MJ / lap" />
+            <StatChip label="Policy"  value="Learned (AI)" />
+          </div>
+        </div>
+      </div>
+
       {/* ── BELOW: Circuit Map + Driver Info ──────────────────────────────── */}
       <div className="relative grid grid-cols-1 md:grid-cols-[3fr_2fr] gap-6 items-stretch">
 
@@ -453,18 +480,7 @@ export default function SetupPanel({ onStart }: SetupPanelProps) {
         </div>
       </div>
 
-      {/* 2026 Regs Banner */}
-      <div className="bg-blue-950/20 border border-blue-500/15 rounded-2xl px-6 py-4">
-        <p className="text-xs font-semibold text-blue-300/80 mb-1">2026 F1 Regulations</p>
-        <p className="text-xs text-blue-300/40 leading-relaxed">
-          Maximum <span className="text-blue-300/70 font-semibold">350 kW</span> electrical output from a{' '}
-          <span className="text-blue-300/70 font-semibold">4 MJ</span> battery cap per lap.
-          Car mass: <span className="text-blue-300/70 font-semibold">798 kg</span>.
-          The AI learns optimal deployment timing to minimise lap time.
-        </p>
-      </div>
-
-      {/* ── BOTTOM: Start Race ────────────────────────────────────────────── */}
+      {/* ── Start Race ────────────────────────────────────────────────────── */}
       <div className="bg-neutral-950/60 backdrop-blur-2xl border border-white/[0.08] rounded-3xl px-6 py-5 shadow-[0_12px_40px_rgba(0,0,0,0.6)] flex flex-col sm:flex-row sm:items-center gap-4">
         <div className="min-w-0 flex-1">
           <EyebrowLabel className="mb-1">Ready to launch</EyebrowLabel>
@@ -474,14 +490,21 @@ export default function SetupPanel({ onStart }: SetupPanelProps) {
             {CONFIG_ITEMS[1].options.find(o => o.value === selections.driver)?.label}
           </p>
         </div>
-        <button
-          type="button"
+        <SpinningBorderButton
+          text="Start Race"
           onClick={() => onStart(selections.track, selections.driver, selections.policy)}
-          className="w-full sm:w-auto sm:min-w-[240px] bg-white text-black font-semibold text-sm py-4 px-8 rounded-full flex items-center justify-center gap-2 shadow-xl transition-all duration-200 hover:scale-[1.02] active:scale-[0.97] hover:bg-neutral-100"
-        >
-          <Flag size={13} />
-          Start Race
-        </button>
+        />
+      </div>
+
+      {/* ── BOTTOM: 2026 Regs Banner ──────────────────────────────────────── */}
+      <div className="bg-blue-950/20 border border-blue-500/15 rounded-2xl px-6 py-4">
+        <p className="text-xs font-semibold text-blue-300/80 mb-1">2026 F1 Regulations</p>
+        <p className="text-xs text-blue-300/40 leading-relaxed">
+          Maximum <span className="text-blue-300/70 font-semibold">350 kW</span> electrical output from a{' '}
+          <span className="text-blue-300/70 font-semibold">4 MJ</span> battery cap per lap.
+          Car mass: <span className="text-blue-300/70 font-semibold">798 kg</span>.
+          The AI learns optimal deployment timing to minimise lap time.
+        </p>
       </div>
 
       {/* ── DRIVER INFO MODAL ─────────────────────────────────────────────── */}

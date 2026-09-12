@@ -1,17 +1,26 @@
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 
+const ROOT_CLASS =
+  "group relative inline-flex items-center justify-center overflow-hidden rounded-full p-[4px] transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[-8px_0_25px_rgba(59,130,246,0.35),8px_0_25px_rgba(239,68,68,0.35)]";
+
 /**
- * White pill link. On hover a blue→red beam spins around its edge while a dark
+ * White pill button. On hover a blue→red beam spins around its edge while a dark
  * circle floods the surface, the text turns white and slides right, and the
  * arrow swaps from the right edge to the left.
+ * Renders a Link when `href` is given, otherwise a button calling `onClick`.
  */
-export function SpinningBorderButton({ text = "Request Demo", href }: { text?: string; href: string }) {
-  return (
-    <Link
-      href={href}
-      className="group relative inline-flex items-center justify-center overflow-hidden rounded-full p-[4px] transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[-8px_0_25px_rgba(59,130,246,0.35),8px_0_25px_rgba(239,68,68,0.35)]"
-    >
+export function SpinningBorderButton({
+  text = "Request Demo",
+  href,
+  onClick,
+}: {
+  text?: string;
+  href?: string;
+  onClick?: () => void;
+}) {
+  const content = (
+    <>
       {/* Spinning blue→red border beam (visible on hover), matching the grid gradient */}
       <span className="absolute inset-[-100%] animate-[spin_3s_linear_infinite] bg-[conic-gradient(from_90deg_at_50%_50%,transparent_0%,transparent_50%,#3b82f6_75%,#ef4444_100%)] opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
 
@@ -33,6 +42,11 @@ export function SpinningBorderButton({ text = "Request Demo", href }: { text?: s
         {/* Right arrow — slides out on hover */}
         <ArrowRight className="absolute w-6 h-6 right-5 z-[9] group-hover:right-[-25%] transition-all duration-[800ms] ease-[cubic-bezier(0.34,1.56,0.64,1)]" />
       </span>
-    </Link>
+    </>
   );
+
+  if (href) {
+    return <Link href={href} className={ROOT_CLASS}>{content}</Link>;
+  }
+  return <button type="button" onClick={onClick} className={ROOT_CLASS}>{content}</button>;
 }
