@@ -66,7 +66,7 @@ def _acquire_day(request: SessionRequest, cache_dir: Path, output_dir: Path) -> 
         exports[name] = {
             "path": str(day_dir / f"{name}.parquet"),
             "sha256": write_table(records, day_dir / f"{name}.parquet"),
-            "provenance": {"kind": "parser_derived", "row_key": "source_row", "stream": name, "source_snapshot_sha256": source_snapshot_hash},
+            "provenance": {"kind": "parser_derived", "row_key": ["DriverNumber", "source_row"] if name in {"car", "position"} else ["source_row"], "stream": name, "source_snapshot_sha256": source_snapshot_hash},
         }
         coverage[name] = audit_stream(records, expected_roster).__dict__
     laps = streams["laps"].records

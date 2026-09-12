@@ -74,4 +74,6 @@ def _records(load: callable) -> StreamResult:
         return StreamResult(None, StreamStatus.FAILED, str(error))
     if records.empty:
         return StreamResult(records, StreamStatus.MISSING, "FastF1 returned no records")
+    if "NativeSourceRow" not in records:
+        records = records.assign(NativeSourceRow=records.index)
     return StreamResult(records, StreamStatus.PRESENT)
