@@ -2,9 +2,11 @@
 
 import { useState } from "react";
 import Image from "next/image";
+import { usePathname } from "next/navigation";
 import { motion, useScroll, useSpring, useTransform, useMotionValueEvent } from "framer-motion";
 
 export default function F1ScrollTracker() {
+  const pathname = usePathname();
   const [percent, setPercent] = useState(0);
   const { scrollYProgress } = useScroll();
   const smoothProgress = useSpring(scrollYProgress, {
@@ -38,6 +40,9 @@ export default function F1ScrollTracker() {
     const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
     window.scrollTo({ top: fraction * maxScroll, behavior: "instant" });
   };
+
+  // The report is a read-only document; the car scrubber stays off it.
+  if (pathname === "/report") return null;
 
   return (
     <div

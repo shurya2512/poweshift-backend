@@ -91,11 +91,9 @@ function Chronicle({
 
 /** The race as it unfolded: our own laps first, the rest of the field's kept behind. */
 export function ChronicleSection({
-  index,
   report,
   participants,
 }: {
-  index: string;
   report: RaceReport;
   participants: Map<string, Participant>;
 }) {
@@ -107,7 +105,7 @@ export function ChronicleSection({
 
   if (events.length === 0) {
     return (
-      <Section index={index} title="What happened" standfirst="The race in order.">
+      <Section title="What happened" standfirst="The race in order.">
         <Aside>No events were supplied for this race.</Aside>
       </Section>
     );
@@ -115,7 +113,6 @@ export function ChronicleSection({
 
   return (
     <Section
-      index={index}
       title="What happened"
       standfirst="Our car's race, in order. Lines before the branch belong to both races; after it, each names the one it belongs to."
     >

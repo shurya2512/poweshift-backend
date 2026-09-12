@@ -29,8 +29,7 @@ const BLOCKING_TITLE: Record<string, string> = {
 function NoReport({ title, body }: { title: string; body: string }) {
   return (
     <Column className="py-24">
-      <p className="font-mono text-[11px] uppercase tracking-[0.4em] text-white/30">Race report</p>
-      <h1 className="mt-5 text-4xl font-black uppercase leading-[0.95] tracking-tighter text-white md:text-6xl">
+      <h1 className="text-4xl font-black uppercase leading-[0.95] tracking-tighter text-white md:text-6xl">
         {title}
       </h1>
       <p className="mt-6 border-t border-white/10 pt-5 text-[11px] uppercase tracking-[0.15em] text-white/30">

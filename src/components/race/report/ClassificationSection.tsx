@@ -183,12 +183,10 @@ function FullState({
 }
 
 export function ClassificationSection({
-  index,
   report,
   participants,
   driver,
 }: {
-  index: string;
   report: RaceReport;
   participants: Map<string, Participant>;
   driver: Participant | null;
@@ -201,11 +199,10 @@ export function ClassificationSection({
 
   return (
     <Section
-      index={index}
       title="The finish"
       standfirst={`${report.session.participants.length} cars started and ${classified} were classified. The field below is in our plan's order, against where each car finished in the race as it was run.`}
     >
-      <Figure label="Table 1" title="Final classification" note="Two separate classifications, read side by side.">
+      <Figure title="Final classification" note="Two separate classifications, read side by side.">
         <FieldComparison report={report} participants={participants} />
       </Figure>
 

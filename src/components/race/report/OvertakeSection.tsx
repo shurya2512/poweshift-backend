@@ -233,11 +233,9 @@ function Modal({
 }
 
 export function OvertakeSection({
-  index,
   moves,
   participants,
 }: {
-  index: string;
   moves: OvertakeMove[];
   participants: Map<string, Participant>;
 }) {
@@ -248,7 +246,6 @@ export function OvertakeSection({
 
   return (
     <Section
-      index={index}
       title={moves.length === 1 ? 'The move' : 'The moves'}
       standfirst="Where our car came out of a fight ahead of the one it was behind — and the lines it turned down to do it."
     >

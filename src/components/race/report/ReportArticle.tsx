@@ -8,6 +8,7 @@ import { ChronicleSection } from './ChronicleSection';
 import { ClassificationSection } from './ClassificationSection';
 import { EvidenceSection, RobustnessSection } from './EvidenceSection';
 import { OvertakeSection } from './OvertakeSection';
+import { ReportRail } from './ReportRail';
 
 const MODE_LABEL: Record<RaceReport['session']['mode'], string> = {
   recorded_replay: 'Recorded replay',
@@ -27,8 +28,7 @@ function Masthead({ report, driver }: { report: RaceReport; driver: Participant 
 
   return (
     <header>
-      <p className="font-mono text-[11px] uppercase tracking-[0.4em] text-sky-400/70">Race report</p>
-      <h1 className="mt-5 text-[44px] font-black uppercase leading-[0.9] tracking-tighter text-white md:text-[76px]">
+      <h1 className="text-[44px] font-black uppercase leading-[0.9] tracking-tighter text-white md:text-[76px]">
         {identity.event}
       </h1>
       <p className="mt-6 max-w-[58ch] text-[17px] leading-relaxed text-white/45">
@@ -56,7 +56,6 @@ function TheResult({ report, driver }: { report: RaceReport; driver: Participant
 
   return (
     <Section
-      index="01"
       title="The result"
       standfirst="What our car finished with in each race, and what separates them."
     >
@@ -140,7 +139,6 @@ function ThePlan({ report, driver }: { report: RaceReport; driver: Participant |
 
   return (
     <Section
-      index="02"
       title="Our plan"
       standfirst="Where we asked the race to go differently, and everything that call was allowed to assume."
     >
@@ -196,12 +194,9 @@ export function ReportArticle({
   const { comparison } = report;
   const overtakes = findOvertakes(report);
 
-  // The move section only exists when our car actually passed someone, so the numbering
-  // after it shifts rather than leaving a gap in the document.
-  const n = (position: number) => String(position - (overtakes.length === 0 ? 1 : 0)).padStart(2, '0');
-
   return (
     <Column className="pb-32">
+      <ReportRail />
       <Masthead report={report} driver={driver} />
 
       <div className="mt-14">
@@ -226,11 +221,11 @@ export function ReportArticle({
       <div className="mt-24 flex flex-col">
         <TheResult report={report} driver={driver} />
         <ThePlan report={report} driver={driver} />
-        <ChronicleSection index="03" report={report} participants={participants} />
-        <OvertakeSection index="04" moves={overtakes} participants={participants} />
-        <ClassificationSection index={n(5)} report={report} participants={participants} driver={driver} />
-        <RobustnessSection index={n(6)} report={report} />
-        <EvidenceSection index={n(7)} report={report} />
+        <ChronicleSection report={report} participants={participants} />
+        <OvertakeSection moves={overtakes} participants={participants} />
+        <ClassificationSection report={report} participants={participants} driver={driver} />
+        <RobustnessSection report={report} />
+        <EvidenceSection report={report} />
       </div>
     </Column>
   );

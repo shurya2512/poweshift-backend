@@ -50,7 +50,7 @@ const List = ({ items, empty }: { items: string[]; empty: string }) =>
   );
 
 /** Whether the answer survives the other assumptions the backend supports. */
-export function RobustnessSection({ index, report }: { index: string; report: RaceReport }) {
+export function RobustnessSection({ report }: { report: RaceReport }) {
   const stability = report.comparison.stability;
   if (!stability) return null;
 
@@ -60,7 +60,6 @@ export function RobustnessSection({ index, report }: { index: string; report: Ra
 
   return (
     <Section
-      index={index}
       title="Does it hold?"
       standfirst="The same comparison, re-run under every other assumption the backend supports."
     >
@@ -93,13 +92,12 @@ export function RobustnessSection({ index, report }: { index: string; report: Ra
 }
 
 /** The closing section: what the answer rests on, and what it could not see. */
-export function EvidenceSection({ index, report }: { index: string; report: RaceReport }) {
+export function EvidenceSection({ report }: { report: RaceReport }) {
   const { assumptions, validity, coverage } = report.session;
   const unsupported = unsupportedReasons(report);
 
   return (
     <Section
-      index={index}
       title="Notes on the evidence"
       standfirst="What this report was allowed to use, what it could not resolve, and how to read every figure in it."
     >

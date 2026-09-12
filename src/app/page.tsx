@@ -23,7 +23,7 @@ export default function LandingPage() {
         </h1>
 
         <div className="flex flex-wrap justify-center pointer-events-auto mt-12 gap-5">
-          <SpinningBorderButton href="/full-race" text="Full race" />
+          <SpinningBorderButton href="/setup?mode=full-race" text="Full race" />
           <SpinningBorderButton href="/setup" text="Qualifying" fill="hollow" />
         </div>
       </div>

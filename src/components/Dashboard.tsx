@@ -178,7 +178,7 @@ export function Dashboard({
           </Link>
           
           <Link
-            href="/full-race"
+            href="/setup?mode=full-race"
             className="absolute right-0 flex items-center gap-2 text-sm text-white/50 hover:text-white transition-colors bg-white/[0.03] hover:bg-white/[0.08] border border-white/[0.05] h-10 px-4 rounded-[14px] font-medium shadow-lg backdrop-blur-md"
           >
             Full race

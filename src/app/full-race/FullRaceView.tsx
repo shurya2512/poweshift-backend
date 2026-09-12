@@ -85,7 +85,7 @@ export function FullRaceView() {
     <div className="mx-auto flex max-w-[1600px] flex-col gap-5 px-4 py-8 sm:px-6 lg:px-10">
       <div className="flex items-center justify-between">
         <Link
-          href="/setup"
+          href="/setup?mode=full-race"
           className="flex items-center gap-2 rounded-[14px] border border-white/[0.05] bg-white/[0.03] px-4 py-2 text-sm font-medium text-white/50 transition-colors hover:bg-white/[0.08] hover:text-white"
         >
           <ArrowLeft size={15} /> Setup

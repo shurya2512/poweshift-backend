@@ -24,21 +24,19 @@ export const Lede = ({ children }: { children: React.ReactNode }) => (
   </p>
 );
 
+/** A report section. Its `data-title` and `data-standfirst` feed the report rail. */
 export const Section = ({
-  index,
   title,
   standfirst,
   children,
 }: {
-  index: string;
   title: string;
   standfirst?: string;
   children: React.ReactNode;
 }) => (
-  <section className="mt-28 first:mt-0">
+  <section data-title={title} data-standfirst={standfirst} className="mt-28 scroll-mt-12 first:mt-0">
     <div className="border-t border-white/15 pt-6">
-      <span className="font-mono text-[11px] tracking-[0.35em] text-sky-400/70">{index}</span>
-      <h2 className="mt-3 text-3xl font-black uppercase tracking-tighter text-white md:text-4xl">{title}</h2>
+      <h2 className="text-3xl font-black uppercase tracking-tighter text-white md:text-4xl">{title}</h2>
       {standfirst && <p className="mt-3 max-w-[58ch] text-[15px] leading-relaxed text-white/40">{standfirst}</p>}
     </div>
     <div className="mt-10 flex flex-col gap-7">{children}</div>
@@ -89,23 +87,20 @@ export const Datum = ({ label, children }: { label: string; children: React.Reac
 
 /**
  * Wider than the prose column, so a table is not squeezed to the measure of a
- * sentence. Captioned above, numbered, the way a figure in a paper is.
+ * sentence. Captioned above, the way a figure in a paper is.
  */
 export const Figure = ({
-  label,
   title,
   note,
   children,
 }: {
-  label: string;
   title: string;
   note?: string;
   children: React.ReactNode;
 }) => (
   <figure className="my-4 lg:-mx-24">
     <figcaption className="mb-4 lg:px-24">
-      <span className="font-mono text-[10px] uppercase tracking-[0.3em] text-white/30">{label}</span>
-      <p className="mt-1.5 text-[13px] font-bold uppercase tracking-[0.15em] text-white/70">{title}</p>
+      <p className="text-[13px] font-bold uppercase tracking-[0.15em] text-white/70">{title}</p>
       {note && <p className="mt-1.5 max-w-[62ch] text-[12px] leading-relaxed text-white/35">{note}</p>}
     </figcaption>
     <div className="overflow-x-auto lg:px-24">{children}</div>

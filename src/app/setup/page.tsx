@@ -1,17 +1,28 @@
 'use client';
 
-import React from 'react';
+import React, { use } from 'react';
 import { useRouter } from 'next/navigation';
 import SetupPanel from '@/components/ui/setup-panel';
 import { SpinningBorderButton } from '@/components/ui/spinning-border-button';
 import { ShiftHoverText } from '@/components/ShiftHoverText';
 
-export default function SetupPage() {
+/** Setup for both races: `?mode=full-race` sends Start Race to the full race, otherwise to qualifying. */
+export default function SetupPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
+}) {
   const router = useRouter();
+  const fullRace = use(searchParams).mode === 'full-race';
 
   const handleStart = (track: string, driver: string, policy: string) => {
-    const params = new URLSearchParams({ track, driver, policy, year: '2026' });
-    router.push(`/race?${params.toString()}`);
+    // The full race still runs on its fixture, so only qualifying takes the choices.
+    if (fullRace) {
+      router.push('/full-race');
+    } else {
+      const params = new URLSearchParams({ track, driver, policy, year: '2026' });
+      router.push(`/race?${params.toString()}`);
+    }
   };
 
   return (
