@@ -91,7 +91,7 @@ export function ShiftHoverText() {
             origin={{ x: box.width * SIDE_PAD, y: box.baseline }}
             strokeWidth={2.4}
             durationSec={2.5}
-            loop={phase === "hover"}
+            loop={false}
             onComplete={() => setPhase("fill")}
           />
         </div>
