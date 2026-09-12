@@ -20,6 +20,7 @@ class StreamAudit:
     unexpected_roster: list[str]
     fields: list[str]
     error: str | None = None
+    reason: str | None = None
 
 
 def audit_stream(
@@ -27,6 +28,7 @@ def audit_stream(
     expected_roster: set[str],
     max_gap: timedelta = timedelta(seconds=15),
     error: str | None = None,
+    reason: str | None = None,
 ) -> StreamAudit:
     """Describe time and roster coverage without changing records."""
     if records is None:
@@ -41,6 +43,7 @@ def audit_stream(
             unexpected_roster=[],
             fields=[],
             error=error,
+            reason=reason,
         )
     if records.empty:
         return StreamAudit(

@@ -58,8 +58,13 @@ def _acquire_day(request: SessionRequest, cache_dir: Path, output_dir: Path) -> 
         result = streams[name]
         records = result.records
         expected_roster = set(roster) if name in {"car", "position", "laps", "tyres"} else set()
-        if result.status.value != "present":
-            coverage[name] = audit_stream(None, expected_roster=expected_roster, error=result.reason if result.status.value == "failed" else None).__dict__
+        if result.status.value not in {"present", "verified_empty"}:
+            coverage[name] = audit_stream(
+                None,
+                expected_roster=expected_roster,
+                error=result.reason if result.status.value == "failed" else None,
+                reason=result.reason if result.status.value == "missing" else None,
+            ).__dict__
             continue
         records = records.copy()
         records.insert(0, "source_row", records["NativeSourceRow"] if "NativeSourceRow" in records else range(len(records)))

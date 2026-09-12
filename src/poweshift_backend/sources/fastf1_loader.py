@@ -67,12 +67,14 @@ def _driver_frames(records: Mapping[str, pd.DataFrame]) -> pd.DataFrame:
     return pd.concat(frames, ignore_index=True) if frames else pd.DataFrame()
 
 
-def _records(load: callable) -> StreamResult:
+def _records(load: callable, verified_empty: bool = False) -> StreamResult:
     try:
         records = load()
     except Exception as error:
         return StreamResult(None, StreamStatus.FAILED, str(error))
     if records.empty:
+        if verified_empty:
+            return StreamResult(records, StreamStatus.VERIFIED_EMPTY)
         return StreamResult(records, StreamStatus.MISSING, "FastF1 returned no records")
     if "NativeSourceRow" not in records:
         records = records.assign(NativeSourceRow=records.index)
