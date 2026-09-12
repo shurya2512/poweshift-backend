@@ -1,0 +1,105 @@
+/* MagicBento effects (adapted from React Bits). Colours come from --glow-color ("r, g, b"),
+   which MagicBento.tsx sets from the site's blue→red brand gradient. */
+
+.card {
+  position: relative;
+  isolation: isolate;
+  --glow-x: 50%;
+  --glow-y: 50%;
+  --glow-intensity: 0;
+  --glow-radius: 200px;
+  --glow-color: 59, 130, 246;
+}
+
+/* Border glow: a 6px ring masked to the card's edge, lit around the cursor. */
+.card::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  padding: 6px;
+  border-radius: inherit;
+  background: radial-gradient(
+    var(--glow-radius) circle at var(--glow-x) var(--glow-y),
+    rgba(var(--glow-color), calc(var(--glow-intensity) * 0.8)) 0%,
+    rgba(var(--glow-color), calc(var(--glow-intensity) * 0.4)) 30%,
+    transparent 60%
+  );
+  mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  mask-composite: exclude;
+  pointer-events: none;
+}
+
+.card:hover {
+  box-shadow:
+    0 12px 40px rgba(0, 0, 0, 0.6),
+    0 0 30px rgba(var(--glow-color), 0.2);
+}
+
+/* Clips particles and ripples to the card without clipping the card's own content (e.g. dropdown menus). */
+.layer {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  border-radius: inherit;
+  pointer-events: none;
+}
+
+.particle {
+  position: absolute;
+  z-index: 100;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: rgb(var(--glow-color));
+  box-shadow: 0 0 6px rgba(var(--glow-color), 0.6);
+}
+
+.particle::before {
+  content: '';
+  position: absolute;
+  inset: -2px;
+  z-index: -1;
+  border-radius: 50%;
+  background: rgba(var(--glow-color), 0.2);
+}
+
+.ripple {
+  position: absolute;
+  z-index: 1000;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle,
+    rgba(var(--glow-color), 0.4) 0%,
+    rgba(var(--glow-color), 0.2) 30%,
+    transparent 70%
+  );
+}
+
+/* Page-wide glow that follows the cursor over the section; appended to <body>. */
+.spotlight {
+  --glow-color: 59, 130, 246;
+  position: fixed;
+  left: 0;
+  top: 0;
+  z-index: 200;
+  width: 800px;
+  height: 800px;
+  border-radius: 50%;
+  pointer-events: none;
+  opacity: 0;
+  transform: translate(-50%, -50%);
+  mix-blend-mode: screen;
+  will-change: left, top, opacity;
+  background: radial-gradient(
+    circle,
+    rgba(var(--glow-color), 0.15) 0%,
+    rgba(var(--glow-color), 0.08) 15%,
+    rgba(var(--glow-color), 0.04) 25%,
+    rgba(var(--glow-color), 0.02) 40%,
+    rgba(var(--glow-color), 0.01) 65%,
+    transparent 70%
+  );
+}

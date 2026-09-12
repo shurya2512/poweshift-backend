@@ -1,8 +1,8 @@
 import React from 'react';
-import FeaturesGrid from "@/components/FeaturesGrid";
 import { SpinningBorderButton } from "@/components/ui/spinning-border-button";
 import { ShiftHoverText } from "@/components/ShiftHoverText";
 import { TypewriterHeading } from "@/components/TypewriterHeading";
+import { PowerShiftSubsections } from "@/components/PowerShiftSubsections";
 
 export const metadata = {
   title: "Power-Shift | Energy Deployment Intelligence",
@@ -34,7 +34,7 @@ export default function LandingPage() {
 
       {/* What is Power-Shift */}
       <div className="px-6 pb-32 max-w-6xl mx-auto pointer-events-auto">
-        <div className="grid grid-cols-1 md:grid-cols-[280px_1px_1fr] gap-8 md:gap-12 text-left mb-16">
+        <div className="grid grid-cols-1 md:grid-cols-[280px_1px_1fr] gap-8 md:gap-12 text-left mb-12">
           <TypewriterHeading
             text="What is Power-Shift"
             className="text-3xl md:text-4xl font-bold uppercase tracking-tight leading-tight"
@@ -52,7 +52,7 @@ export default function LandingPage() {
           </div>
         </div>
 
-        <FeaturesGrid />
+        <PowerShiftSubsections />
       </div>
     </main>
   );

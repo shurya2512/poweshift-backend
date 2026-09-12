@@ -5,6 +5,7 @@ import { Check, X, ChevronRight, MapPin, User, Cpu, Flag, Loader2 } from 'lucide
 import { motion, AnimatePresence } from 'framer-motion';
 import { SpinningBorderButton } from '@/components/ui/spinning-border-button';
 import { DropdownMenu } from '@/components/ui/dropdown-menu';
+import { BentoSection, BentoCard } from '@/components/MagicBento';
 
 // ── Types ────────────────────────────────────────────────────────────────────
 
@@ -94,27 +95,27 @@ export const CIRCUIT_META: Record<string, { laps: number; length: string; turns:
 };
 
 export const DRIVER_META: Record<string, { number: number; team: string; wdc: number; color: string; nationality: string; bio: string }> = {
-  VER: { 
-    number: 1,  
-    team: 'Red Bull Racing', 
-    wdc: 4, 
-    color: '#3671C6', 
+  VER: {
+    number: 1,
+    team: 'Red Bull Racing',
+    wdc: 4,
+    color: '#3671C6',
     nationality: 'NL',
     bio: "Max Verstappen has redefined modern Formula 1 dominance with relentless consistency and aggressive race craft. His reference telemetry is characterised by ultra-late braking and perfect rotation on corner entry, demanding a highly sophisticated AI deployment policy to match his lap times."
   },
-  HAM: { 
-    number: 44, 
-    team: 'Ferrari',          
-    wdc: 7, 
-    color: '#E8002D', 
+  HAM: {
+    number: 44,
+    team: 'Ferrari',
+    wdc: 7,
+    color: '#E8002D',
     nationality: 'GB',
     bio: "A seven-time World Champion, Lewis Hamilton brings decades of experience and a famously smooth, momentum-carrying driving style to his new chapter at Ferrari. His telemetry provides an excellent benchmark for battery regeneration and tyre management over a full race stint."
   },
-  LEC: { 
-    number: 16, 
-    team: 'Ferrari',          
-    wdc: 0, 
-    color: '#E8002D', 
+  LEC: {
+    number: 16,
+    team: 'Ferrari',
+    wdc: 0,
+    color: '#E8002D',
     nationality: 'MC',
     bio: "Charles Leclerc is renowned for his blistering one-lap pace and spectacular car control on the limit. His aggressive traction phase and willingness to dance the car on the edge of grip makes his telemetry a punishing benchmark for any AI attempting to optimise energy deployment."
   },
@@ -151,9 +152,9 @@ const CircuitMap = ({ circuit }: { circuit: string }) => {
     <div className="w-full h-full relative">
       <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
         {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img 
-          src={url} 
-          alt={circuit} 
+        <img
+          src={url}
+          alt={circuit}
           className="w-full h-full object-contain opacity-90"
           onError={(e) => { e.currentTarget.style.opacity = '0'; }}
         />
@@ -173,41 +174,6 @@ const StatChip = ({ label, value }: { label: string; value: string }) => (
   </div>
 );
 
-// Site's brand gradient: blue on the left, red on the right.
-const SPOT_BLUE: [number, number, number] = [59, 130, 246];
-const SPOT_RED: [number, number, number] = [239, 68, 68];
-const lerp = (a: number, b: number, t: number) => Math.round(a + (b - a) * t);
-
-// Cursor-tracked glow: follows the pointer and blends blue→red across the card's width.
-function useSpotlight() {
-  const ref = useRef<HTMLDivElement>(null);
-  const onMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
-    const el = ref.current;
-    const rect = el?.getBoundingClientRect();
-    if (!el || !rect) return;
-    const x = e.clientX - rect.left;
-    const y = e.clientY - rect.top;
-    const t = Math.min(1, Math.max(0, rect.width ? x / rect.width : 0));
-    const [r, g, b] = [
-      lerp(SPOT_BLUE[0], SPOT_RED[0], t),
-      lerp(SPOT_BLUE[1], SPOT_RED[1], t),
-      lerp(SPOT_BLUE[2], SPOT_RED[2], t),
-    ];
-    el.style.setProperty('--spot-x', `${x}px`);
-    el.style.setProperty('--spot-y', `${y}px`);
-    el.style.setProperty('--spot-color', `rgba(${r}, ${g}, ${b}, 0.2)`);
-  };
-  return { ref, onMouseMove };
-}
-
-const Spotlight = () => (
-  <div
-    aria-hidden
-    className="pointer-events-none absolute inset-0 -z-10 rounded-[inherit] opacity-0 transition-opacity duration-300 group-hover:opacity-100"
-    style={{ background: `radial-gradient(320px circle at var(--spot-x, 50%) var(--spot-y, 50%), var(--spot-color, rgba(150,99,157,0.2)), transparent 60%)` }}
-  />
-);
-
 // ── Main Component ───────────────────────────────────────────────────────────
 
 export default function SetupPanel({ onStart }: SetupPanelProps) {
@@ -220,13 +186,6 @@ export default function SetupPanel({ onStart }: SetupPanelProps) {
   const timerRef   = useRef<ReturnType<typeof setTimeout> | null>(null);
   const circuit    = CIRCUIT_META[selections.track];
   const driverMeta = DRIVER_META[selections.driver];
-
-  const setupSpot   = useSpotlight();
-  const egoSpot     = useSpotlight();
-  const circuitSpot = useSpotlight();
-  const driverSpot  = useSpotlight();
-  const startSpot   = useSpotlight();
-  const regsSpot    = useSpotlight();
 
   const triggerLoading = useCallback(() => {
     setIsLoading(true);
@@ -244,15 +203,10 @@ export default function SetupPanel({ onStart }: SetupPanelProps) {
   };
 
   return (
-    <div className="w-full flex flex-col gap-6">
+    <BentoSection className="w-full flex flex-col gap-6">
 
       {/* ── TOP: Simulation Setup — title left, selectors right ───────────── */}
-      <div
-        ref={setupSpot.ref}
-        onMouseMove={setupSpot.onMouseMove}
-        className="relative isolate group z-30 bg-neutral-950/90 backdrop-blur-2xl border border-white/[0.08] rounded-3xl shadow-[0_20px_60px_rgba(0,0,0,0.8)] transition-colors duration-300 group-hover:border-blue-400/25"
-      >
-        <Spotlight />
+      <BentoCard className="relative isolate group z-30 bg-neutral-950/90 backdrop-blur-2xl border border-white/[0.08] rounded-3xl shadow-[0_20px_60px_rgba(0,0,0,0.8)] transition-colors duration-300 group-hover:border-blue-400/25">
         <div className="grid grid-cols-1 md:grid-cols-[2fr_3fr_3fr]">
 
           {/* Title block */}
@@ -299,15 +253,10 @@ export default function SetupPanel({ onStart }: SetupPanelProps) {
             );
           })}
         </div>
-      </div>
+      </BentoCard>
 
       {/* ── Ego Car — the simulated vehicle the AI controls ───────────────── */}
-      <div
-        ref={egoSpot.ref}
-        onMouseMove={egoSpot.onMouseMove}
-        className="relative isolate group bg-neutral-950/90 backdrop-blur-2xl border border-white/[0.08] rounded-3xl shadow-[0_12px_40px_rgba(0,0,0,0.6)] overflow-hidden transition-colors duration-300 group-hover:border-red-400/25"
-      >
-        <Spotlight />
+      <BentoCard className="relative isolate group bg-neutral-950/90 backdrop-blur-2xl border border-white/[0.08] rounded-3xl shadow-[0_12px_40px_rgba(0,0,0,0.6)] overflow-hidden transition-colors duration-300 group-hover:border-red-400/25">
         <div className="grid grid-cols-1 md:grid-cols-3">
 
           <div className="px-6 py-6 border-b md:border-b-0 md:border-r border-white/[0.06] flex flex-col justify-center">
@@ -330,7 +279,7 @@ export default function SetupPanel({ onStart }: SetupPanelProps) {
             <StatChip label="Policy"  value="Learned (AI)" />
           </div>
         </div>
-      </div>
+      </BentoCard>
 
       {/* ── BELOW: Circuit Map + Driver Info ──────────────────────────────── */}
       <div className="relative grid grid-cols-1 md:grid-cols-[3fr_2fr] gap-6 items-stretch">
@@ -352,12 +301,7 @@ export default function SetupPanel({ onStart }: SetupPanelProps) {
         </AnimatePresence>
 
         {/* Circuit Hero Card */}
-        <div
-          ref={circuitSpot.ref}
-          onMouseMove={circuitSpot.onMouseMove}
-          className="relative isolate group h-full flex flex-col bg-neutral-950/90 backdrop-blur-2xl border border-white/[0.08] rounded-3xl overflow-hidden shadow-[0_12px_40px_rgba(0,0,0,0.6)] transition-colors duration-300 group-hover:border-blue-400/25"
-        >
-          <Spotlight />
+        <BentoCard className="relative isolate group h-full flex flex-col bg-neutral-950/90 backdrop-blur-2xl border border-white/[0.08] rounded-3xl overflow-hidden shadow-[0_12px_40px_rgba(0,0,0,0.6)] transition-colors duration-300 group-hover:border-blue-400/25">
           <div className="px-6 pt-6 pb-5 border-b border-white/[0.06]">
             <EyebrowLabel className="text-blue-400 mb-2">Selected Circuit</EyebrowLabel>
             <div className="flex items-start justify-between gap-4">
@@ -399,15 +343,10 @@ export default function SetupPanel({ onStart }: SetupPanelProps) {
             <StatChip label="Turns"     value={`${circuit.turns}`} />
             <StatChip label="Lap Record" value={circuit.lapRecord} />
           </div>
-        </div>
+        </BentoCard>
 
         {/* Driver Info Card — full profile */}
-        <div
-          ref={driverSpot.ref}
-          onMouseMove={driverSpot.onMouseMove}
-          className="relative isolate group h-full flex flex-col bg-neutral-950/90 backdrop-blur-2xl border border-white/[0.08] rounded-3xl overflow-hidden shadow-[0_12px_40px_rgba(0,0,0,0.5)] transition-colors duration-300 group-hover:border-blue-300/25"
-        >
-          <Spotlight />
+        <BentoCard className="relative isolate group h-full flex flex-col bg-neutral-950/90 backdrop-blur-2xl border border-white/[0.08] rounded-3xl overflow-hidden shadow-[0_12px_40px_rgba(0,0,0,0.5)] transition-colors duration-300 group-hover:border-blue-300/25">
 
           {/* Header */}
           <div className="px-6 pt-6 pb-5 border-b border-white/[0.06] flex items-start justify-between gap-4">
@@ -472,16 +411,11 @@ export default function SetupPanel({ onStart }: SetupPanelProps) {
               {driverMeta.bio}
             </p>
           </div>
-        </div>
+        </BentoCard>
       </div>
 
       {/* ── Start Race ────────────────────────────────────────────────────── */}
-      <div
-        ref={startSpot.ref}
-        onMouseMove={startSpot.onMouseMove}
-        className="relative isolate group bg-neutral-950/90 backdrop-blur-2xl border border-white/[0.08] rounded-3xl px-6 py-5 shadow-[0_12px_40px_rgba(0,0,0,0.6)] flex flex-col sm:flex-row sm:items-center gap-4 transition-colors duration-300 group-hover:border-red-400/25"
-      >
-        <Spotlight />
+      <BentoCard className="relative isolate group bg-neutral-950/90 backdrop-blur-2xl border border-white/[0.08] rounded-3xl px-6 py-5 shadow-[0_12px_40px_rgba(0,0,0,0.6)] flex flex-col sm:flex-row sm:items-center gap-4 transition-colors duration-300 group-hover:border-red-400/25">
         <div className="min-w-0 flex-1">
           <EyebrowLabel className="mb-1">Ready to launch</EyebrowLabel>
           <p className="text-sm font-semibold text-white truncate">
@@ -494,15 +428,10 @@ export default function SetupPanel({ onStart }: SetupPanelProps) {
           text="Start Race"
           onClick={() => onStart(selections.track, selections.driver, selections.policy)}
         />
-      </div>
+      </BentoCard>
 
       {/* ── BOTTOM: 2026 Regs Banner ──────────────────────────────────────── */}
-      <div
-        ref={regsSpot.ref}
-        onMouseMove={regsSpot.onMouseMove}
-        className="relative isolate group bg-blue-950/35 border border-blue-500/15 rounded-2xl px-6 py-4 transition-colors duration-300 group-hover:border-blue-400/40"
-      >
-        <Spotlight />
+      <BentoCard className="relative isolate group bg-blue-950/35 border border-blue-500/15 rounded-2xl px-6 py-4 transition-colors duration-300 group-hover:border-blue-400/40">
         <p className="text-xs font-semibold text-blue-300/80 mb-1">2026 F1 Regulations</p>
         <p className="text-xs text-blue-300/40 leading-relaxed">
           Maximum <span className="text-blue-300/70 font-semibold">350 kW</span> electrical output from a{' '}
@@ -510,7 +439,7 @@ export default function SetupPanel({ onStart }: SetupPanelProps) {
           Car mass: <span className="text-blue-300/70 font-semibold">798 kg</span>.
           The AI learns optimal deployment timing to minimise lap time.
         </p>
-      </div>
+      </BentoCard>
 
       {/* ── DRIVER INFO MODAL ─────────────────────────────────────────────── */}
       <AnimatePresence>
@@ -528,7 +457,7 @@ export default function SetupPanel({ onStart }: SetupPanelProps) {
               transition={{ type: 'spring', stiffness: 400, damping: 32 }}
               className="fixed inset-0 z-50 flex items-center justify-center p-6 pointer-events-none"
             >
-              <div 
+              <div
                 className="relative w-full max-w-md bg-neutral-950/95 backdrop-blur-2xl border border-white/[0.12] rounded-3xl overflow-hidden shadow-[0_24px_60px_rgba(0,0,0,0.9)] pointer-events-auto"
                 onClick={e => e.stopPropagation()}
               >
@@ -551,23 +480,23 @@ export default function SetupPanel({ onStart }: SetupPanelProps) {
                 {/* Photo Area */}
                 <div className="relative w-full h-64 bg-neutral-950 border-b border-white/[0.05] z-10">
                   {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img 
-                    src={`/${selections.driver}.png`} 
-                    alt={selections.driver} 
+                  <img
+                    src={`/${selections.driver}.png`}
+                    alt={selections.driver}
                     className="absolute inset-0 w-full h-full object-contain object-bottom opacity-90 z-10"
-                    onError={(e) => { e.currentTarget.style.opacity = '0'; }} 
+                    onError={(e) => { e.currentTarget.style.opacity = '0'; }}
                   />
                   {/* Fallback if no image */}
                   <div className="absolute inset-0 flex flex-col items-center justify-center z-0 bg-neutral-900/50">
                     <User size={48} className="text-white/10 mb-4" />
                     <p className="text-[10px] font-medium uppercase tracking-widest text-white/20">Photo missing (/{selections.driver}.png)</p>
                   </div>
-                  
+
                   {/* Gradient Overlay at bottom of photo */}
                   <div className="absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-neutral-950 to-transparent z-10" />
-                  
+
                   {/* Floating Number */}
-                  <div 
+                  <div
                     className="absolute bottom-4 right-6 text-[80px] leading-none font-black italic tracking-tighter z-20"
                     style={{ color: driverMeta.color, textShadow: '0 4px 24px rgba(0,0,0,0.8)' }}
                   >
@@ -591,19 +520,19 @@ export default function SetupPanel({ onStart }: SetupPanelProps) {
                       <p className="text-sm font-semibold text-white uppercase">{driverMeta.nationality}</p>
                     </div>
                   </div>
-                  
+
                   <EyebrowLabel className="mb-2">Telemetry Profile</EyebrowLabel>
                   <p className="text-sm text-white/60 leading-relaxed font-medium">
                     {driverMeta.bio}
                   </p>
                 </div>
-                
+
                 <GradientBlur />
               </div>
             </motion.div>
           </>
         )}
       </AnimatePresence>
-    </div>
+    </BentoSection>
   );
 }
