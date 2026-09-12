@@ -42,3 +42,4 @@ def test_audit_reports_datetime_stream_ranges_without_coercing_them_to_durations
 
     assert report.first_time_s == 0.0
     assert report.last_time_s == 20.0
+    assert report.time_origin == "2026-02-11T07:00:00+00:00"

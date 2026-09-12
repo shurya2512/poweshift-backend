@@ -58,7 +58,11 @@ def _acquire_day(request: SessionRequest, cache_dir: Path, output_dir: Path) -> 
             continue
         records = records.copy()
         records.insert(0, "source_row", range(len(records)))
-        exports[name] = {"path": str(day_dir / f"{name}.parquet"), "sha256": write_table(records, day_dir / f"{name}.parquet")}
+        exports[name] = {
+            "path": str(day_dir / f"{name}.parquet"),
+            "sha256": write_table(records, day_dir / f"{name}.parquet"),
+            "provenance": {"kind": "parser_derived", "row_key": "source_row", "stream": name},
+        }
         expected_roster = set(roster) if name in {"car", "position", "laps", "tyres"} else set()
         coverage[name] = audit_stream(records, expected_roster).__dict__
     laps = streams["laps"]

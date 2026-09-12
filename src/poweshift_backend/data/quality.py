@@ -13,6 +13,7 @@ class StreamAudit:
     status: StreamStatus
     first_time_s: float | None
     last_time_s: float | None
+    time_origin: str | None
     gap_count: int
     out_of_order_count: int
     missing_roster: list[str]
@@ -33,6 +34,7 @@ def audit_stream(
             status=StreamStatus.FAILED if error else StreamStatus.MISSING,
             first_time_s=None,
             last_time_s=None,
+            time_origin=None,
             gap_count=0,
             out_of_order_count=0,
             missing_roster=sorted(expected_roster),
@@ -45,6 +47,7 @@ def audit_stream(
             status=StreamStatus.VERIFIED_EMPTY,
             first_time_s=None,
             last_time_s=None,
+            time_origin=None,
             gap_count=0,
             out_of_order_count=0,
             missing_roster=sorted(expected_roster),
@@ -57,15 +60,22 @@ def audit_stream(
     if pd.api.types.is_datetime64_any_dtype(raw_times):
         times = pd.to_datetime(raw_times)
         elapsed = times - times.min()
+        time_origin = times.min().isoformat()
+        first_time_s = 0.0
+        last_time_s = elapsed.max().total_seconds()
     else:
         times = pd.to_timedelta(raw_times)
         elapsed = times
+        time_origin = None
+        first_time_s = times.min().total_seconds()
+        last_time_s = times.max().total_seconds()
     deltas = times.diff()
     observed_roster = set(records.get("DriverNumber", pd.Series(dtype=str)).dropna().astype(str))
     return StreamAudit(
         status=StreamStatus.PRESENT,
-        first_time_s=0.0,
-        last_time_s=elapsed.max().total_seconds(),
+        first_time_s=first_time_s,
+        last_time_s=last_time_s,
+        time_origin=time_origin,
         gap_count=int((deltas > pd.Timedelta(max_gap)).sum()),
         out_of_order_count=int((deltas < pd.Timedelta(0)).sum()),
         missing_roster=sorted(expected_roster - observed_roster),
