@@ -25,12 +25,29 @@ export default function F1ScrollTracker() {
     return `calc(${p}vw - ${p}%)`;
   });
 
+  /** Scroll the page to the fraction of the bar under the pointer. */
+  const scrollToPointer = (clientX: number) => {
+    const fraction = Math.min(Math.max(clientX / window.innerWidth, 0), 1);
+    const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
+    window.scrollTo({ top: fraction * maxScroll, behavior: "instant" });
+  };
+
   return (
-    <div className="fixed bottom-0 left-0 w-full h-10 z-[9999] pointer-events-none overflow-visible bg-neutral-950/50 backdrop-blur-md border-t border-white/[0.05]">
+    <div
+      className="group fixed bottom-0 left-0 w-full h-10 z-[9999] overflow-visible bg-neutral-950/50 backdrop-blur-md border-t border-white/[0.05] cursor-pointer select-none touch-none"
+      onPointerDown={(e) => {
+        e.currentTarget.setPointerCapture(e.pointerId);
+        scrollToPointer(e.clientX);
+      }}
+      onPointerMove={(e) => {
+        // Only scrub while the pointer is held down (captured).
+        if (e.currentTarget.hasPointerCapture(e.pointerId)) scrollToPointer(e.clientX);
+      }}
+    >
 
       {/* Laser Progress Trail */}
-      <motion.div 
-        className="absolute left-0 top-1/2 -translate-y-1/2 h-[3px] bg-gradient-to-r from-blue-500 to-red-500 shadow-[0_0_8px_rgba(239,68,68,0.6)]"
+      <motion.div
+        className="absolute left-0 top-1/2 -translate-y-1/2 h-[3px] group-hover:h-[5px] transition-[height] bg-gradient-to-r from-blue-500 to-red-500 shadow-[0_0_8px_rgba(239,68,68,0.6)]"
         style={{ width }}
       >
         {/* Glowing Leading Dot */}
@@ -39,7 +56,7 @@ export default function F1ScrollTracker() {
       
       {/* Car Indicator */}
       <motion.div 
-        className="absolute w-36 h-14 top-1/2 -mt-[28px]"
+        className="absolute w-36 h-[34px] top-1/2 -mt-[17px]"
         style={{ x }}
       >
         {/* Percentage on the left of the car */}
@@ -48,8 +65,8 @@ export default function F1ScrollTracker() {
         </div>
 
         <Image 
-          src="/car.png" 
-          alt="F1 Car Scroll Indicator" 
+          src="/haas_car2.png"
+          alt="Haas F1 Car Scroll Indicator"
           fill
           className="object-contain drop-shadow-[4px_4px_4px_rgba(0,0,0,0.8)]"
           priority
