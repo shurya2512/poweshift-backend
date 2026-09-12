@@ -18,9 +18,9 @@
 
 ## Roles and verification
 
-- `gpt-5.6-terra` writes specifications, code, test suites, documentation, and handoffs.
-- `gpt-5.6-luna` runs the suite and reports the evidence.
-- Use `gpt-5.6-sol` with high reasoning only when test or acceptance evidence shows an unmet requirement. Terra fixes it, then Luna reruns the relevant tests.
+- Terra writes specifications, code, test suites, documentation, and handoffs. Use `gpt-5.6-terra` on ChatGPT, otherwise Sonnet.
+- Luna runs the suite and reports the evidence. Use `gpt-5.6-luna` on ChatGPT, otherwise Haiku. The role measures and reports rather than judges.
+- Use Sol only when test or acceptance evidence shows an unmet requirement: `gpt-5.6-sol` with high reasoning on ChatGPT, otherwise Opus. The role is judgement. Terra fixes it, then Luna reruns the relevant tests.
 - A passing phase does not require a Sol review. When a workflow is used, record these model assignments in `meta.phases`.
 
 ## Change discipline

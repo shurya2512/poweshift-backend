@@ -287,7 +287,7 @@ Split complete runs before fitting transforms. Native elapsed times remain expli
 
 The initial inherited split is Test 1 for training, 18 February for model selection and 19-20 February for final evaluation, subject to a coverage review before performance inspection. Later weekends use an explicit expanding chronological manifest. A weekend subsequently used for training is not untouched evidence for that model.
 
-FP/qualifying classification, comparable lap-time gaps, live race progress and final race outcomes are distinct targets. A target contract must preserve Q-segment eligibility, deleted/no-time outcomes, lap deficits and penalty treatment. Never assign convenient seconds to a categorical no-time or disqualification result.
+FP/qualifying classification, comparable lap-time gaps, live race progress and final race outcomes are distinct targets. A target contract must preserve Q-segment eligibility, deleted/no-time outcomes, lap deficits and penalty treatment. Never assign convenient seconds to a categorical no-time or disqualification result. A preseason testing session does not support race-gap or classification targets; a non-valid status such as deleted, no-time, disqualified, lap deficit or penalty can never carry a time value.
 
 ---
 
@@ -300,15 +300,15 @@ The following are exact required field families for the proposed backend. Featur
 | Contract | Required payload |
 |---|---|
 | `AcquisitionBundle` | Session identity; separate table/stream artifact references; parser version; per-stream coverage; export hashes; roster discrepancies. |
-| `StintPackage` | Entry/session/run IDs; start/end and completed cutoff; `X: float32[T,F]`; `valid: bool[T,F]`; `origin: uint8[T,F]`; `dt_s: float64[T]`; `padding: bool[T]`; feature order; tyre/programme/quality context; split; source-row references. Initial anchor dt is zero; later valid intervals are positive. |
-| `TargetBundle` | Target kind; roster or entry pair; timing/classification values; units; observed availability time; comparison masks; Q-segment/valid-lap rules; lap-deficit/status fields; source references. |
-| `TrackProfile` | Coordinate transform; reference progress and actual distance; route-specific curvature/grade/support; width/support; corner IDs and entry/apex/exit; connected routes; pit branch; rule-line mappings. |
+| `StintPackage` | Entry/session/run IDs; start/end and completed cutoff; `X: float32[T,F]`; `valid: bool[T,F]`; `origin: uint8[T,F]`; `dt_s: float64[T]`; `padding: bool[T]`; feature order; tyre context (`Compound`, `TyreLife`, `FreshTyre`; no field identifies a physical tyre set, so tyre-set identity stays unknown); programme/quality context; split; source-row references. Initial anchor dt is zero; later valid intervals are positive. |
+| `TargetBundle` | Target kind; roster or entry pair; timing/classification values; units; observed availability time; comparison masks; Q-segment/valid-lap rules; lap-deficit/status fields; source references. A preseason testing session cannot supply race-gap or classification targets, and a non-valid status (deleted, no-time, disqualified, lap deficit, penalty) never carries a time value. |
+| `TrackProfile` | Coordinate transform (a decimetre-to-metre scale on FastF1 position X/Y, not an identity transform); reference progress and actual distance; curvature with an explicit validity mask. Grade, width, corner boundaries, connected routes, pit branch and rule-line mappings have no approved source in this bundle and stay unavailable. |
 | `CarProfile` | Entry and version; latent and latent-valid flag; encoder/decoder/scaler/feature IDs; effective maps; reference mass/condition; support limits; driver/tyre model IDs; actuation semantics; readiness flags; calibration/uncertainty status. |
 | `PowertrainMap` | Torque-map axes and boundary units; gear/final-drive ratios; radius; shaft connection; motor and engine maps; response/shift/loss IDs; supported modes and assumption provenance. |
 | `ChassisModel` | Reference-mass inclusion convention; CG and wheelbase; aero balance/force locations; selected load-transfer, grip and road-frame model IDs; supported conditions. |
 | `NewsPrior` | Article/span/source IDs; publication and known availability; effective date; component and claim type; fitment status; entry applicability; extraction/reviewer version; bounded context and uncertainty. |
 
-A curve records its axis, monotonically ordered axis values, aligned finite values, units, interpolation, support and extrapolation policy. Multi-axis maps record the grid and shape explicitly. No endpoint clamping outside observed support is silently presented as validated extrapolation.
+A curve records its axis, monotonically ordered axis values, aligned finite values, units, interpolation, support and extrapolation policy. Multi-axis maps record the grid and shape explicitly. No endpoint clamping outside observed support is silently presented as validated extrapolation. Curvature's one-sided edge differencing understates the true value: measured on a known 500 m arc, the first and last samples read half the true curvature, which is why `TrackProfile` marks them invalid rather than presenting them as measured.
 
 ### 6.2 World, physical and rule contracts
 
@@ -976,9 +976,10 @@ All paths below are relative to the proposed new `src/trackshift/` package. They
 | `contracts/` | Evidence, profile, state, rules, pit, observation, recommendation and report schemas. |
 | `sources/fastf1_loader.py`, `cache_audit.py` | Exact session resolution and eligible-cache provenance. |
 | `data/export.py`, `quality.py` | Immutable exports, hashes and actual coverage. |
-| `prepare/normalise.py`, `runs.py`, `windows.py`, `targets.py` | Time/units, run/tyre continuity, masked windows and isolated targets. |
+| `prepare/normalise.py`, `runs.py`, `windows.py` | Time/units, run/tyre continuity and masked windows. |
 | `events/timeline.py`, `information/projector.py` | Availability gate, event reduction and future-pit-only projection. |
 | `geometry/reference.py`, `templates.py`, `corners.py` | Coordinate mapping, route support, finite templates and corner sequence. |
+| `targets/bundle.py` | Isolated `TargetBundle` records, kept separate from reconstruction inputs. |
 | `reconstruction/baseline.py`, `losses.py` | Numerical effective-profile fitting and matched losses. |
 | `representation/gru.py`, `transformer.py`, `decoder.py`, `update.py` | Network 1 candidates, physical contract and versioned latent updates. |
 | `powertrain/maps.py`, `transients.py`, `transmission.py` | Source boundaries, response and gear coupling. |
