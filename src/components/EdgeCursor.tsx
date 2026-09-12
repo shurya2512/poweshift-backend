@@ -8,8 +8,10 @@ const BLUE = "#3b8bff";
 /** Hotspot inside the SVG (arrow tip and index fingertip), placed on the pointer. */
 const HOT_X = 9;
 const HOT_Y = 2;
-/** Where red meets blue across each shape's width: 40% red, 60% blue. */
+/** Where red meets blue across each shape's width, mid-screen: 40% red, 60% blue. */
 const SPLIT = 0.4;
+/** How far the split moves at the screen edges: 65% red at far left, 15% at far right. */
+const SHIFT = 0.25;
 /** Half-width of the red→blue blend, as a fraction of the shape's width. */
 const BLEND = 0.15;
 /** Elements that swap the arrow for the pointing hand, like the native cursor. */
@@ -28,9 +30,9 @@ const EDGE = {
 } as const;
 
 /**
- * A black cursor with a 40/60 red→blue edge that follows the mouse: an arrow,
- * or a pointing hand over clickable elements. The half on the pointer's side of
- * the screen (red left, blue right) glows brightest.
+ * A black cursor with a red→blue edge that follows the mouse: an arrow, or a
+ * pointing hand over clickable elements. Mid-screen the edge is 40% red, 60% blue;
+ * moving left grows and brightens the red part, moving right the blue.
  */
 export default function EdgeCursor() {
   const ref = useRef<HTMLDivElement>(null);
@@ -40,15 +42,17 @@ export default function EdgeCursor() {
 
   useEffect(() => {
     const el = ref.current!;
-    const stops = gradientRef.current!.querySelectorAll("stop");
+    const [red, blue] = gradientRef.current!.querySelectorAll("stop");
     const arrow = arrowRef.current!;
     const hand = handRef.current!;
     const move = (e: PointerEvent) => {
       if (e.pointerType !== "mouse") return;
       const fx = e.clientX / window.innerWidth;
-      const red = String(0.8 + 0.2 * (1 - fx));
-      const blue = String(0.8 + 0.2 * fx);
-      stops.forEach((s, i) => s.setAttribute("stop-opacity", i < 2 ? red : blue));
+      const split = SPLIT + SHIFT * (1 - 2 * fx);
+      red.setAttribute("offset", String(split - BLEND));
+      blue.setAttribute("offset", String(split + BLEND));
+      red.setAttribute("stop-opacity", String(0.8 + 0.2 * (1 - fx)));
+      blue.setAttribute("stop-opacity", String(0.8 + 0.2 * fx));
       const clickable = (e.target as Element).closest(CLICKABLE) !== null;
       arrow.style.display = clickable ? "none" : "";
       hand.style.display = clickable ? "" : "none";
@@ -76,10 +80,10 @@ export default function EdgeCursor() {
       <svg width="24" height="25" viewBox="0 0 24 25" className="block">
         <defs>
           <linearGradient ref={gradientRef} id="edge-gradient" x1="0" x2="1">
-            <stop offset="0" stopColor={RED} />
+            {/* Two stops only: the gradient pads both ends. A duplicate stop at the same
+                offset (e.g. at the far right) makes WebKit drop the outer half of the edge. */}
             <stop offset={SPLIT - BLEND} stopColor={RED} />
             <stop offset={SPLIT + BLEND} stopColor={BLUE} />
-            <stop offset="1" stopColor={BLUE} />
           </linearGradient>
         </defs>
         <path ref={arrowRef} d={ARROW} {...EDGE} />

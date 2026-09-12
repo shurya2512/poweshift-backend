@@ -4,6 +4,7 @@ import React from 'react';
 import { useRouter } from 'next/navigation';
 import SetupPanel from '@/components/ui/setup-panel';
 import { SpinningBorderButton } from '@/components/ui/spinning-border-button';
+import { ShiftHoverText } from '@/components/ShiftHoverText';
 
 export default function SetupPage() {
   const router = useRouter();
@@ -35,7 +36,7 @@ export default function SetupPage() {
               2026 F1 Regulations Prototype
             </p>
             <h1 className="text-5xl lg:text-6xl font-black tracking-tighter text-white uppercase drop-shadow-xl">
-              Power<span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-500 to-red-500">-Shift</span>
+              Power<ShiftHoverText />
             </h1>
           </div>
         </div>
