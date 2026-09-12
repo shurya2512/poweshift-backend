@@ -1100,6 +1100,12 @@ flowchart TB
 
 Completion may retain limitations. It does not imply all entries are usable or independent electrical actuation is valid. Synthetic controller development remains segregated from the real-profile claim.
 
+The baseline fits one entry at a time from training chunks, records selection residuals without
+refitting, and keeps final-evaluation records out of fitting. Package observations do not contain
+aligned X/Y positions, so their cornering curvature is missing; recovered reference-route geometry
+does not fill that gap. Held-out reports state their bounded chunk count and any infeasible replay,
+rather than treating chunk scores as a full-lap result.
+
 ### Phase 4 | Network 1 comparison and entry updates
 
 ```mermaid

@@ -4,5 +4,6 @@ data/acquisition/
 data/acquisition_recap/
 data/acquisition_verified_*/
 data/preparation_verified*/
+data/reconstruction_phase3/*/
 data/phase1_fastf1_cache/
 __pycache__/

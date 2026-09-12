@@ -1,0 +1,20 @@
+{
+  "approved_by": "human-approved-phase-3-plan",
+  "approved_defaults": {
+    "gap_limit_s": 1.16,
+    "smoothing_limit_s": 0.44,
+    "staleness_policy": "recorded_not_used",
+    "window_limit_s": 190.761
+  },
+  "coverage_disposition_sha256": "1519a85cc2e42d9add74f183c079a782f0131394a8c84e4be05a7366bb8eaa77",
+  "effective_manifest_sha256": "cce63664130a4b01dd9948d4c35494e44ab1cc4328b1cbe5f310604384886355",
+  "phase2_evidence_manifest_sha256": "ae7733065fb4c3e47c1c7561cd5c1441e9f7edd421bafe40c504dd0d565d7e9e",
+  "preprocessing_spec_sha256": "dcdcb45b92057fc59211c2b0795bfc4a0a83445eb377f72f2956a28b212cacb6",
+  "split_manifest": {
+    "final_evaluation": ["2026-02-19", "2026-02-20"],
+    "manifest_kind": "phase_2_split",
+    "phase_1_proposal_activated": false,
+    "selection": "2026-02-18",
+    "training": "Test 1"
+  }
+}
