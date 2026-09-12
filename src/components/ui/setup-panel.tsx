@@ -183,7 +183,7 @@ function useSpotlight() {
     ];
     el.style.setProperty('--spot-x', `${x}px`);
     el.style.setProperty('--spot-y', `${y}px`);
-    el.style.setProperty('--spot-color', `rgba(${r}, ${g}, ${b}, 0.4)`);
+    el.style.setProperty('--spot-color', `rgba(${r}, ${g}, ${b}, 0.2)`);
   };
   return { ref, onMouseMove };
 }
@@ -192,7 +192,7 @@ const Spotlight = () => (
   <div
     aria-hidden
     className="pointer-events-none absolute inset-0 -z-10 rounded-[inherit] opacity-0 transition-opacity duration-300 group-hover:opacity-100"
-    style={{ background: `radial-gradient(320px circle at var(--spot-x, 50%) var(--spot-y, 50%), var(--spot-color, rgba(150,99,157,0.4)), transparent 60%)` }}
+    style={{ background: `radial-gradient(320px circle at var(--spot-x, 50%) var(--spot-y, 50%), var(--spot-color, rgba(150,99,157,0.2)), transparent 60%)` }}
   />
 );
 
