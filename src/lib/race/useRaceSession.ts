@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useMemo, useReducer, useRef } from 'react';
+import { RaceReport } from './report';
 import { RaceMessage, RaceSource, SessionRequest } from './source';
 import { Battle, ComparisonResult, RaceEvent, RaceFrame, SessionInfo, SupportState } from './types';
 
@@ -12,6 +13,8 @@ export interface RaceSessionState {
   events: RaceEvent[];
   comparison: ComparisonResult | null;
   battles: Battle[];
+  /** Only ever what the source delivered. A report is never assembled in this reducer. */
+  report: RaceReport | null;
   supportState: SupportState;
   supportReason?: string;
   playback: PlaybackStatus;
@@ -36,6 +39,7 @@ const initialState: RaceSessionState = {
   events: [],
   comparison: null,
   battles: [],
+  report: null,
   supportState: 'ready',
   playback: 'preparing',
   rate: 20,
@@ -71,6 +75,8 @@ function onMessage(state: RaceSessionState, message: RaceMessage): RaceSessionSt
       return { ...state, comparison: message.comparison };
     case 'battles':
       return { ...state, battles: message.battles };
+    case 'report':
+      return { ...state, report: message.report, playback: 'complete' };
     case 'support':
       return { ...state, supportState: message.state, supportReason: message.reason };
     case 'error':

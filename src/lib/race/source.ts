@@ -1,3 +1,4 @@
+import { RaceReport } from './report';
 import { Battle, ComparisonResult, RaceEvent, RaceFrame, SessionInfo, SupportState } from './types';
 
 /** What the view asks for. The source decides how to satisfy it. */
@@ -14,6 +15,8 @@ export type RaceMessage =
   | { type: 'events'; events: RaceEvent[] }
   | { type: 'comparison'; comparison: ComparisonResult }
   | { type: 'battles'; battles: Battle[] }
+  /** Sent once, at the flag. The finished race as a whole. */
+  | { type: 'report'; report: RaceReport }
   | { type: 'support'; state: SupportState; reason?: string }
   | { type: 'error'; code: string; message: string };
 

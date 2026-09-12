@@ -1,5 +1,14 @@
+import { RaceReport, WorldReport } from './report';
 import { RaceMessage } from './source';
-import { EnergyState, ParticipantState, RaceFrame, TyreState } from './types';
+import {
+  ComparisonDelta,
+  ComparisonResult,
+  EnergyState,
+  ParticipantState,
+  RaceFrame,
+  RaceOutcome,
+  TyreState,
+} from './types';
 import { Valued, unsupported } from './valued';
 
 /**
@@ -69,6 +78,14 @@ function participantState(raw: Record<string, unknown>): ParticipantState {
   };
 }
 
+function comparisonDelta(raw: Record<string, unknown> | undefined): ComparisonDelta {
+  return {
+    positionDelta: valued(raw?.positionDelta, 'Position delta'),
+    timeDeltaS: valued(raw?.timeDeltaS, 'Time delta'),
+    strategyDivergence: (raw?.strategyDivergence as string[]) ?? [],
+  };
+}
+
 function frame(raw: Record<string, unknown>): RaceFrame {
   const world = (side: 'baseline' | 'alternative') => {
     const w = (raw[side] ?? {}) as Record<string, unknown>;
@@ -77,16 +94,53 @@ function frame(raw: Record<string, unknown>): RaceFrame {
       field: ((w.field ?? []) as Record<string, unknown>[]).map(participantState),
     };
   };
-  const delta = (raw.delta ?? {}) as Record<string, unknown>;
   return {
     ...(raw as unknown as RaceFrame),
     baseline: world('baseline'),
     alternative: world('alternative'),
-    delta: {
-      positionDelta: valued(delta.positionDelta, 'Position delta'),
-      timeDeltaS: valued(delta.timeDeltaS, 'Time delta'),
-      strategyDivergence: (delta.strategyDivergence as string[]) ?? [],
-    },
+    delta: comparisonDelta(raw.delta as Record<string, unknown> | undefined),
+  };
+}
+
+function outcome(raw: Record<string, unknown> | undefined): RaceOutcome {
+  return {
+    finishPosition: valued(raw?.finishPosition, 'Finish position'),
+    classifiedStatus: String(raw?.classifiedStatus ?? 'Not classified'),
+    totalTimeS: valued(raw?.totalTimeS, 'Total race time'),
+    points: valued(raw?.points, 'Points'),
+    pitCount: Number(raw?.pitCount ?? 0),
+    tyreUse: String(raw?.tyreUse ?? ''),
+  };
+}
+
+function comparison(raw: Record<string, unknown>): ComparisonResult {
+  return {
+    ...(raw as unknown as ComparisonResult),
+    baseline: outcome(raw.baseline as Record<string, unknown> | undefined),
+    alternative: outcome(raw.alternative as Record<string, unknown> | undefined),
+    relativeTimeS: valued(raw.relativeTimeS, 'Relative race time'),
+    relativePositions: valued(raw.relativePositions, 'Relative positions'),
+    relativePoints: valued(raw.relativePoints, 'Relative points'),
+  };
+}
+
+function worldReport(raw: Record<string, unknown> | undefined): WorldReport {
+  return {
+    ...(raw as unknown as WorldReport),
+    outcome: outcome(raw?.outcome as Record<string, unknown> | undefined),
+    classification: ((raw?.classification ?? []) as Record<string, unknown>[]).map(participantState),
+  };
+}
+
+function report(raw: Record<string, unknown>): RaceReport {
+  return {
+    ...(raw as unknown as RaceReport),
+    baseline: worldReport(raw.baseline as Record<string, unknown> | undefined),
+    alternative: worldReport(raw.alternative as Record<string, unknown> | undefined),
+    comparison: comparison((raw.comparison ?? {}) as Record<string, unknown>),
+    delta: comparisonDelta(raw.delta as Record<string, unknown> | undefined),
+    events: (raw.events as RaceReport['events']) ?? [],
+    battles: (raw.battles as RaceReport['battles']) ?? [],
   };
 }
 
@@ -98,13 +152,16 @@ export function coerceMessage(raw: unknown): RaceMessage | null {
   switch (msg.type) {
     case 'session':
     case 'events':
-    case 'comparison':
     case 'battles':
     case 'support':
     case 'error':
       return msg as unknown as RaceMessage;
     case 'frame':
       return { type: 'frame', frame: frame(msg.frame as Record<string, unknown>) };
+    case 'comparison':
+      return { type: 'comparison', comparison: comparison(msg.comparison as Record<string, unknown>) };
+    case 'report':
+      return { type: 'report', report: report(msg.report as Record<string, unknown>) };
     default:
       return null;
   }

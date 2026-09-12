@@ -2,7 +2,7 @@
 
 import React, { useMemo, useState } from 'react';
 import Link from 'next/link';
-import { ArrowLeft } from 'lucide-react';
+import { ArrowLeft, ArrowRight } from 'lucide-react';
 import { FixtureRaceSource } from '@/lib/race/fixtures/source';
 import { useRaceSession } from '@/lib/race/useRaceSession';
 import { RaceEvent, SupportState } from '@/lib/race/types';
@@ -90,7 +90,15 @@ export function FullRaceView() {
         >
           <ArrowLeft size={15} /> Setup
         </Link>
-        <p className="text-[10px] uppercase tracking-widest text-white/25">Fixture source — no backend attached</p>
+        <div className="flex items-center gap-4">
+          <p className="text-[10px] uppercase tracking-widest text-white/25">Fixture source — no backend attached</p>
+          <Link
+            href="/report"
+            className="flex items-center gap-2 rounded-[14px] border border-white/[0.05] bg-white/[0.03] px-4 py-2 text-sm font-medium text-white/50 transition-colors hover:bg-white/[0.08] hover:text-white"
+          >
+            Report <ArrowRight size={15} />
+          </Link>
+        </div>
       </div>
 
       <TopContextBand session={session} stale={state.stale} />

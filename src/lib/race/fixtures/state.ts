@@ -79,6 +79,10 @@ export interface StateInput {
   aheadDistance?: number;
   aheadId?: string;
   behindId?: string;
+  /** Race time this entry took the flag. Used once distance stops separating the field. */
+  finishTimeS?: number;
+  leaderFinishTimeS?: number;
+  aheadFinishTimeS?: number;
 }
 
 function participation(p: Progress): ParticipationState {
@@ -99,6 +103,17 @@ export function buildParticipantState(input: StateInput): ParticipantState {
   const gapAhead =
     input.aheadDistance === undefined ? undefined : input.aheadDistance - p.distance;
 
+  // Every finisher sits at the same distance, so a distance-derived gap collapses to
+  // zero at the flag. A classified entry is separated by when it crossed the line.
+  const finishGap = (otherFinishS: number | undefined): number | undefined =>
+    p.finished && input.finishTimeS !== undefined && otherFinishS !== undefined
+      ? Number((input.finishTimeS - otherFinishS).toFixed(2))
+      : undefined;
+
+  const gapS = finishGap(input.leaderFinishTimeS) ?? gapFrom(behindLeaderLaps, entry);
+  const intervalS =
+    gapAhead === undefined ? undefined : finishGap(input.aheadFinishTimeS) ?? gapFrom(gapAhead, entry);
+
   return {
     participantId: entry.id,
     participation: participation(p),
@@ -108,11 +123,11 @@ export function buildParticipantState(input: StateInput): ParticipantState {
     x: point.x,
     y: point.y,
     speedKmh: mark(side, Math.round(speedKmh(p)), t, 'measured'),
-    gapS: mark(side, gapFrom(behindLeaderLaps, entry), t, 'measured'),
+    gapS: mark(side, gapS, t, 'measured'),
     intervalS:
-      gapAhead === undefined
+      intervalS === undefined
         ? unsupported('Leader has no car ahead')
-        : mark(side, gapFrom(gapAhead, entry), t, 'measured'),
+        : mark(side, intervalS, t, 'measured'),
     sector: mark(side, Math.min(3, Math.floor(p.frac * 3) + 1), t, 'measured'),
     lapsDown: lapsDown > 0 ? lapsDown : 0,
     tyre: tyre(side, pitLaps, p, t),

@@ -69,6 +69,9 @@ export function buildWorld(
       aheadDistance: i === 0 ? undefined : ordered[i - 1].progress.distance,
       aheadId: i === 0 ? undefined : ordered[i - 1].entry.id,
       behindId: i === ordered.length - 1 ? undefined : ordered[i + 1].entry.id,
+      finishTimeS: row.finishTimeS,
+      leaderFinishTimeS: ordered[0]?.finishTimeS,
+      aheadFinishTimeS: i === 0 ? undefined : ordered[i - 1].finishTimeS,
     }),
   );
 
