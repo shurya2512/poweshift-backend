@@ -17,12 +17,19 @@ export default function F1ScrollTracker() {
     setPercent(Math.round(latest * 100));
   });
 
-  const width = useTransform(smoothProgress, [0, 1], ["0%", "100%"]);
   // Framer Motion cannot interpolate between different units like "0vw" and "calc()".
   // We use a function to generate the exact transform string on every frame based on the 0-1 progress.
   const x = useTransform(smoothProgress, (val) => {
     const p = val * 100;
     return `calc(${p}vw - ${p}%)`;
+  });
+  // Car indicator width (`w-36` below) — kept in sync so the trail lines up with its center.
+  const CAR_WIDTH_REM = 9;
+  // The trail's width must land on the car's visual center, not its left edge: it uses the
+  // same left-edge formula as `x` above, plus half the car's own width.
+  const width = useTransform(smoothProgress, (val) => {
+    const p = val * 100;
+    return `calc(${p}vw - ${(p * CAR_WIDTH_REM) / 100}rem + ${CAR_WIDTH_REM / 2}rem)`;
   });
 
   /** Scroll the page to the fraction of the bar under the pointer. */

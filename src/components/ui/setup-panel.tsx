@@ -459,13 +459,6 @@ export default function SetupPanel({ onStart }: SetupPanelProps) {
             <p className="text-xs text-white/45 leading-relaxed font-medium line-clamp-4">
               {driverMeta.bio}
             </p>
-            <button
-              type="button"
-              onClick={() => setShowDriverModal(true)}
-              className="mt-2 text-[10px] font-medium uppercase tracking-widest text-blue-400/70 hover:text-blue-300 transition-colors"
-            >
-              Read full profile
-            </button>
           </div>
         </div>
       </div>
