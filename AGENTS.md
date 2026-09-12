@@ -29,6 +29,7 @@
 - Keep decisions, pending choices, and deviations with their reasons synchronized with the code in the same change.
 - Preserve user files and existing edits. Do not delete, move, discard, or overwrite them without explicit approval.
 - Do not add a `Co-Authored-By` trailer to commits.
+- Prioritize a working implementation. Keep testing and review proportional: use a small set of meaningful checks, avoid repeated review rounds and unnecessary polish, and accept simple, rough code when it meets the requested behavior.
 
 ## Routine commands
 
