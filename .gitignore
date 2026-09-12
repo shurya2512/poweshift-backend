@@ -1,5 +1,6 @@
 data/fastf1data/
 .venv/
 data/acquisition/
+data/acquisition_recap/
 data/phase1_fastf1_cache/
 __pycache__/
