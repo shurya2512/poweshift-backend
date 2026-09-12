@@ -1,6 +1,7 @@
 """Load permitted FastF1 testing-session records."""
 
 from collections.abc import Mapping
+import logging
 from pathlib import Path
 
 import fastf1
@@ -9,7 +10,9 @@ import pandas as pd
 from poweshift_backend.contracts.acquisition import SessionIdentity, SessionRequest, resolve_bahrain_test_request
 
 
-def load_bahrain_test_day(request: SessionRequest, cache_dir: Path) -> tuple[SessionIdentity, dict[str, pd.DataFrame]]:
+def load_bahrain_test_day(
+    request: SessionRequest, cache_dir: Path, log_path: Path
+) -> tuple[SessionIdentity, dict[str, pd.DataFrame]]:
     """Load one identity-checked Bahrain test day into a separate cache."""
     identity = resolve_bahrain_test_request(request)
     cache_dir.mkdir(parents=True, exist_ok=True)
@@ -17,7 +20,16 @@ def load_bahrain_test_day(request: SessionRequest, cache_dir: Path) -> tuple[Ses
     session = fastf1.get_testing_session(2026, identity.test_number, identity.day_number)
     if session.event["Location"] != identity.venue or session.date.date() != identity.date:
         raise ValueError("FastF1 returned an unexpected testing session")
-    session.load(laps=True, telemetry=True, weather=True, messages=True)
+    log_path.parent.mkdir(parents=True, exist_ok=True)
+    handler = logging.FileHandler(log_path, mode="w")
+    handler.setFormatter(logging.Formatter("%(name)s %(levelname)s %(message)s"))
+    logger = logging.getLogger("fastf1")
+    logger.addHandler(handler)
+    try:
+        session.load(laps=True, telemetry=True, weather=True, messages=True)
+    finally:
+        logger.removeHandler(handler)
+        handler.close()
     return identity, {
         "car": _driver_frames(session.car_data),
         "position": _driver_frames(session.pos_data),

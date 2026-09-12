@@ -1,5 +1,6 @@
 """Acquire, export and describe all permitted Bahrain test days."""
 
+from hashlib import sha256
 from pathlib import Path
 
 from poweshift_backend.contracts.acquisition import SessionRequest
@@ -43,9 +44,10 @@ def acquire_all(cache_dir: Path, output_dir: Path) -> Path:
 
 
 def _acquire_day(request: SessionRequest, cache_dir: Path, output_dir: Path) -> dict:
-    identity, streams = load_bahrain_test_day(request, cache_dir)
+    day_dir = output_dir / f"test_{request.test_number}_day_{request.day_number}"
+    log_path = day_dir / "fastf1.log"
+    identity, streams = load_bahrain_test_day(request, cache_dir, log_path)
     roster = sorted({str(driver) for driver in streams["car"]["DriverNumber"].dropna()})
-    day_dir = output_dir / f"test_{identity.test_number}_day_{identity.day_number}"
     exports = {}
     coverage = {}
     for name in STREAMS:
@@ -62,4 +64,5 @@ def _acquire_day(request: SessionRequest, cache_dir: Path, output_dir: Path) -> 
         "roster": roster,
         "exclusions": entry_exclusions(laps, roster),
         "source_quality": parser_quality(laps),
+        "loader_log": {"path": str(log_path), "sha256": sha256(log_path.read_bytes()).hexdigest()},
     }
