@@ -1,9 +1,10 @@
 "use client";
 
 import React, { useState, useEffect, useRef, useCallback } from 'react';
-import { Check, X, ChevronRight, ChevronDown, MapPin, User, Cpu, Flag, Loader2 } from 'lucide-react';
+import { Check, X, ChevronRight, MapPin, User, Cpu, Flag, Loader2 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { SpinningBorderButton } from '@/components/ui/spinning-border-button';
+import { DropdownMenu } from '@/components/ui/dropdown-menu';
 
 // ── Types ────────────────────────────────────────────────────────────────────
 
@@ -167,11 +168,9 @@ export default function SetupPanel({ onStart }: SetupPanelProps) {
     track: 'Monaco Grand Prix', driver: 'VER', policy: 'learned',
   });
   const [isLoading, setIsLoading] = useState(false);
-  const [activeId, setActiveId]   = useState<string | null>(null);
   const [showDriverModal, setShowDriverModal] = useState(false);
 
   const timerRef   = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const rootRef    = useRef<HTMLDivElement>(null);
   const circuit    = CIRCUIT_META[selections.track];
   const driverMeta = DRIVER_META[selections.driver];
 
@@ -183,132 +182,60 @@ export default function SetupPanel({ onStart }: SetupPanelProps) {
 
   useEffect(() => () => { if (timerRef.current) clearTimeout(timerRef.current); }, []);
 
-  // Inline dropdowns close on outside click or Escape (no modal, no backdrop).
-  useEffect(() => {
-    if (!activeId) return;
-    const onPointerDown = (e: MouseEvent) => {
-      if (rootRef.current && !rootRef.current.contains(e.target as Node)) setActiveId(null);
-    };
-    const onKeyDown = (e: KeyboardEvent) => { if (e.key === 'Escape') setActiveId(null); };
-    document.addEventListener('mousedown', onPointerDown);
-    document.addEventListener('keydown', onKeyDown);
-    return () => {
-      document.removeEventListener('mousedown', onPointerDown);
-      document.removeEventListener('keydown', onKeyDown);
-    };
-  }, [activeId]);
-
-  const closePanel = () => setActiveId(null);
-
   const select = (id: string, value: string) => {
     if (selections[id] !== value) {
       setSelections(prev => ({ ...prev, [id]: value }));
       triggerLoading();
     }
-    closePanel();
   };
 
   return (
-    <div ref={rootRef} className="w-full flex flex-col gap-6">
+    <div className="w-full flex flex-col gap-6">
 
       {/* ── TOP: Simulation Setup — title left, selectors right ───────────── */}
       <div className="relative z-30 bg-neutral-950/60 backdrop-blur-2xl border border-white/[0.08] rounded-3xl shadow-[0_20px_60px_rgba(0,0,0,0.8)]">
-        <div className="grid grid-cols-1 md:grid-cols-3">
+        <div className="grid grid-cols-1 md:grid-cols-[2fr_3fr_3fr]">
 
           {/* Title block */}
           <div className="px-6 py-6 border-b md:border-b-0 md:border-r border-white/[0.06] flex flex-col justify-center">
-            <EyebrowLabel className="text-blue-400 mb-2">Configure Simulation</EyebrowLabel>
             <h2 className="text-2xl font-black tracking-tight text-white mb-2 drop-shadow-md">Simulation Setup</h2>
             <p className="text-xs font-medium leading-relaxed text-white/35">
               Pick the circuit and the reference driver lap, then start the simulation.
             </p>
           </div>
 
-          {/* Selectors — inline dropdowns, no modal */}
+          {/* Selectors — animated DropdownMenu per setting */}
           {SETUP_ITEMS.map((item, i) => {
             const chosen = item.options.find(o => o.value === selections[item.id]);
             const Icon = item.icon;
-            const isOpen = activeId === item.id;
             return (
               <div
                 key={item.id}
-                className={`relative flex ${i > 0 ? 'border-t md:border-t-0 md:border-l border-white/[0.06]' : ''}`}
+                className={`relative flex flex-col justify-center p-2 ${i > 0 ? 'border-t md:border-t-0 md:border-l border-white/[0.06]' : ''}`}
               >
-                <button
-                  type="button"
-                  onClick={() => setActiveId(isOpen ? null : item.id)}
-                  className="group relative w-full flex items-center justify-between gap-3 px-6 py-6 text-left"
+                {/* The whole section is the dropdown trigger */}
+                <DropdownMenu
+                  triggerClassName="w-full h-auto justify-between px-4 py-4 rounded-2xl bg-transparent hover:bg-white/[0.05] shadow-none backdrop-blur-none text-left whitespace-normal"
+                  menuClassName="w-full"
+                  options={item.options.map(opt => ({
+                    label: opt.label,
+                    onClick: () => select(item.id, opt.value),
+                    Icon: opt.value === selections[item.id]
+                      ? <Check className="h-4 w-4 text-blue-400" />
+                      : <span className="h-4 w-4" />,
+                  }))}
                 >
-                  {/* Inset highlight — keeps the card's rounded corners intact */}
-                  <span
-                    className={`absolute inset-2 rounded-2xl bg-white/[0.05] transition-opacity pointer-events-none ${isOpen ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'}`}
-                  />
-                  <span className="relative flex items-center gap-4 min-w-0">
+                  <span className="flex items-center gap-4 min-w-0">
                     <span className="w-9 h-9 rounded-xl bg-white/[0.05] border border-white/[0.07] flex items-center justify-center flex-shrink-0">
                       <Icon size={14} className={item.accentColor} />
                     </span>
                     <span className="min-w-0 block">
-                      <EyebrowLabel className="mb-0.5">{item.label}</EyebrowLabel>
+                      <span className="block text-[10px] font-medium uppercase tracking-widest text-white/35 mb-0.5">{item.label}</span>
                       <span className="block text-sm font-semibold text-white truncate">{chosen?.label ?? '—'}</span>
                       {chosen?.sublabel && <span className="block text-xs text-white/25 mt-0.5 truncate">{chosen.sublabel}</span>}
                     </span>
                   </span>
-                  <ChevronDown
-                    size={14}
-                    className={`relative text-white/25 group-hover:text-white/50 flex-shrink-0 transition-all ${isOpen ? 'rotate-180 text-white/60' : ''}`}
-                  />
-                </button>
-
-                {/* Inline dropdown */}
-                <AnimatePresence>
-                  {isOpen && (
-                    <motion.div
-                      initial={{ opacity: 0, y: -6 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, y: -6 }}
-                      transition={{ duration: 0.15, ease: 'easeOut' }}
-                      className="absolute left-2 right-2 top-full z-40 origin-top"
-                    >
-                      <div className="bg-neutral-900 border border-white/[0.12] rounded-2xl overflow-hidden shadow-[0_18px_50px_rgba(0,0,0,0.85)]">
-                        {item.options.map((opt) => {
-                          const isSelected = selections[item.id] === opt.value;
-                          return (
-                            <button
-                              type="button"
-                              key={opt.value}
-                              onClick={() => select(item.id, opt.value)}
-                              className={`w-full flex items-center justify-between gap-3 px-5 py-3.5 text-left transition-colors ${isSelected ? 'bg-white/[0.07]' : 'hover:bg-white/[0.04]'}`}
-                            >
-                              <span className="min-w-0">
-                                <span className={`block text-sm font-semibold truncate ${isSelected ? 'text-white' : 'text-white/55'}`}>
-                                  {opt.label}
-                                </span>
-                                {opt.sublabel && <span className="block text-xs text-white/25 mt-0.5 truncate">{opt.sublabel}</span>}
-                              </span>
-                              <span className="flex items-center gap-2.5 flex-shrink-0">
-                                {opt.badge && (
-                                  <span className={`text-[10px] font-medium px-2 py-0.5 rounded-full border tracking-wider ${isSelected ? 'border-white/25 text-white/60 bg-white/[0.08]' : 'border-white/10 text-white/20'}`}>
-                                    {opt.badge}
-                                  </span>
-                                )}
-                                {isSelected && (
-                                  <span className="w-5 h-5 rounded-full bg-white flex items-center justify-center">
-                                    <Check size={10} className="text-black" strokeWidth={3} />
-                                  </span>
-                                )}
-                              </span>
-                            </button>
-                          );
-                        })}
-                        {item.note && (
-                          <div className="px-5 py-3 border-t border-white/[0.06]">
-                            <p className="text-[11px] text-white/20 leading-relaxed">* {item.note}</p>
-                          </div>
-                        )}
-                      </div>
-                    </motion.div>
-                  )}
-                </AnimatePresence>
+                </DropdownMenu>
               </div>
             );
           })}
