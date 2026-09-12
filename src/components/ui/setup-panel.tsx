@@ -38,10 +38,16 @@ export const CONFIG_ITEMS: ConfigItem[] = [
     accentColor: 'text-blue-400',
     note: 'Only held-out circuits are selectable — zero rows in training data.',
     options: [
-      { value: 'Monaco Grand Prix',   label: 'Monaco',  sublabel: 'Circuit de Monaco',            badge: 'Held-out' },
-      { value: 'Canadian Grand Prix', label: 'Canada',  sublabel: 'Circuit Gilles Villeneuve',     badge: 'Held-out' },
-      { value: 'Miami Grand Prix',    label: 'Miami',   sublabel: 'Miami International Autodrome', badge: 'Held-out' },
-      { value: 'Belgian Grand Prix',  label: 'Belgium', sublabel: 'Circuit de Spa-Francorchamps',  badge: 'Held-out' },
+      { value: 'Monaco Grand Prix',   label: 'Monaco',    sublabel: 'Circuit de Monaco',                     badge: 'Held-out' },
+      { value: 'Canadian Grand Prix', label: 'Canada',    sublabel: 'Circuit Gilles Villeneuve',              badge: 'Held-out' },
+      { value: 'Miami Grand Prix',    label: 'Miami',     sublabel: 'Miami International Autodrome',          badge: 'Held-out' },
+      { value: 'Belgian Grand Prix',  label: 'Belgium',   sublabel: 'Circuit de Spa-Francorchamps',           badge: 'Held-out' },
+      { value: 'Australian Grand Prix', label: 'Australia', sublabel: 'Albert Park Circuit',                 badge: 'Held-out' },
+      { value: 'Austrian Grand Prix',   label: 'Austria',   sublabel: 'Red Bull Ring',                       badge: 'Held-out' },
+      { value: 'Spanish Grand Prix',    label: 'Barcelona', sublabel: 'Circuit de Barcelona-Catalunya',      badge: 'Held-out' },
+      { value: 'Chinese Grand Prix',    label: 'China',     sublabel: 'Shanghai International Circuit',      badge: 'Held-out' },
+      { value: 'British Grand Prix',    label: 'Britain',   sublabel: 'Silverstone Circuit',                 badge: 'Held-out' },
+      { value: 'Japanese Grand Prix',   label: 'Japan',     sublabel: 'Suzuka International Racing Course',  badge: 'Held-out' },
     ],
   },
   {
@@ -75,10 +81,16 @@ export const CONFIG_ITEMS: ConfigItem[] = [
 const SETUP_ITEMS: ConfigItem[] = CONFIG_ITEMS.filter(c => c.id !== 'policy');
 
 export const CIRCUIT_META: Record<string, { laps: number; length: string; turns: number; lapRecord: string; country: string; mapUrl: string }> = {
-  'Monaco Grand Prix':   { laps: 78, length: '3.337 km', turns: 19, lapRecord: '1:12.909', country: 'MC', mapUrl: '/monaco.jpg' },
-  'Canadian Grand Prix': { laps: 70, length: '4.361 km', turns: 14, lapRecord: '1:13.078', country: 'CA', mapUrl: '/canada.jpg' },
-  'Miami Grand Prix':    { laps: 57, length: '5.412 km', turns: 19, lapRecord: '1:29.708', country: 'US', mapUrl: '/miami.jpg' },
-  'Belgian Grand Prix':  { laps: 44, length: '7.004 km', turns: 20, lapRecord: '1:46.286', country: 'BE', mapUrl: '/belgium.jpg' },
+  'Monaco Grand Prix':     { laps: 78, length: '3.337 km', turns: 19, lapRecord: '1:12.909', country: 'MC', mapUrl: '/monaco.jpg' },
+  'Canadian Grand Prix':   { laps: 70, length: '4.361 km', turns: 14, lapRecord: '1:13.078', country: 'CA', mapUrl: '/canada.jpg' },
+  'Miami Grand Prix':      { laps: 57, length: '5.412 km', turns: 19, lapRecord: '1:29.708', country: 'US', mapUrl: '/miami.jpg' },
+  'Belgian Grand Prix':    { laps: 44, length: '7.004 km', turns: 20, lapRecord: '1:46.286', country: 'BE', mapUrl: '/belgium.jpg' },
+  'Australian Grand Prix': { laps: 58, length: '5.278 km', turns: 14, lapRecord: '1:19.813', country: 'AU', mapUrl: '/australia.jpg' },
+  'Austrian Grand Prix':   { laps: 71, length: '4.318 km', turns: 10, lapRecord: '1:05.619', country: 'AT', mapUrl: '/austria.jpg' },
+  'Spanish Grand Prix':    { laps: 66, length: '4.657 km', turns: 14, lapRecord: '1:16.330', country: 'ES', mapUrl: '/barcelona.jpg' },
+  'Chinese Grand Prix':    { laps: 56, length: '5.451 km', turns: 16, lapRecord: '1:32.238', country: 'CN', mapUrl: '/china.jpg' },
+  'British Grand Prix':    { laps: 52, length: '5.891 km', turns: 18, lapRecord: '1:27.097', country: 'GB', mapUrl: '/britain.jpg' },
+  'Japanese Grand Prix':   { laps: 53, length: '5.807 km', turns: 18, lapRecord: '1:30.983', country: 'JP', mapUrl: '/japan.jpg' },
 };
 
 export const DRIVER_META: Record<string, { number: number; team: string; wdc: number; color: string; nationality: string; bio: string }> = {
