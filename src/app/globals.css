@@ -32,6 +32,12 @@ body {
   }
 }
 
+/* ---- Text selection ---- */
+::selection {
+  background: #ef4444;
+  color: #ffffff;
+}
+
 /* ---- Scrollbar (WebKit) ---- */
 ::-webkit-scrollbar {
   display: none;

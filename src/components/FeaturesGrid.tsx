@@ -39,16 +39,15 @@ export default function FeaturesGrid() {
 
   return (
     <>
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-12 text-left w-full border-t border-neutral-800/60 pt-16 pointer-events-auto z-10 relative">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-8 text-left w-full pointer-events-auto z-10 relative">
         {featureData.map((feature) => (
-          <div 
+          <div
             key={feature.id}
             onClick={() => setSelectedFeature(feature)}
-            className={`bg-[#0a0a0a]/80 backdrop-blur-md p-6 rounded-xl border border-neutral-800 transition-all cursor-pointer ${feature.borderColor} hover:shadow-lg ${feature.shadowColor} hover:-translate-y-1`}
+            className={`bg-[#0a0a0a]/80 backdrop-blur-md p-6 rounded-xl border border-neutral-800 transition-all cursor-pointer flex items-center gap-4 ${feature.borderColor} hover:shadow-lg ${feature.shadowColor} hover:-translate-y-1`}
           >
-            <feature.icon className={`${feature.color} mb-4`} size={32} />
-            <h3 className="text-lg font-bold mb-2">{feature.title}</h3>
-            <p className="text-neutral-500 text-sm break-words">{feature.description}</p>
+            <feature.icon className={`${feature.color} shrink-0`} size={32} />
+            <h3 className="text-lg font-bold">{feature.title}</h3>
           </div>
         ))}
       </div>

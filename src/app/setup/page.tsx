@@ -2,8 +2,8 @@
 
 import React from 'react';
 import { useRouter } from 'next/navigation';
-import { ArrowLeft } from 'lucide-react';
 import SetupPanel from '@/components/ui/setup-panel';
+import { SpinningBorderButton } from '@/components/ui/spinning-border-button';
 
 export default function SetupPage() {
   const router = useRouter();
@@ -25,13 +25,9 @@ export default function SetupPage() {
         {/* Top Header Row */}
         <div className="relative flex items-center justify-center mb-6 w-full">
           {/* Back Button */}
-          <button 
-            onClick={() => router.push('/')} 
-            className="absolute left-0 top-1/2 -translate-y-1/2 flex items-center gap-2 text-white/50 hover:text-white transition-colors text-xs font-semibold tracking-wider uppercase group"
-          >
-            <ArrowLeft size={14} className="group-hover:-translate-x-1 transition-transform" />
-            Return to Home
-          </button>
+          <div className="absolute left-0 top-1/2 -translate-y-1/2">
+            <SpinningBorderButton href="/" text="Return to Home" size="sm" />
+          </div>
 
           {/* Page title */}
           <div className="text-center">
