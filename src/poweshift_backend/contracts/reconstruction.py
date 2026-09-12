@@ -110,3 +110,5 @@ class EvidenceReport(StrictModel):
     exclusions: tuple[str, ...]
     numerical_diagnostics: dict[str, float]
     unsupported_components: tuple[str, ...]
+    evaluated_chunks: int
+    support: dict[str, str]
