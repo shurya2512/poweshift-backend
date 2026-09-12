@@ -9,11 +9,21 @@ import fastf1
 import pandas as pd
 
 from poweshift_backend.contracts.acquisition import SessionIdentity, SessionRequest, resolve_bahrain_test_request
+from poweshift_backend.contracts.acquisition import StreamStatus
+
+
+class StreamResult:
+    """One stream outcome after a FastF1 session load."""
+
+    def __init__(self, records: pd.DataFrame | None, status: StreamStatus, reason: str | None = None):
+        self.records = records
+        self.status = status
+        self.reason = reason
 
 
 def load_bahrain_test_day(
     request: SessionRequest, cache_dir: Path, log_path: Path
-) -> tuple[SessionIdentity, list[str], dict[str, pd.DataFrame | None]]:
+) -> tuple[SessionIdentity, list[str], dict[str, StreamResult]]:
     """Load one identity-checked Bahrain test day into a separate cache."""
     identity = resolve_bahrain_test_request(request)
     cache_dir.mkdir(parents=True, exist_ok=True)
@@ -42,9 +52,9 @@ def load_bahrain_test_day(
         "car": _records(lambda: _driver_frames(session.car_data)),
         "position": _records(lambda: _driver_frames(session.pos_data)),
         "laps": laps,
-        "tyres": laps.reindex(
+        "tyres": StreamResult(laps.records.reindex(
             columns=["NativeSourceRow", "Time", "DriverNumber", "LapNumber", "Stint", "Compound", "TyreLife", "FreshTyre"]
-        ) if laps is not None else None,
+        ), laps.status, laps.reason) if laps.records is not None else StreamResult(None, laps.status, laps.reason),
         "weather": _records(lambda: session.weather_data),
         "session_status": _records(lambda: session.session_status),
         "track_status": _records(lambda: session.track_status),
@@ -57,8 +67,11 @@ def _driver_frames(records: Mapping[str, pd.DataFrame]) -> pd.DataFrame:
     return pd.concat(frames, ignore_index=True) if frames else pd.DataFrame()
 
 
-def _records(load: callable) -> pd.DataFrame | None:
+def _records(load: callable) -> StreamResult:
     try:
-        return load()
-    except Exception:
-        return None
+        records = load()
+    except Exception as error:
+        return StreamResult(None, StreamStatus.FAILED, str(error))
+    if records.empty:
+        return StreamResult(records, StreamStatus.MISSING, "FastF1 returned no records")
+    return StreamResult(records, StreamStatus.PRESENT)

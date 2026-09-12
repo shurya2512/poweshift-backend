@@ -55,9 +55,11 @@ def _acquire_day(request: SessionRequest, cache_dir: Path, output_dir: Path) -> 
     exports = {}
     coverage = {}
     for name in STREAMS:
-        records = streams[name]
-        if records is None:
-            coverage[name] = audit_stream(None, expected_roster=set(roster) if name in {"car", "position", "laps", "tyres"} else set(), error="FastF1 stream unavailable").__dict__
+        result = streams[name]
+        records = result.records
+        expected_roster = set(roster) if name in {"car", "position", "laps", "tyres"} else set()
+        if result.status.value != "present":
+            coverage[name] = audit_stream(None, expected_roster=expected_roster, error=result.reason if result.status.value == "failed" else None).__dict__
             continue
         records = records.copy()
         records.insert(0, "source_row", records["NativeSourceRow"] if "NativeSourceRow" in records else range(len(records)))
@@ -66,15 +68,14 @@ def _acquire_day(request: SessionRequest, cache_dir: Path, output_dir: Path) -> 
             "sha256": write_table(records, day_dir / f"{name}.parquet"),
             "provenance": {"kind": "parser_derived", "row_key": "source_row", "stream": name, "source_snapshot_sha256": source_snapshot_hash},
         }
-        expected_roster = set(roster) if name in {"car", "position", "laps", "tyres"} else set()
         coverage[name] = audit_stream(records, expected_roster).__dict__
-    laps = streams["laps"]
+    laps = streams["laps"].records
     return {
         "identity": identity.model_dump(mode="json"),
         "exports": exports,
         "coverage": coverage,
         "roster": roster,
-        "exclusions": entry_exclusions(laps, roster, streams["car"], streams["position"], streams["tyres"]),
+        "exclusions": entry_exclusions(laps, roster, streams["car"].records, streams["position"].records, streams["tyres"].records),
         "source_quality": parser_quality(laps) if laps is not None else {},
         "source_snapshot": source_snapshot,
         "source_snapshot_sha256": source_snapshot_hash,
