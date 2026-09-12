@@ -14,7 +14,7 @@ The bundle keeps `downstream_ready=false`. The proposed split is recorded but in
 
 ## Checks and commands
 
-`uv run pytest` passed 24 tests before final evidence generation. The final evidence was generated with:
+`uv run pytest` passed 24 tests before final evidence generation. Luna then independently accepted all 48 audited stream exports, hashes, logs, snapshots and the unchanged source-cache inventory. The final evidence was generated with:
 
 ```sh
 uv run python -m poweshift_backend \
@@ -32,4 +32,4 @@ Fourteen commits were needed instead of the planned four because reviewer-found 
 
 ## Next decision
 
-Approve or reject the coverage review before any preparation, performance inspection, split activation or Phase 2 work. The approved Phase 1 specification remains until final acceptance and durable-content transfer are confirmed.
+Approve or reject the coverage review before any preparation, performance inspection, split activation or Phase 2 work. The temporary approval document has been retired after this durable handoff.
