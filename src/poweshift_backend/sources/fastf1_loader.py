@@ -12,7 +12,7 @@ from poweshift_backend.contracts.acquisition import SessionIdentity, SessionRequ
 
 def load_bahrain_test_day(
     request: SessionRequest, cache_dir: Path, log_path: Path
-) -> tuple[SessionIdentity, dict[str, pd.DataFrame]]:
+) -> tuple[SessionIdentity, list[str], dict[str, pd.DataFrame | None]]:
     """Load one identity-checked Bahrain test day into a separate cache."""
     identity = resolve_bahrain_test_request(request)
     cache_dir.mkdir(parents=True, exist_ok=True)
@@ -30,20 +30,28 @@ def load_bahrain_test_day(
     finally:
         logger.removeHandler(handler)
         handler.close()
-    return identity, {
-        "car": _driver_frames(session.car_data),
-        "position": _driver_frames(session.pos_data),
-        "laps": pd.DataFrame(session.laps),
-        "tyres": pd.DataFrame(session.laps).reindex(
+    laps = _records(lambda: pd.DataFrame(session.laps))
+    return identity, [str(driver) for driver in session.drivers], {
+        "car": _records(lambda: _driver_frames(session.car_data)),
+        "position": _records(lambda: _driver_frames(session.pos_data)),
+        "laps": laps,
+        "tyres": laps.reindex(
             columns=["Time", "DriverNumber", "LapNumber", "Stint", "Compound", "TyreLife", "FreshTyre"]
-        ),
-        "weather": session.weather_data,
-        "session_status": session.session_status,
-        "track_status": session.track_status,
-        "race_control_messages": session.race_control_messages,
+        ) if laps is not None else None,
+        "weather": _records(lambda: session.weather_data),
+        "session_status": _records(lambda: session.session_status),
+        "track_status": _records(lambda: session.track_status),
+        "race_control_messages": _records(lambda: session.race_control_messages),
     }
 
 
 def _driver_frames(records: Mapping[str, pd.DataFrame]) -> pd.DataFrame:
     frames = [frame.assign(DriverNumber=driver) for driver, frame in records.items()]
     return pd.concat(frames, ignore_index=True) if frames else pd.DataFrame()
+
+
+def _records(load: callable) -> pd.DataFrame | None:
+    try:
+        return load()
+    except Exception:
+        return None

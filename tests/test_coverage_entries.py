@@ -11,7 +11,9 @@ def test_excludes_roster_entries_without_observed_or_accurate_laps() -> None:
         }
     )
 
-    assert entry_exclusions(laps, ["1", "2", "3"]) == {
+    telemetry = pd.DataFrame({"DriverNumber": ["1", "2"]})
+
+    assert entry_exclusions(laps, ["1", "2", "3"], telemetry, telemetry, telemetry) == {
         "2": "no_accurate_lap_records",
-        "3": "no_lap_records",
+        "3": "missing_car_data",
     }

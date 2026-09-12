@@ -48,12 +48,15 @@ def acquire_all(cache_dir: Path, output_dir: Path) -> Path:
 def _acquire_day(request: SessionRequest, cache_dir: Path, output_dir: Path) -> dict:
     day_dir = output_dir / f"test_{request.test_number}_day_{request.day_number}"
     log_path = day_dir / "fastf1.log"
-    identity, streams = load_bahrain_test_day(request, cache_dir, log_path)
-    roster = sorted({str(driver) for driver in streams["car"]["DriverNumber"].dropna()})
+    identity, roster, streams = load_bahrain_test_day(request, cache_dir, log_path)
     exports = {}
     coverage = {}
     for name in STREAMS:
-        records = streams[name].copy()
+        records = streams[name]
+        if records is None:
+            coverage[name] = audit_stream(None, expected_roster=set(roster) if name in {"car", "position", "laps", "tyres"} else set(), error="FastF1 stream unavailable").__dict__
+            continue
+        records = records.copy()
         records.insert(0, "source_row", range(len(records)))
         exports[name] = {"path": str(day_dir / f"{name}.parquet"), "sha256": write_table(records, day_dir / f"{name}.parquet")}
         expected_roster = set(roster) if name in {"car", "position", "laps", "tyres"} else set()
@@ -64,7 +67,7 @@ def _acquire_day(request: SessionRequest, cache_dir: Path, output_dir: Path) -> 
         "exports": exports,
         "coverage": coverage,
         "roster": roster,
-        "exclusions": entry_exclusions(laps, roster),
-        "source_quality": parser_quality(laps),
+        "exclusions": entry_exclusions(laps, roster, streams["car"], streams["position"], streams["tyres"]),
+        "source_quality": parser_quality(laps) if laps is not None else {},
         "loader_log": {"path": str(log_path), "sha256": sha256(log_path.read_bytes()).hexdigest()},
     }
