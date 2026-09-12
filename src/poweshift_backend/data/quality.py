@@ -53,13 +53,19 @@ def audit_stream(
         )
 
     time_column = "SessionTime" if "SessionTime" in records else "Time"
-    times = pd.to_timedelta(records[time_column])
+    raw_times = records[time_column]
+    if pd.api.types.is_datetime64_any_dtype(raw_times):
+        times = pd.to_datetime(raw_times)
+        elapsed = times - times.min()
+    else:
+        times = pd.to_timedelta(raw_times)
+        elapsed = times
     deltas = times.diff()
     observed_roster = set(records.get("DriverNumber", pd.Series(dtype=str)).dropna().astype(str))
     return StreamAudit(
         status=StreamStatus.PRESENT,
-        first_time_s=times.min().total_seconds(),
-        last_time_s=times.max().total_seconds(),
+        first_time_s=0.0,
+        last_time_s=elapsed.max().total_seconds(),
         gap_count=int((deltas > pd.Timedelta(max_gap)).sum()),
         out_of_order_count=int((deltas < pd.Timedelta(0)).sum()),
         missing_roster=sorted(expected_roster - observed_roster),
