@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect, useRef, useCallback } from 'react';
-import { Check, X, ChevronRight, MapPin, User, Cpu, Flag, Loader2 } from 'lucide-react';
+import { Check, X, ChevronRight, ChevronDown, MapPin, User, Cpu, Flag, Loader2 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 // ── Types ────────────────────────────────────────────────────────────────────
@@ -140,7 +140,7 @@ const CircuitMap = ({ circuit }: { circuit: string }) => {
         <img 
           src={url} 
           alt={circuit} 
-          className="w-full h-full object-cover opacity-90"
+          className="w-full h-full object-contain opacity-90"
           onError={(e) => { e.currentTarget.style.opacity = '0'; }}
         />
         <div className="absolute inset-0 flex flex-col items-center justify-center -z-10 bg-neutral-900/40">
@@ -170,6 +170,7 @@ export default function SetupPanel({ onStart }: SetupPanelProps) {
   const [showDriverModal, setShowDriverModal] = useState(false);
 
   const timerRef   = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const rootRef    = useRef<HTMLDivElement>(null);
   const circuit    = CIRCUIT_META[selections.track];
   const driverMeta = DRIVER_META[selections.driver];
 
@@ -181,6 +182,21 @@ export default function SetupPanel({ onStart }: SetupPanelProps) {
 
   useEffect(() => () => { if (timerRef.current) clearTimeout(timerRef.current); }, []);
 
+  // Inline dropdowns close on outside click or Escape (no modal, no backdrop).
+  useEffect(() => {
+    if (!activeId) return;
+    const onPointerDown = (e: MouseEvent) => {
+      if (rootRef.current && !rootRef.current.contains(e.target as Node)) setActiveId(null);
+    };
+    const onKeyDown = (e: KeyboardEvent) => { if (e.key === 'Escape') setActiveId(null); };
+    document.addEventListener('mousedown', onPointerDown);
+    document.addEventListener('keydown', onKeyDown);
+    return () => {
+      document.removeEventListener('mousedown', onPointerDown);
+      document.removeEventListener('keydown', onKeyDown);
+    };
+  }, [activeId]);
+
   const closePanel = () => setActiveId(null);
 
   const select = (id: string, value: string) => {
@@ -191,17 +207,15 @@ export default function SetupPanel({ onStart }: SetupPanelProps) {
     closePanel();
   };
 
-  const activeItem = CONFIG_ITEMS.find(c => c.id === activeId) ?? null;
-
   return (
-    <div className="w-full flex flex-col gap-6 lg:gap-7">
+    <div ref={rootRef} className="w-full flex flex-col gap-6">
 
-      {/* ── TOP: Horizontal Simulation Setup Bar ──────────────────────────── */}
-      <div className={`relative bg-neutral-950/60 backdrop-blur-2xl border border-white/[0.08] rounded-3xl overflow-hidden shadow-[0_20px_60px_rgba(0,0,0,0.8)] transition-all duration-300 ${activeId ? 'scale-[0.99] brightness-75' : ''}`}>
-        <div className="flex flex-col xl:flex-row xl:items-stretch">
+      {/* ── TOP: Simulation Setup — title left, selectors right ───────────── */}
+      <div className="relative z-30 bg-neutral-950/60 backdrop-blur-2xl border border-white/[0.08] rounded-3xl shadow-[0_20px_60px_rgba(0,0,0,0.8)]">
+        <div className="grid grid-cols-1 md:grid-cols-3">
 
           {/* Title block */}
-          <div className="px-7 py-6 xl:py-7 xl:w-[300px] xl:flex-shrink-0 border-b xl:border-b-0 xl:border-r border-white/[0.06] flex flex-col justify-center">
+          <div className="px-6 py-6 border-b md:border-b-0 md:border-r border-white/[0.06] flex flex-col justify-center">
             <EyebrowLabel className="text-blue-400 mb-2">Configure Simulation</EyebrowLabel>
             <h2 className="text-2xl font-black tracking-tight text-white mb-2 drop-shadow-md">Simulation Setup</h2>
             <p className="text-xs font-medium leading-relaxed text-white/35">
@@ -209,48 +223,99 @@ export default function SetupPanel({ onStart }: SetupPanelProps) {
             </p>
           </div>
 
-          {/* Config selectors — horizontal */}
-          <div className="flex-1 grid grid-cols-1 sm:grid-cols-2 divide-y sm:divide-y-0 sm:divide-x divide-white/[0.05]">
-            {SETUP_ITEMS.map((item) => {
-              const chosen = item.options.find(o => o.value === selections[item.id]);
-              const Icon = item.icon;
-              return (
-                <div
-                  key={item.id}
-                  onClick={() => setActiveId(item.id)}
-                  className="flex items-center justify-between px-7 py-5 cursor-pointer hover:bg-white/[0.03] transition-colors group"
+          {/* Selectors — inline dropdowns, no modal */}
+          {SETUP_ITEMS.map((item, i) => {
+            const chosen = item.options.find(o => o.value === selections[item.id]);
+            const Icon = item.icon;
+            const isOpen = activeId === item.id;
+            return (
+              <div
+                key={item.id}
+                className={`relative flex ${i > 0 ? 'border-t md:border-t-0 md:border-l border-white/[0.06]' : ''}`}
+              >
+                <button
+                  type="button"
+                  onClick={() => setActiveId(isOpen ? null : item.id)}
+                  className="group relative w-full flex items-center justify-between gap-3 px-6 py-6 text-left"
                 >
-                  <div className="flex items-center gap-4 min-w-0">
-                    <div className="w-9 h-9 rounded-xl bg-white/[0.05] border border-white/[0.07] flex items-center justify-center flex-shrink-0">
+                  {/* Inset highlight — keeps the card's rounded corners intact */}
+                  <span
+                    className={`absolute inset-2 rounded-2xl bg-white/[0.05] transition-opacity pointer-events-none ${isOpen ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'}`}
+                  />
+                  <span className="relative flex items-center gap-4 min-w-0">
+                    <span className="w-9 h-9 rounded-xl bg-white/[0.05] border border-white/[0.07] flex items-center justify-center flex-shrink-0">
                       <Icon size={14} className={item.accentColor} />
-                    </div>
-                    <div className="min-w-0">
+                    </span>
+                    <span className="min-w-0 block">
                       <EyebrowLabel className="mb-0.5">{item.label}</EyebrowLabel>
-                      <p className="text-sm font-semibold text-white truncate">{chosen?.label ?? '—'}</p>
-                      {chosen?.sublabel && <p className="text-xs text-white/25 mt-0.5 truncate">{chosen.sublabel}</p>}
-                    </div>
-                  </div>
-                  <ChevronRight size={13} className="text-white/15 group-hover:text-white/40 flex-shrink-0 ml-3 transition-colors" />
-                </div>
-              );
-            })}
-          </div>
+                      <span className="block text-sm font-semibold text-white truncate">{chosen?.label ?? '—'}</span>
+                      {chosen?.sublabel && <span className="block text-xs text-white/25 mt-0.5 truncate">{chosen.sublabel}</span>}
+                    </span>
+                  </span>
+                  <ChevronDown
+                    size={14}
+                    className={`relative text-white/25 group-hover:text-white/50 flex-shrink-0 transition-all ${isOpen ? 'rotate-180 text-white/60' : ''}`}
+                  />
+                </button>
 
-          {/* Start Button */}
-          <div className="px-7 py-6 xl:w-[240px] xl:flex-shrink-0 border-t xl:border-t-0 xl:border-l border-white/[0.06] bg-white/[0.015] flex items-center">
-            <button
-              onClick={() => onStart(selections.track, selections.driver, selections.policy)}
-              className="w-full bg-white text-black font-semibold text-sm py-4 rounded-full flex items-center justify-center gap-2 shadow-xl transition-all duration-200 hover:scale-[1.02] active:scale-[0.97] hover:bg-neutral-100"
-            >
-              <Flag size={13} />
-              Start Race
-            </button>
-          </div>
+                {/* Inline dropdown */}
+                <AnimatePresence>
+                  {isOpen && (
+                    <motion.div
+                      initial={{ opacity: 0, y: -6 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -6 }}
+                      transition={{ duration: 0.15, ease: 'easeOut' }}
+                      className="absolute left-2 right-2 top-full z-40 origin-top"
+                    >
+                      <div className="bg-neutral-900 border border-white/[0.12] rounded-2xl overflow-hidden shadow-[0_18px_50px_rgba(0,0,0,0.85)]">
+                        {item.options.map((opt) => {
+                          const isSelected = selections[item.id] === opt.value;
+                          return (
+                            <button
+                              type="button"
+                              key={opt.value}
+                              onClick={() => select(item.id, opt.value)}
+                              className={`w-full flex items-center justify-between gap-3 px-5 py-3.5 text-left transition-colors ${isSelected ? 'bg-white/[0.07]' : 'hover:bg-white/[0.04]'}`}
+                            >
+                              <span className="min-w-0">
+                                <span className={`block text-sm font-semibold truncate ${isSelected ? 'text-white' : 'text-white/55'}`}>
+                                  {opt.label}
+                                </span>
+                                {opt.sublabel && <span className="block text-xs text-white/25 mt-0.5 truncate">{opt.sublabel}</span>}
+                              </span>
+                              <span className="flex items-center gap-2.5 flex-shrink-0">
+                                {opt.badge && (
+                                  <span className={`text-[10px] font-medium px-2 py-0.5 rounded-full border tracking-wider ${isSelected ? 'border-white/25 text-white/60 bg-white/[0.08]' : 'border-white/10 text-white/20'}`}>
+                                    {opt.badge}
+                                  </span>
+                                )}
+                                {isSelected && (
+                                  <span className="w-5 h-5 rounded-full bg-white flex items-center justify-center">
+                                    <Check size={10} className="text-black" strokeWidth={3} />
+                                  </span>
+                                )}
+                              </span>
+                            </button>
+                          );
+                        })}
+                        {item.note && (
+                          <div className="px-5 py-3 border-t border-white/[0.06]">
+                            <p className="text-[11px] text-white/20 leading-relaxed">* {item.note}</p>
+                          </div>
+                        )}
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </div>
+            );
+          })}
         </div>
       </div>
 
       {/* ── BELOW: Circuit Map + Driver Info ──────────────────────────────── */}
-      <div className="relative grid grid-cols-1 lg:grid-cols-[1fr_400px] gap-6 lg:gap-7 items-start">
+      <div className="relative grid grid-cols-1 md:grid-cols-[3fr_2fr] gap-6 items-stretch">
 
         {/* Loading overlay */}
         <AnimatePresence>
@@ -258,7 +323,7 @@ export default function SetupPanel({ onStart }: SetupPanelProps) {
             <motion.div
               initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
               transition={{ duration: 0.15 }}
-              className="absolute inset-0 z-30 rounded-3xl flex items-center justify-center bg-black/50 backdrop-blur-sm"
+              className="absolute inset-0 z-20 rounded-3xl flex items-center justify-center bg-black/50 backdrop-blur-sm"
             >
               <div className="flex flex-col items-center gap-3">
                 <Loader2 size={28} className="text-blue-400 animate-spin" />
@@ -269,15 +334,15 @@ export default function SetupPanel({ onStart }: SetupPanelProps) {
         </AnimatePresence>
 
         {/* Circuit Hero Card */}
-        <div className="bg-neutral-950/60 backdrop-blur-2xl border border-white/[0.08] rounded-3xl overflow-hidden shadow-[0_12px_40px_rgba(0,0,0,0.6)]">
-          <div className="px-7 pt-7 pb-5 border-b border-white/[0.06]">
+        <div className="h-full flex flex-col bg-neutral-950/60 backdrop-blur-2xl border border-white/[0.08] rounded-3xl overflow-hidden shadow-[0_12px_40px_rgba(0,0,0,0.6)]">
+          <div className="px-6 pt-6 pb-5 border-b border-white/[0.06]">
             <EyebrowLabel className="text-blue-400 mb-2">Selected Circuit</EyebrowLabel>
             <div className="flex items-start justify-between gap-4">
-              <div>
-                <h2 className="text-2xl font-bold tracking-tight text-white">
+              <div className="min-w-0">
+                <h2 className="text-2xl font-bold tracking-tight text-white truncate">
                   {selections.track.replace(' Grand Prix', '')}
                 </h2>
-                <p className="text-xs text-white/30 mt-0.5">{selections.track}</p>
+                <p className="text-xs text-white/30 mt-0.5 truncate">{selections.track}</p>
               </div>
               <div className="flex items-center gap-2 mt-1 flex-shrink-0">
                 <span className="text-[10px] font-medium text-white/25 tracking-widest uppercase">{circuit.country}</span>
@@ -288,24 +353,24 @@ export default function SetupPanel({ onStart }: SetupPanelProps) {
             </div>
           </div>
 
-          {/* Circuit SVG Map */}
-          <div className="relative bg-neutral-950/40 mx-5 mt-4 mb-2 rounded-2xl overflow-hidden border border-white/[0.05]" style={{ height: '420px' }}>
+          {/* Circuit map — 16/9 box matching the source images, so it fills exactly */}
+          <div className="relative w-full flex-1 min-h-[260px] bg-neutral-950/40 overflow-hidden border-b border-white/[0.05]">
             <AnimatePresence mode="wait">
               <motion.div
                 key={selections.track}
                 initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
                 transition={{ duration: 0.3 }}
-                className="absolute inset-0 flex items-center justify-center p-4"
+                className="absolute inset-0"
               >
                 <CircuitMap circuit={selections.track} />
               </motion.div>
             </AnimatePresence>
-            <div className="absolute bottom-3 left-1/2 -translate-x-1/2">
+            <div className="absolute bottom-2 left-1/2 -translate-x-1/2">
               <span className="text-[9px] font-medium uppercase tracking-widest text-blue-400/60">S/F</span>
             </div>
           </div>
 
-          <div className="grid grid-cols-3 gap-3 p-5 pt-3">
+          <div className="grid grid-cols-3 gap-3 p-5">
             <StatChip label="Length"    value={circuit.length} />
             <StatChip label="Turns"     value={`${circuit.turns}`} />
             <StatChip label="Lap Record" value={circuit.lapRecord} />
@@ -313,18 +378,19 @@ export default function SetupPanel({ onStart }: SetupPanelProps) {
         </div>
 
         {/* Driver Info Card — full profile */}
-        <div className="bg-neutral-950/60 backdrop-blur-2xl border border-white/[0.08] rounded-3xl overflow-hidden shadow-[0_12px_40px_rgba(0,0,0,0.5)]">
+        <div className="h-full flex flex-col bg-neutral-950/60 backdrop-blur-2xl border border-white/[0.08] rounded-3xl overflow-hidden shadow-[0_12px_40px_rgba(0,0,0,0.5)]">
 
           {/* Header */}
-          <div className="px-7 pt-7 pb-5 border-b border-white/[0.06] flex items-start justify-between gap-4">
+          <div className="px-6 pt-6 pb-5 border-b border-white/[0.06] flex items-start justify-between gap-4">
             <div className="min-w-0">
               <EyebrowLabel className="text-blue-300 mb-2">Reference Driver</EyebrowLabel>
               <h2 className="text-2xl font-bold tracking-tight text-white truncate">
                 {CONFIG_ITEMS[1].options.find(o => o.value === selections.driver)?.label}
               </h2>
-              <p className="text-xs text-white/30 mt-0.5">{driverMeta.team}</p>
+              <p className="text-xs text-white/30 mt-0.5 truncate">{driverMeta.team}</p>
             </div>
             <button
+              type="button"
               onClick={() => setShowDriverModal(true)}
               className="w-8 h-8 rounded-full bg-white/[0.05] border border-white/[0.08] flex items-center justify-center flex-shrink-0 text-white/30 hover:text-white hover:bg-white/[0.12] transition-colors"
             >
@@ -332,8 +398,8 @@ export default function SetupPanel({ onStart }: SetupPanelProps) {
             </button>
           </div>
 
-          {/* Driver Photo */}
-          <div className="relative mx-5 mt-4 h-56 bg-neutral-950/40 rounded-2xl overflow-hidden border border-white/[0.05]">
+          {/* Driver photo */}
+          <div className="relative w-full aspect-[4/3] bg-neutral-950/40 overflow-hidden border-b border-white/[0.05]">
             <AnimatePresence mode="wait">
               <motion.div
                 key={selections.driver}
@@ -354,9 +420,9 @@ export default function SetupPanel({ onStart }: SetupPanelProps) {
                 </div>
               </motion.div>
             </AnimatePresence>
-            <div className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-neutral-950 to-transparent z-10 pointer-events-none" />
+            <div className="absolute inset-x-0 bottom-0 h-20 bg-gradient-to-t from-neutral-950 to-transparent z-10 pointer-events-none" />
             <div
-              className="absolute bottom-3 right-5 text-[64px] leading-none font-black italic tracking-tighter z-20 pointer-events-none"
+              className="absolute bottom-2 right-5 text-[56px] leading-none font-black italic tracking-tighter z-20 pointer-events-none"
               style={{ color: driverMeta.color, textShadow: '0 4px 24px rgba(0,0,0,0.8)' }}
             >
               {driverMeta.number}
@@ -371,11 +437,18 @@ export default function SetupPanel({ onStart }: SetupPanelProps) {
           </div>
 
           {/* Telemetry profile */}
-          <div className="px-7 pb-7 pt-2">
+          <div className="px-6 pb-6 pt-2 mt-auto">
             <EyebrowLabel className="mb-2">Telemetry Profile</EyebrowLabel>
-            <p className="text-xs text-white/45 leading-relaxed font-medium">
+            <p className="text-xs text-white/45 leading-relaxed font-medium line-clamp-4">
               {driverMeta.bio}
             </p>
+            <button
+              type="button"
+              onClick={() => setShowDriverModal(true)}
+              className="mt-2 text-[10px] font-medium uppercase tracking-widest text-blue-400/70 hover:text-blue-300 transition-colors"
+            >
+              Read full profile
+            </button>
           </div>
         </div>
       </div>
@@ -391,95 +464,25 @@ export default function SetupPanel({ onStart }: SetupPanelProps) {
         </p>
       </div>
 
-      {/* ── CENTERED MODAL: Selection List ──────────────────────────────────── */}
-      <AnimatePresence>
-        {activeId && activeItem && (
-          <>
-            {/* Backdrop */}
-            <motion.div
-              initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-              transition={{ duration: 0.2 }}
-              className="fixed inset-0 z-40 bg-black/50 backdrop-blur-sm"
-              onClick={closePanel}
-            />
-
-            {/* Centered modal */}
-            <motion.div
-              initial={{ opacity: 0, scale: 0.96, y: 16 }}
-              animate={{ opacity: 1, scale: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.96, y: 16 }}
-              transition={{ type: 'spring', stiffness: 400, damping: 32 }}
-              className="fixed inset-0 z-50 flex items-center justify-center p-6 pointer-events-none"
-            >
-              <div
-                className="w-full max-w-sm bg-neutral-950/80 backdrop-blur-2xl border border-white/[0.12] rounded-3xl overflow-hidden shadow-[0_24px_60px_rgba(0,0,0,0.9)] pointer-events-auto"
-                onClick={e => e.stopPropagation()}
-              >
-                {/* Modal header */}
-                <div className="flex items-center justify-between px-7 py-5 border-b border-white/[0.07]">
-                  <div className="flex items-center gap-3">
-                    <div className="w-8 h-8 rounded-xl bg-white/[0.06] border border-white/[0.08] flex items-center justify-center">
-                      <activeItem.icon size={13} className={activeItem.accentColor} />
-                    </div>
-                    <div>
-                      <EyebrowLabel className="mb-0.5">Select</EyebrowLabel>
-                      <p className="text-sm font-semibold text-white">{activeItem.label}</p>
-                    </div>
-                  </div>
-                  <button
-                    onClick={closePanel}
-                    className="p-2 rounded-full bg-white/[0.07] hover:bg-white/[0.14] border border-white/[0.08] transition-colors text-white/40 hover:text-white"
-                  >
-                    <X size={12} />
-                  </button>
-                </div>
-
-                {/* Options */}
-                <div className="overflow-y-auto max-h-[320px] pb-20">
-                  {activeItem.options.map((opt) => {
-                    const isSelected = selections[activeId] === opt.value;
-                    return (
-                      <div
-                        key={opt.value}
-                        onClick={() => select(activeId, opt.value)}
-                        className={`flex items-center justify-between px-7 py-4 cursor-pointer transition-colors ${isSelected ? 'bg-white/[0.07]' : 'hover:bg-white/[0.03]'}`}
-                      >
-                        <div>
-                          <p className={`text-sm font-semibold ${isSelected ? 'text-white' : 'text-white/55'}`}>
-                            {opt.label}
-                          </p>
-                          {opt.sublabel && <p className="text-xs text-white/25 mt-0.5">{opt.sublabel}</p>}
-                        </div>
-                        <div className="flex items-center gap-2.5 flex-shrink-0 ml-3">
-                          {opt.badge && (
-                            <span className={`text-[10px] font-medium px-2 py-0.5 rounded-full border tracking-wider ${isSelected ? 'border-white/25 text-white/60 bg-white/[0.08]' : 'border-white/8 text-white/20'}`}>
-                              {opt.badge}
-                            </span>
-                          )}
-                          {isSelected && (
-                            <div className="w-5 h-5 rounded-full bg-white flex items-center justify-center">
-                              <Check size={10} className="text-black" strokeWidth={3} />
-                            </div>
-                          )}
-                        </div>
-                      </div>
-                    );
-                  })}
-                </div>
-
-                {/* Footnote */}
-                {activeItem.note && (
-                  <div className="px-7 py-3.5 border-t border-white/[0.05]">
-                    <p className="text-xs text-white/20 leading-relaxed">* {activeItem.note}</p>
-                  </div>
-                )}
-
-                <GradientBlur />
-              </div>
-            </motion.div>
-          </>
-        )}
-      </AnimatePresence>
+      {/* ── BOTTOM: Start Race ────────────────────────────────────────────── */}
+      <div className="bg-neutral-950/60 backdrop-blur-2xl border border-white/[0.08] rounded-3xl px-6 py-5 shadow-[0_12px_40px_rgba(0,0,0,0.6)] flex flex-col sm:flex-row sm:items-center gap-4">
+        <div className="min-w-0 flex-1">
+          <EyebrowLabel className="mb-1">Ready to launch</EyebrowLabel>
+          <p className="text-sm font-semibold text-white truncate">
+            {selections.track.replace(' Grand Prix', '')}
+            <span className="text-white/25 font-normal"> · </span>
+            {CONFIG_ITEMS[1].options.find(o => o.value === selections.driver)?.label}
+          </p>
+        </div>
+        <button
+          type="button"
+          onClick={() => onStart(selections.track, selections.driver, selections.policy)}
+          className="w-full sm:w-auto sm:min-w-[240px] bg-white text-black font-semibold text-sm py-4 px-8 rounded-full flex items-center justify-center gap-2 shadow-xl transition-all duration-200 hover:scale-[1.02] active:scale-[0.97] hover:bg-neutral-100"
+        >
+          <Flag size={13} />
+          Start Race
+        </button>
+      </div>
 
       {/* ── DRIVER INFO MODAL ─────────────────────────────────────────────── */}
       <AnimatePresence>
