@@ -7,7 +7,7 @@ import { motion } from "framer-motion";
 type Mark = { id: number; x: number; y: number };
 
 const SIZE = 96;
-const INTERACTIVE = "a, button, input, select, textarea, label, [role='button']";
+export const INTERACTIVE ="a, button, input, select, textarea, label, [role='button']";
 
 /**
  * Stamps a faint Haas logo wherever the background is clicked, then fades it out.

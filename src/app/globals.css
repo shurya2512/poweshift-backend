@@ -25,6 +25,14 @@ body {
   font-family: var(--font-sans), system-ui, sans-serif;
 }
 
+/* EdgeCursor replaces the native cursor on mouse devices; !important beats cursor-* utilities. */
+@media (pointer: fine) {
+  html,
+  html * {
+    cursor: none !important;
+  }
+}
+
 /* Used by the spinning-border-button beam. */
 @keyframes spin {
   to {
