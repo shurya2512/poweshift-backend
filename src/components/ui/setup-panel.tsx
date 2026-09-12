@@ -68,6 +68,10 @@ export const CONFIG_ITEMS: ConfigItem[] = [
   },
 ];
 
+// Shown in the setup bar — the AI deployment policy is no longer user-selectable here,
+// but stays in CONFIG_ITEMS because the in-race Dashboard still exposes it.
+const SETUP_ITEMS: ConfigItem[] = CONFIG_ITEMS.filter(c => c.id !== 'policy');
+
 export const CIRCUIT_META: Record<string, { laps: number; length: string; turns: number; lapRecord: string; country: string; mapUrl: string }> = {
   'Monaco Grand Prix':   { laps: 78, length: '3.337 km', turns: 19, lapRecord: '1:12.909', country: 'MC', mapUrl: '/monaco.jpg' },
   'Canadian Grand Prix': { laps: 70, length: '4.361 km', turns: 14, lapRecord: '1:13.078', country: 'CA', mapUrl: '/canada.jpg' },
@@ -164,7 +168,6 @@ export default function SetupPanel({ onStart }: SetupPanelProps) {
   const [isLoading, setIsLoading] = useState(false);
   const [activeId, setActiveId]   = useState<string | null>(null);
   const [showDriverModal, setShowDriverModal] = useState(false);
-  const [showPolicyModal, setShowPolicyModal] = useState(false);
 
   const timerRef   = useRef<ReturnType<typeof setTimeout> | null>(null);
   const circuit    = CIRCUIT_META[selections.track];
@@ -191,27 +194,24 @@ export default function SetupPanel({ onStart }: SetupPanelProps) {
   const activeItem = CONFIG_ITEMS.find(c => c.id === activeId) ?? null;
 
   return (
-    <div className="w-full grid grid-cols-1 lg:grid-cols-[420px_1fr] gap-6 lg:gap-8 items-start">
+    <div className="w-full flex flex-col gap-6 lg:gap-7">
 
-      {/* ── LEFT: Setup Panel ─────────────────────────────────────────────── */}
-      <div className="relative">
-        <div className={`relative bg-neutral-950/60 backdrop-blur-2xl border border-white/[0.08] rounded-3xl overflow-hidden shadow-[0_20px_60px_rgba(0,0,0,0.8)] transition-all duration-300 ${activeId ? 'scale-[0.97] brightness-75' : ''}`}>
+      {/* ── TOP: Horizontal Simulation Setup Bar ──────────────────────────── */}
+      <div className={`relative bg-neutral-950/60 backdrop-blur-2xl border border-white/[0.08] rounded-3xl overflow-hidden shadow-[0_20px_60px_rgba(0,0,0,0.8)] transition-all duration-300 ${activeId ? 'scale-[0.99] brightness-75' : ''}`}>
+        <div className="flex flex-col xl:flex-row xl:items-stretch">
 
-          {/* Header */}
-          <div className="px-7 pt-7 pb-6 border-b border-white/[0.06]">
+          {/* Title block */}
+          <div className="px-7 py-6 xl:py-7 xl:w-[300px] xl:flex-shrink-0 border-b xl:border-b-0 xl:border-r border-white/[0.06] flex flex-col justify-center">
             <EyebrowLabel className="text-blue-400 mb-2">Configure Simulation</EyebrowLabel>
-            <h2 className="text-3xl font-black tracking-tight text-white mb-5 drop-shadow-md">Simulation Setup</h2>
-            {/* Highlighted Instruction Panel */}
-            <div className="bg-blue-900/20 border border-blue-500/30 rounded-xl p-4 shadow-[0_0_20px_rgba(59,130,246,0.1)]">
-              <p className="text-xs font-semibold leading-relaxed text-blue-200">
-                Configure the circuit, driver reference lap, and AI energy deployment policy before starting your simulation.
-              </p>
-            </div>
+            <h2 className="text-2xl font-black tracking-tight text-white mb-2 drop-shadow-md">Simulation Setup</h2>
+            <p className="text-xs font-medium leading-relaxed text-white/35">
+              Pick the circuit and the reference driver lap, then start the simulation.
+            </p>
           </div>
 
-          {/* Config Rows */}
-          <div className="divide-y divide-white/[0.04]">
-            {CONFIG_ITEMS.map((item) => {
+          {/* Config selectors — horizontal */}
+          <div className="flex-1 grid grid-cols-1 sm:grid-cols-2 divide-y sm:divide-y-0 sm:divide-x divide-white/[0.05]">
+            {SETUP_ITEMS.map((item) => {
               const chosen = item.options.find(o => o.value === selections[item.id]);
               const Icon = item.icon;
               return (
@@ -227,7 +227,7 @@ export default function SetupPanel({ onStart }: SetupPanelProps) {
                     <div className="min-w-0">
                       <EyebrowLabel className="mb-0.5">{item.label}</EyebrowLabel>
                       <p className="text-sm font-semibold text-white truncate">{chosen?.label ?? '—'}</p>
-                      {chosen?.sublabel && <p className="text-xs text-white/25 mt-0.5">{chosen.sublabel}</p>}
+                      {chosen?.sublabel && <p className="text-xs text-white/25 mt-0.5 truncate">{chosen.sublabel}</p>}
                     </div>
                   </div>
                   <ChevronRight size={13} className="text-white/15 group-hover:text-white/40 flex-shrink-0 ml-3 transition-colors" />
@@ -237,7 +237,7 @@ export default function SetupPanel({ onStart }: SetupPanelProps) {
           </div>
 
           {/* Start Button */}
-          <div className="px-7 py-6 border-t border-white/[0.06] bg-white/[0.015]">
+          <div className="px-7 py-6 xl:w-[240px] xl:flex-shrink-0 border-t xl:border-t-0 xl:border-l border-white/[0.06] bg-white/[0.015] flex items-center">
             <button
               onClick={() => onStart(selections.track, selections.driver, selections.policy)}
               className="w-full bg-white text-black font-semibold text-sm py-4 rounded-full flex items-center justify-center gap-2 shadow-xl transition-all duration-200 hover:scale-[1.02] active:scale-[0.97] hover:bg-neutral-100"
@@ -249,8 +249,8 @@ export default function SetupPanel({ onStart }: SetupPanelProps) {
         </div>
       </div>
 
-      {/* ── RIGHT: F1 Context ─────────────────────────────────────────────── */}
-      <div className="relative flex flex-col gap-5">
+      {/* ── BELOW: Circuit Map + Driver Info ──────────────────────────────── */}
+      <div className="relative grid grid-cols-1 lg:grid-cols-[1fr_400px] gap-6 lg:gap-7 items-start">
 
         {/* Loading overlay */}
         <AnimatePresence>
@@ -289,7 +289,7 @@ export default function SetupPanel({ onStart }: SetupPanelProps) {
           </div>
 
           {/* Circuit SVG Map */}
-          <div className="relative bg-neutral-950/40 mx-5 mt-4 mb-2 rounded-2xl overflow-hidden border border-white/[0.05]" style={{ height: '360px' }}>
+          <div className="relative bg-neutral-950/40 mx-5 mt-4 mb-2 rounded-2xl overflow-hidden border border-white/[0.05]" style={{ height: '420px' }}>
             <AnimatePresence mode="wait">
               <motion.div
                 key={selections.track}
@@ -312,94 +312,83 @@ export default function SetupPanel({ onStart }: SetupPanelProps) {
           </div>
         </div>
 
-        {/* Driver + AI Policy Row */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+        {/* Driver Info Card — full profile */}
+        <div className="bg-neutral-950/60 backdrop-blur-2xl border border-white/[0.08] rounded-3xl overflow-hidden shadow-[0_12px_40px_rgba(0,0,0,0.5)]">
 
-          {/* Driver Card */}
-          <div 
-            onClick={() => setShowDriverModal(true)}
-            className="bg-neutral-950/60 backdrop-blur-2xl border border-white/[0.08] rounded-3xl p-6 shadow-[0_12px_40px_rgba(0,0,0,0.5)] cursor-pointer hover:bg-white/[0.03] transition-colors"
-          >
-            <div className="flex items-center justify-between mb-4">
-              <EyebrowLabel className="text-blue-300">Reference Driver</EyebrowLabel>
-              <div className="w-5 h-5 rounded-full bg-white/[0.05] flex items-center justify-center flex-shrink-0">
-                <ChevronRight size={10} className="text-white/30" />
-              </div>
+          {/* Header */}
+          <div className="px-7 pt-7 pb-5 border-b border-white/[0.06] flex items-start justify-between gap-4">
+            <div className="min-w-0">
+              <EyebrowLabel className="text-blue-300 mb-2">Reference Driver</EyebrowLabel>
+              <h2 className="text-2xl font-bold tracking-tight text-white truncate">
+                {CONFIG_ITEMS[1].options.find(o => o.value === selections.driver)?.label}
+              </h2>
+              <p className="text-xs text-white/30 mt-0.5">{driverMeta.team}</p>
             </div>
-            <div className="flex items-center gap-3.5 mb-5">
-              <div
-                className="w-14 h-14 rounded-2xl flex items-center justify-center text-xl font-black text-white flex-shrink-0"
-                style={{ backgroundColor: `${driverMeta.color}20`, border: `1px solid ${driverMeta.color}50` }}
+            <button
+              onClick={() => setShowDriverModal(true)}
+              className="w-8 h-8 rounded-full bg-white/[0.05] border border-white/[0.08] flex items-center justify-center flex-shrink-0 text-white/30 hover:text-white hover:bg-white/[0.12] transition-colors"
+            >
+              <ChevronRight size={12} />
+            </button>
+          </div>
+
+          {/* Driver Photo */}
+          <div className="relative mx-5 mt-4 h-56 bg-neutral-950/40 rounded-2xl overflow-hidden border border-white/[0.05]">
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={selections.driver}
+                initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+                transition={{ duration: 0.3 }}
+                className="absolute inset-0"
               >
-                #{driverMeta.number}
-              </div>
-              <div className="min-w-0">
-                <p className="font-semibold text-white text-sm leading-tight">
-                  {CONFIG_ITEMS[1].options.find(o => o.value === selections.driver)?.label}
-                </p>
-                <p className="text-xs text-white/35 mt-0.5">{driverMeta.team}</p>
-                <p className="text-[10px] font-medium text-white/20 mt-1 tracking-widest uppercase">{driverMeta.nationality}</p>
-              </div>
-            </div>
-            <div className="border-t border-white/[0.05] pt-4 flex items-center justify-between">
-              <div>
-                <EyebrowLabel className="mb-1">WDC Titles</EyebrowLabel>
-                <p className="text-2xl font-bold text-white">{driverMeta.wdc}<span className="text-sm font-normal text-white/30 ml-0.5">×</span></p>
-              </div>
-              <div className="text-right">
-                <EyebrowLabel className="mb-1">Code</EyebrowLabel>
-                <p className="text-2xl font-bold" style={{ color: driverMeta.color }}>{selections.driver}</p>
-              </div>
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={`/${selections.driver}.png`}
+                  alt={selections.driver}
+                  className="absolute inset-0 w-full h-full object-contain object-bottom opacity-90 z-10"
+                  onError={(e) => { e.currentTarget.style.opacity = '0'; }}
+                />
+                <div className="absolute inset-0 flex flex-col items-center justify-center z-0 bg-neutral-900/40">
+                  <User size={40} className="text-white/10 mb-3" />
+                  <p className="text-[10px] font-medium uppercase tracking-widest text-white/20">Photo missing (/{selections.driver}.png)</p>
+                </div>
+              </motion.div>
+            </AnimatePresence>
+            <div className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-neutral-950 to-transparent z-10 pointer-events-none" />
+            <div
+              className="absolute bottom-3 right-5 text-[64px] leading-none font-black italic tracking-tighter z-20 pointer-events-none"
+              style={{ color: driverMeta.color, textShadow: '0 4px 24px rgba(0,0,0,0.8)' }}
+            >
+              {driverMeta.number}
             </div>
           </div>
 
-          {/* AI Policy Card */}
-          <div 
-            onClick={() => setShowPolicyModal(true)}
-            className="bg-neutral-950/60 backdrop-blur-2xl border border-white/[0.08] rounded-3xl p-6 shadow-[0_12px_40px_rgba(0,0,0,0.5)] cursor-pointer hover:bg-white/[0.03] transition-colors"
-          >
-            <div className="flex items-center justify-between mb-4">
-              <EyebrowLabel className="text-red-400">AI Policy</EyebrowLabel>
-              <div className="w-5 h-5 rounded-full bg-white/[0.05] flex items-center justify-center flex-shrink-0">
-                <ChevronRight size={10} className="text-white/30" />
-              </div>
-            </div>
-            <div className="flex items-center gap-3.5 mb-5">
-              <div className="w-14 h-14 rounded-2xl bg-red-500/10 border border-red-500/25 flex items-center justify-center flex-shrink-0">
-                <Cpu size={22} className="text-red-400" />
-              </div>
-              <div className="min-w-0">
-                <p className="font-semibold text-white text-sm leading-tight">
-                  {CONFIG_ITEMS[2].options.find(o => o.value === selections.policy)?.label}
-                </p>
-                <p className="text-xs text-white/35 mt-0.5">
-                  {CONFIG_ITEMS[2].options.find(o => o.value === selections.policy)?.sublabel}
-                </p>
-              </div>
-            </div>
-            <div className="border-t border-white/[0.05] pt-4 flex gap-4 justify-between">
-              <div>
-                <EyebrowLabel className="mb-1">Type</EyebrowLabel>
-                <p className="text-sm font-semibold text-white">{POLICY_META[selections.policy].type}</p>
-              </div>
-              <div className="text-right">
-                <EyebrowLabel className="mb-1">Compute</EyebrowLabel>
-                <p className="text-sm font-semibold text-white">{POLICY_META[selections.policy].compute}</p>
-              </div>
-            </div>
+          {/* Stats */}
+          <div className="grid grid-cols-3 gap-3 p-5 pb-3">
+            <StatChip label="WDC Titles"  value={`${driverMeta.wdc}`} />
+            <StatChip label="Code"        value={selections.driver} />
+            <StatChip label="Nationality" value={driverMeta.nationality} />
+          </div>
+
+          {/* Telemetry profile */}
+          <div className="px-7 pb-7 pt-2">
+            <EyebrowLabel className="mb-2">Telemetry Profile</EyebrowLabel>
+            <p className="text-xs text-white/45 leading-relaxed font-medium">
+              {driverMeta.bio}
+            </p>
           </div>
         </div>
+      </div>
 
-        {/* 2026 Regs Banner */}
-        <div className="bg-blue-950/20 border border-blue-500/15 rounded-2xl px-6 py-4">
-          <p className="text-xs font-semibold text-blue-300/80 mb-1">2026 F1 Regulations</p>
-          <p className="text-xs text-blue-300/40 leading-relaxed">
-            Maximum <span className="text-blue-300/70 font-semibold">350 kW</span> electrical output from a{' '}
-            <span className="text-blue-300/70 font-semibold">4 MJ</span> battery cap per lap.
-            Car mass: <span className="text-blue-300/70 font-semibold">798 kg</span>.
-            The AI learns optimal deployment timing to minimise lap time.
-          </p>
-        </div>
+      {/* 2026 Regs Banner */}
+      <div className="bg-blue-950/20 border border-blue-500/15 rounded-2xl px-6 py-4">
+        <p className="text-xs font-semibold text-blue-300/80 mb-1">2026 F1 Regulations</p>
+        <p className="text-xs text-blue-300/40 leading-relaxed">
+          Maximum <span className="text-blue-300/70 font-semibold">350 kW</span> electrical output from a{' '}
+          <span className="text-blue-300/70 font-semibold">4 MJ</span> battery cap per lap.
+          Car mass: <span className="text-blue-300/70 font-semibold">798 kg</span>.
+          The AI learns optimal deployment timing to minimise lap time.
+        </p>
       </div>
 
       {/* ── CENTERED MODAL: Selection List ──────────────────────────────────── */}
@@ -575,100 +564,6 @@ export default function SetupPanel({ onStart }: SetupPanelProps) {
                   <EyebrowLabel className="mb-2">Telemetry Profile</EyebrowLabel>
                   <p className="text-sm text-white/60 leading-relaxed font-medium">
                     {driverMeta.bio}
-                  </p>
-                </div>
-                
-                <GradientBlur />
-              </div>
-            </motion.div>
-          </>
-        )}
-      </AnimatePresence>
-
-      {/* ── AI POLICY INFO MODAL ──────────────────────────────────────────── */}
-      <AnimatePresence>
-        {showPolicyModal && (
-          <>
-            <motion.div
-              initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.2 }}
-              className="fixed inset-0 z-40 bg-black/60 backdrop-blur-md"
-              onClick={() => setShowPolicyModal(false)}
-            />
-            <motion.div
-              initial={{ opacity: 0, scale: 0.96, y: 16 }}
-              animate={{ opacity: 1, scale: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.96, y: 16 }}
-              transition={{ type: 'spring', stiffness: 400, damping: 32 }}
-              className="fixed inset-0 z-50 flex items-center justify-center p-6 pointer-events-none"
-            >
-              <div 
-                className="relative w-full max-w-md bg-neutral-950/80 backdrop-blur-2xl border border-white/[0.12] rounded-3xl overflow-hidden shadow-[0_24px_60px_rgba(0,0,0,0.9)] pointer-events-auto"
-                onClick={e => e.stopPropagation()}
-              >
-                {/* Header */}
-                <div className="flex items-center justify-between px-7 py-5 border-b border-white/[0.07] z-20 relative">
-                  <div className="flex items-center gap-3">
-                    <div className="w-8 h-8 rounded-xl bg-white/[0.06] border border-white/[0.08] flex items-center justify-center">
-                      <Cpu size={13} className="text-red-400" />
-                    </div>
-                    <div>
-                      <EyebrowLabel className="mb-0.5">Deployment Policy</EyebrowLabel>
-                      <p className="text-sm font-semibold text-white">{CONFIG_ITEMS[2].options.find(o => o.value === selections.policy)?.label}</p>
-                    </div>
-                  </div>
-                  <button onClick={() => setShowPolicyModal(false)} className="p-2 rounded-full bg-white/[0.07] hover:bg-white/[0.14] border border-white/[0.08] transition-colors text-white/40 hover:text-white">
-                    <X size={12} />
-                  </button>
-                </div>
-
-                {/* Hero / Graphic Area */}
-                <div className="relative w-full h-56 bg-neutral-950 border-b border-white/[0.05] z-10 flex flex-col items-center justify-center">
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img 
-                    src={`/${selections.policy}.jpg`} 
-                    alt={selections.policy} 
-                    className="absolute inset-0 w-full h-full object-cover opacity-90 z-10"
-                    onError={(e) => { e.currentTarget.style.opacity = '0'; }} 
-                  />
-                  {/* Fallback graphic if no image provided */}
-                  <div className="absolute inset-0 flex flex-col items-center justify-center z-0 bg-neutral-900/40">
-                    <div className="w-20 h-20 rounded-2xl bg-red-500/10 border border-red-500/20 flex items-center justify-center mb-4">
-                      <Cpu size={40} className="text-red-400/50" />
-                    </div>
-                    <p className="text-[10px] font-medium uppercase tracking-widest text-white/20">Graphic missing (/{selections.policy}.jpg)</p>
-                  </div>
-                  
-                  {/* Gradient Overlay */}
-                  <div className="absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-neutral-950 to-transparent z-10" />
-                  
-                  {/* Floating Badge */}
-                  <div className="absolute bottom-5 right-6 z-20">
-                    <span className="text-[10px] font-medium px-3 py-1.5 rounded-full border border-red-500/30 text-red-400 bg-red-500/10 tracking-widest uppercase shadow-[0_0_12px_rgba(248,113,113,0.2)]">
-                      {CONFIG_ITEMS[2].options.find(o => o.value === selections.policy)?.badge}
-                    </span>
-                  </div>
-                </div>
-
-                {/* Details */}
-                <div className="p-7 pt-5 relative z-20 bg-neutral-950/40">
-                  <div className="flex gap-6 mb-6">
-                    <div>
-                      <EyebrowLabel className="mb-1">Type</EyebrowLabel>
-                      <p className="text-sm font-semibold text-white">{POLICY_META[selections.policy].type}</p>
-                    </div>
-                    <div>
-                      <EyebrowLabel className="mb-1">Speed</EyebrowLabel>
-                      <p className="text-sm font-semibold text-white">{POLICY_META[selections.policy].speed}</p>
-                    </div>
-                    <div>
-                      <EyebrowLabel className="mb-1">Compute Cost</EyebrowLabel>
-                      <p className="text-sm font-semibold text-white">{POLICY_META[selections.policy].compute}</p>
-                    </div>
-                  </div>
-                  
-                  <EyebrowLabel className="mb-2">Algorithm Description</EyebrowLabel>
-                  <p className="text-sm text-white/60 leading-relaxed font-medium">
-                    {POLICY_META[selections.policy].desc}
                   </p>
                 </div>
                 
