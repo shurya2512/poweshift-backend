@@ -1,7 +1,6 @@
-import Link from "next/link";
 import React from 'react';
-import { ArrowRight } from 'lucide-react';
 import FeaturesGrid from "@/components/FeaturesGrid";
+import { SpinningBorderButton } from "@/components/ui/spinning-border-button";
 
 export const metadata = {
   title: "Power-Shift | Energy Deployment Intelligence",
@@ -31,8 +30,8 @@ export default function LandingPage() {
         </div>
         
         <div className="flex flex-wrap justify-center pointer-events-auto mt-12 mb-16 gap-5">
-          <ModeButton href="/setup" label="Qualifying" />
-          <ModeButton href="/full-race" label="Full race" />
+          <SpinningBorderButton href="/setup" text="Qualifying" />
+          <SpinningBorderButton href="/full-race" text="Full race" />
         </div>
 
         {/* Features Grid */}
@@ -40,29 +39,5 @@ export default function LandingPage() {
 
       </div>
     </main>
-  );
-}
-
-/** Pill-shaped link that starts a simulation mode. */
-function ModeButton({ href, label }: { href: string; label: string }) {
-  return (
-    <Link
-      href={href}
-      className="
-        group relative flex items-center justify-center px-12 py-5
-        bg-white text-black
-        rounded-full
-        font-sans font-bold tracking-wider uppercase
-        shadow-xl
-        transition-all duration-300 transform hover:scale-[1.05] active:scale-[0.95]
-        hover:bg-neutral-200
-        overflow-hidden
-      "
-    >
-      <div className="flex items-center gap-3 z-10 relative">
-        <span className="text-lg md:text-xl">{label}</span>
-        <ArrowRight size={24} className="group-hover:translate-x-1 transition-transform" />
-      </div>
-    </Link>
   );
 }

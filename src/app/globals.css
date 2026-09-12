@@ -25,6 +25,13 @@ body {
   font-family: var(--font-sans), system-ui, sans-serif;
 }
 
+/* Used by the spinning-border-button beam. */
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
 /* ---- Scrollbar (WebKit) ---- */
 ::-webkit-scrollbar {
   display: none;
