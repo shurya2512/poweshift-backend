@@ -1,0 +1,4 @@
+data/fastf1data/
+.venv/
+data/acquisition/
+data/phase1_fastf1_cache/
