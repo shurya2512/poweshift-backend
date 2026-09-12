@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from 'react';
-import { Cpu, Zap, Trophy, X, BrainCircuit } from 'lucide-react';
+import { Cpu, Zap, Trophy, X } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 const featureData = [
@@ -13,15 +13,6 @@ const featureData = [
     color: 'text-blue-500',
     borderColor: 'hover:border-blue-500/50',
     shadowColor: 'shadow-blue-500/20'
-  },
-  {
-    id: 'dp',
-    title: 'Dynamic Programming',
-    description: 'The theoretical global optimal oracle. Calculates the perfect energy deployment for any lap with O(N²) complexity, providing flawless training data for our AI.',
-    icon: BrainCircuit,
-    color: 'text-purple-500',
-    borderColor: 'hover:border-purple-500/50',
-    shadowColor: 'shadow-purple-500/20'
   },
   {
     id: 'physics',
@@ -48,7 +39,7 @@ export default function FeaturesGrid() {
 
   return (
     <>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mt-12 text-left w-full border-t border-neutral-800/60 pt-16 pointer-events-auto z-10 relative">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-12 text-left w-full border-t border-neutral-800/60 pt-16 pointer-events-auto z-10 relative">
         {featureData.map((feature) => (
           <div 
             key={feature.id}
