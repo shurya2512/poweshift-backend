@@ -307,8 +307,9 @@ export default function SetupPanel({ onStart }: SetupPanelProps) {
             </div>
           </div>
 
-          {/* Circuit map — 16/9 box matching the source images, so it fills exactly */}
-          <div className="relative w-full flex-1 min-h-[260px] bg-neutral-950/40 overflow-hidden border-b border-white/[0.05]">
+          {/* Circuit map — panel is black to match the source images' own background, so the
+              letterboxing from object-contain is invisible rather than a grey band. */}
+          <div className="relative w-full flex-1 min-h-[260px] bg-black overflow-hidden border-b border-white/[0.05]">
             <AnimatePresence mode="wait">
               <motion.div
                 key={selections.track}
