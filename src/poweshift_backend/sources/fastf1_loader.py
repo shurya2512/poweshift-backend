@@ -1,6 +1,7 @@
 """Load permitted FastF1 testing-session records."""
 
 from collections.abc import Mapping
+from hashlib import sha256
 import logging
 from pathlib import Path
 
@@ -21,7 +22,8 @@ def load_bahrain_test_day(
     if session.event["Location"] != identity.venue or session.date.date() != identity.date:
         raise ValueError("FastF1 returned an unexpected testing session")
     log_path.parent.mkdir(parents=True, exist_ok=True)
-    handler = logging.FileHandler(log_path, mode="w")
+    candidate_log = log_path.with_suffix(log_path.suffix + ".candidate")
+    handler = logging.FileHandler(candidate_log, mode="w")
     handler.setFormatter(logging.Formatter("%(name)s %(levelname)s %(message)s"))
     logger = logging.getLogger("fastf1")
     logger.addHandler(handler)
@@ -30,6 +32,11 @@ def load_bahrain_test_day(
     finally:
         logger.removeHandler(handler)
         handler.close()
+    candidate_hash = sha256(candidate_log.read_bytes()).hexdigest()
+    if log_path.exists() and sha256(log_path.read_bytes()).hexdigest() != candidate_hash:
+        candidate_log.unlink()
+        raise FileExistsError(f"immutable loader log differs: {log_path}")
+    candidate_log.replace(log_path)
     laps = _records(lambda: pd.DataFrame(session.laps))
     return identity, [str(driver) for driver in session.drivers], {
         "car": _records(lambda: _driver_frames(session.car_data)),
