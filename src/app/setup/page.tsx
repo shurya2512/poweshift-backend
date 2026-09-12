@@ -36,7 +36,7 @@ export default function SetupPage() {
               2026 F1 Regulations Prototype
             </p>
             <h1 className="text-5xl lg:text-6xl font-black tracking-tighter text-white uppercase drop-shadow-xl">
-              Power<ShiftHoverText />
+              Power<ShiftHoverText italic />
             </h1>
           </div>
         </div>
