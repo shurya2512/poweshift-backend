@@ -2,7 +2,16 @@ import { FlagState, RacePhase, RaceWorld, ScenarioIdentity, WorldSide } from '..
 import { ROSTER } from './roster';
 import { FixtureTrack } from './track';
 import { buildParticipantState } from './state';
-import { Progress, TOTAL_LAPS, WorldPlan, WorldTiming, pitLapsFor, progressAt } from './model';
+import {
+  Progress,
+  TOTAL_LAPS,
+  WorldPlan,
+  WorldTiming,
+  compoundsFor,
+  neutralisationAt,
+  pitLapsFor,
+  progressAt,
+} from './model';
 
 interface Ranked {
   entry: (typeof ROSTER)[number];
@@ -26,10 +35,9 @@ function order(rows: Ranked[]): Ranked[] {
   return [...finished, ...running, ...retired];
 }
 
+/** The flag follows the neutralisation the leader is inside, and its kind. */
 function flagAt(plan: WorldPlan, leaderLap: number): FlagState {
-  const sc = plan.safetyCar;
-  if (sc && leaderLap >= sc.fromLap && leaderLap <= sc.toLap) return 'safety_car';
-  return 'green';
+  return neutralisationAt(plan, leaderLap)?.kind ?? 'green';
 }
 
 function phaseAt(allDone: boolean, t: number): RacePhase {
@@ -62,6 +70,7 @@ export function buildWorld(
       entry: row.entry,
       progress: row.progress,
       pitLaps: pitLapsFor(plan, row.entry.id),
+      compounds: compoundsFor(plan, row.entry.id),
       track,
       raceTimeS: t,
       rank: i + 1,
@@ -77,6 +86,7 @@ export function buildWorld(
 
   const leaderLap = ordered[0]?.progress.lap ?? 1;
   const allDone = rows.every((r) => r.progress.finished || r.progress.retired);
+  const neutralised = neutralisationAt(plan, leaderLap);
 
   return {
     side,
@@ -86,7 +96,7 @@ export function buildWorld(
     phase: phaseAt(allDone, t),
     flag: allDone ? 'chequered' : flagAt(plan, leaderLap),
     weather: 'Dry, 27 °C track',
-    trackCondition: plan.safetyCar && flagAt(plan, leaderLap) === 'safety_car' ? 'Neutralised' : 'Racing',
+    trackCondition: allDone ? 'Race over' : neutralised ? 'Neutralised' : 'Racing',
     field,
     finished: allDone,
   };

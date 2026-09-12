@@ -7,6 +7,8 @@ import {
   ParticipantState,
   RaceFrame,
   RaceOutcome,
+  SessionInfo,
+  StrategyBrief,
   TyreState,
 } from './types';
 import { Valued, unsupported } from './valued';
@@ -102,6 +104,33 @@ function frame(raw: Record<string, unknown>): RaceFrame {
   };
 }
 
+/** A brief with no stints is not a smaller brief — it is not one, so it is dropped. */
+function brief(raw: Record<string, unknown> | undefined): StrategyBrief | undefined {
+  if (!raw) return undefined;
+  const stints = (raw.stints ?? []) as StrategyBrief['stints'];
+  if (stints.length === 0) return undefined;
+  return {
+    author: String(raw.author ?? 'Not attributed'),
+    car: String(raw.car ?? 'Not supplied'),
+    stints,
+    pitLaps: (raw.pitLaps as number[]) ?? [],
+    expectedFinishPosition: valued(raw.expectedFinishPosition, 'Expected finish position'),
+    note: raw.note as string | undefined,
+  };
+}
+
+function session(raw: Record<string, unknown>): SessionInfo {
+  const assumptions = (raw.assumptions ?? {}) as Record<string, unknown>;
+  return {
+    ...(raw as unknown as SessionInfo),
+    brief: brief(raw.brief as Record<string, unknown> | undefined),
+    assumptions: {
+      ...(assumptions as unknown as SessionInfo['assumptions']),
+      pitLossS: valued(assumptions.pitLossS, 'Pit loss'),
+    },
+  };
+}
+
 function outcome(raw: Record<string, unknown> | undefined): RaceOutcome {
   return {
     finishPosition: valued(raw?.finishPosition, 'Finish position'),
@@ -150,12 +179,13 @@ export function coerceMessage(raw: unknown): RaceMessage | null {
   const msg = raw as Record<string, unknown>;
 
   switch (msg.type) {
-    case 'session':
     case 'events':
     case 'battles':
     case 'support':
     case 'error':
       return msg as unknown as RaceMessage;
+    case 'session':
+      return { type: 'session', session: session(msg.session as Record<string, unknown>) };
     case 'frame':
       return { type: 'frame', frame: frame(msg.frame as Record<string, unknown>) };
     case 'comparison':

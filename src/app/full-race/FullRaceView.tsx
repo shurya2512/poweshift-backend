@@ -1,23 +1,20 @@
 'use client';
 
 import React, { useMemo, useState } from 'react';
-import Link from 'next/link';
-import { ArrowLeft, ArrowRight } from 'lucide-react';
+import { SpinningBorderButton } from '@/components/ui/spinning-border-button';
 import { FixtureRaceSource } from '@/lib/race/fixtures/source';
 import { useRaceSession } from '@/lib/race/useRaceSession';
-import { RaceEvent, SupportState } from '@/lib/race/types';
+import { findOvertakeMoves } from '@/lib/race/report';
+import { RaceEvent, SupportState, WorldSide } from '@/lib/race/types';
 import { AssumptionsPanel } from '@/components/race/AssumptionsPanel';
-import { DeltaColumn } from '@/components/race/DeltaColumn';
-import { DriverComparison } from '@/components/race/DriverComparison';
-import { OutcomeRow } from '@/components/race/OutcomeRow';
-import { PlaybackBar } from '@/components/race/PlaybackBar';
 import { RaceTimeline } from '@/components/race/RaceTimeline';
-import { RaceWorldPanel } from '@/components/race/RaceWorldPanel';
-import { RobustnessPanel } from '@/components/race/RobustnessPanel';
-import { BattleRegion } from '@/components/race/battle/BattleRegion';
 import { StateBanner } from '@/components/race/StateBanner';
-import { TopContextBand } from '@/components/race/TopContextBand';
-import { Eyebrow, Panel } from '@/components/race/primitives';
+import { LiveFeed } from '@/components/race/full/LiveFeed';
+import { OurCarPanel } from '@/components/race/full/OurCarPanel';
+import { RaceHeader } from '@/components/race/full/RaceHeader';
+import { StandingsPanel } from '@/components/race/full/StandingsPanel';
+import { OvertakeFlashCards } from '@/components/race/overtake/OvertakeFlashCards';
+import { Panel } from '@/components/race/primitives';
 
 const REQUEST = {
   season: 2026,
@@ -27,15 +24,6 @@ const REQUEST = {
 
 /** States that replace the race regions rather than sitting above them. */
 const BLOCKING: SupportState[] = ['unsupported', 'abstained', 'failed'];
-
-const INJECTABLE: { label: string; state: SupportState | 'disconnected' | 'ready'; reason?: string }[] = [
-  { label: 'Ready', state: 'ready' },
-  { label: 'Partial', state: 'partial', reason: 'The alternative world is missing energy for four entries beyond lap 20.' },
-  { label: 'Disconnected', state: 'disconnected' },
-  { label: 'Unsupported', state: 'unsupported', reason: 'No validated tyre model exists for this compound at this circuit, so the stint cannot be extended.' },
-  { label: 'Abstained', state: 'abstained', reason: 'The requested branch lies beyond the forecast horizon the backend can defend.' },
-  { label: 'Failed', state: 'failed', reason: 'The alternative world failed to solve; baseline and scenario inputs are preserved.' },
-];
 
 function Preparing() {
   return (
@@ -52,56 +40,55 @@ function Preparing() {
 export function FullRaceView() {
   const source = useMemo(() => new FixtureRaceSource(), []);
   const { state, controls } = useRaceSession(source, REQUEST);
-  const { session, frame, comparison } = state;
+  const { session, frame } = state;
   const [selectedEventId, setSelectedEventId] = useState<string | null>(null);
-  const [selectedBattleId, setSelectedBattleId] = useState<string | null>(null);
+  // The live regions read one race at a time, and say which. Our plan leads, because
+  // it is the one the page is asking about; the recorded race is a switch away.
+  const [side, setSide] = useState<WorldSide>('alternative');
 
   const selected = useMemo(
     () => session?.participants.find((p) => p.id === state.selectedParticipantId) ?? null,
     [session, state.selectedParticipantId],
   );
 
+  const participants = useMemo(
+    () => new Map((session?.participants ?? []).map((p) => [p.id, p])),
+    [session],
+  );
+
+  const moves = useMemo(
+    () => (state.selectedParticipantId ? findOvertakeMoves(state.battles, state.selectedParticipantId) : []),
+    [state.battles, state.selectedParticipantId],
+  );
+
   if (!session) return <Preparing />;
 
   const blocked = BLOCKING.includes(state.supportState);
+  const other: WorldSide = side === 'baseline' ? 'alternative' : 'baseline';
+  const stateOf = (world: WorldSide) =>
+    frame?.[world].field.find((p) => p.participantId === state.selectedParticipantId);
 
-  // Selecting an event moves to that event in its own world; the other world is shown
-  // at the same elapsed race time, with no matching event invented for it.
+  // Selecting an event moves to that event in its own race; the other race is shown at
+  // the same elapsed race time, with no matching event invented for it.
   const onSelectEvent = (event: RaceEvent) => {
     setSelectedEventId(event.id);
     controls.seek(event.raceTimeS);
-    // A competition event on the timeline opens its battle.
-    const battle = state.battles.find((b) => `battle-event-${b.id}` === event.id);
-    if (battle) setSelectedBattleId(battle.id);
-  };
-
-  const onSelectBattle = (id: string) => {
-    setSelectedBattleId(id);
-    const battle = state.battles.find((b) => b.id === id);
-    if (battle) controls.seek(battle.windowStartS);
+    if (event.world !== 'shared') setSide(event.world);
   };
 
   return (
     <div className="mx-auto flex max-w-[1600px] flex-col gap-5 px-4 py-8 sm:px-6 lg:px-10">
-      <div className="flex items-center justify-between">
-        <Link
-          href="/setup?mode=full-race"
-          className="flex items-center gap-2 rounded-[14px] border border-white/[0.05] bg-white/[0.03] px-4 py-2 text-sm font-medium text-white/50 transition-colors hover:bg-white/[0.08] hover:text-white"
-        >
-          <ArrowLeft size={15} /> Setup
-        </Link>
-        <div className="flex items-center gap-4">
-          <p className="text-[10px] uppercase tracking-widest text-white/25">Fixture source — no backend attached</p>
-          <Link
-            href="/report"
-            className="flex items-center gap-2 rounded-[14px] border border-white/[0.05] bg-white/[0.03] px-4 py-2 text-sm font-medium text-white/50 transition-colors hover:bg-white/[0.08] hover:text-white"
-          >
-            Report <ArrowRight size={15} />
-          </Link>
-        </div>
+      {/* Same pill as the setup page's Return to Home: back flips its arrow, forward slides. */}
+      <div className="flex items-center justify-between gap-4">
+        <SpinningBorderButton href="/setup-full-race" text="Setup" size="sm" arrowMode="flip" fill="hollow" beam="once" />
+        <SpinningBorderButton href="/report" text="Report" size="sm" fill="hollow" beam="once" />
       </div>
 
-      <TopContextBand session={session} stale={state.stale} />
+      <RaceHeader
+        session={session}
+        driver={selected}
+        support={state.stale ? 'stale' : state.supportState}
+      />
 
       <StateBanner
         session={session}
@@ -111,35 +98,32 @@ export function FullRaceView() {
         error={state.error}
       />
 
-      {!blocked && comparison && <OutcomeRow comparison={comparison} />}
-
       {!blocked && frame && (
         <>
-          {/* Narrow layout: baseline, then alternative, then the deltas. */}
-          <div className="grid grid-cols-1 gap-5 lg:grid-cols-[1fr_340px_1fr]">
-            <div className="order-1 lg:order-1">
-              <RaceWorldPanel
-                world={frame.baseline}
+          {/* Standings, then our car, then the feed — the order the pit wall reads them. */}
+          <div className="grid grid-cols-1 gap-5 lg:grid-cols-2 xl:grid-cols-[minmax(0,320px)_minmax(0,340px)_minmax(0,1fr)]">
+            <StandingsPanel
+              world={frame[side]}
+              participants={session.participants}
+              selectedId={state.selectedParticipantId}
+              onSelect={controls.select}
+            />
+            <OurCarPanel
+              driver={selected}
+              car={session.brief?.car}
+              side={side}
+              state={stateOf(side)}
+              other={stateOf(other)}
+            />
+            <div className="lg:col-span-2 xl:col-span-1">
+              <LiveFeed
+                world={frame[side]}
                 track={session.track}
                 participants={session.participants}
                 selectedId={state.selectedParticipantId}
+                raceTimeS={frame.raceTimeS}
                 onSelect={controls.select}
-                title="Baseline race world"
-                accent="text-sky-400"
-              />
-            </div>
-            <div className="order-3 lg:order-2">
-              <DeltaColumn frame={frame} session={session} selected={selected} />
-            </div>
-            <div className="order-2 lg:order-3">
-              <RaceWorldPanel
-                world={frame.alternative}
-                track={session.track}
-                participants={session.participants}
-                selectedId={state.selectedParticipantId}
-                onSelect={controls.select}
-                title="Alternative race world"
-                accent="text-emerald-400"
+                onWorld={setSide}
               />
             </div>
           </div>
@@ -149,59 +133,22 @@ export function FullRaceView() {
             events={state.events}
             currentTimeS={frame.raceTimeS}
             selectedEventId={selectedEventId}
+            status={state.playback}
             onSeek={controls.seek}
             onSelectEvent={onSelectEvent}
+            onPause={controls.pause}
+            onResume={controls.resume}
           />
 
-          <DriverComparison frame={frame} participant={selected} />
-
-          {state.battles.length > 0 && (
-            <BattleRegion
-              battles={state.battles}
-              selectedId={selectedBattleId}
-              onSelect={onSelectBattle}
-              frame={frame}
-              participants={session.participants}
-            />
-          )}
-
-          {comparison?.stability && <RobustnessPanel stability={comparison.stability} />}
+          <OvertakeFlashCards
+            moves={moves}
+            participants={participants}
+            branchLap={session.branchPoint.lap}
+          />
         </>
       )}
 
       <AssumptionsPanel session={session} frame={frame} />
-
-      {!blocked && (
-        <PlaybackBar
-          session={session}
-          frame={frame}
-          events={state.events}
-          status={state.playback}
-          rate={state.rate}
-          onPause={controls.pause}
-          onResume={controls.resume}
-          onSeek={controls.seek}
-          onRate={controls.setRate}
-        />
-      )}
-
-      {/* Fixture-only: makes every layout state reachable without a misbehaving backend. */}
-      <Panel className="flex flex-wrap items-center gap-3 p-4 px-6">
-        <Eyebrow>Layout states (fixture)</Eyebrow>
-        {INJECTABLE.map((s) => (
-          <button
-            key={s.label}
-            onClick={() =>
-              s.state === 'disconnected'
-                ? controls.injectDisconnect()
-                : controls.injectSupport(s.state as SupportState, s.reason)
-            }
-            className="rounded-full border border-white/[0.08] bg-white/[0.04] px-3 py-1 text-[10px] font-semibold uppercase tracking-widest text-white/50 transition-colors hover:bg-white/[0.1] hover:text-white"
-          >
-            {s.label}
-          </button>
-        ))}
-      </Panel>
     </div>
   );
 }

@@ -26,7 +26,11 @@ interface ConfigItem {
   note?: string;
 }
 
+/** Which session is being set up. The two are laid out identically and read differently. */
+export type SetupMode = 'qualifying' | 'full-race';
+
 interface SetupPanelProps {
+  mode: SetupMode;
   onStart: (track: string, driver: string, policy: string) => void;
 }
 
@@ -81,6 +85,31 @@ export const CONFIG_ITEMS: ConfigItem[] = [
 // Shown in the setup bar — the AI deployment policy is no longer user-selectable here,
 // but stays in CONFIG_ITEMS because the in-race Dashboard still exposes it.
 const SETUP_ITEMS: ConfigItem[] = CONFIG_ITEMS.filter(c => c.id !== 'policy');
+
+/**
+ * Everything the two sessions word differently. The circuit and the ego car are the
+ * same choice in both, so neither appears here — only the driver, who is a lap to
+ * replay in qualifying and the driver of our own car over a race.
+ */
+const MODE_COPY: Record<SetupMode, {
+  intro: string;
+  driverLabel: string;
+  driverNote: string;
+  driverCaption: (circuit: string) => string;
+}> = {
+  qualifying: {
+    intro: 'Pick the circuit and the reference driver lap, then start the simulation.',
+    driverLabel: 'Reference Driver',
+    driverNote: 'Driver selection changes which lap is replayed — not the car physics.',
+    driverCaption: circuit => `${circuit} reference lap`,
+  },
+  'full-race': {
+    intro: 'Pick the circuit and the ego driver, then start the race.',
+    driverLabel: 'Ego Driver',
+    driverNote: 'The driver in our car. Selection changes whose race we run — not the car physics.',
+    driverCaption: circuit => `${circuit} full race`,
+  },
+};
 
 export const CIRCUIT_META: Record<string, { laps: number; length: string; turns: number; lapRecord: string; country: string; mapUrl: string }> = {
   'Monaco Grand Prix':     { laps: 78, length: '3.337 km', turns: 19, lapRecord: '1:12.909', country: 'MC', mapUrl: '/monaco.jpg' },
@@ -177,7 +206,7 @@ const StatChip = ({ label, value }: { label: string; value: string }) => (
 
 // ── Main Component ───────────────────────────────────────────────────────────
 
-export default function SetupPanel({ onStart }: SetupPanelProps) {
+export default function SetupPanel({ mode, onStart }: SetupPanelProps) {
   const [selections, setSelections] = useState<Record<string, string>>({
     track: 'Monaco Grand Prix', driver: 'VER', policy: 'learned',
   });
@@ -187,6 +216,13 @@ export default function SetupPanel({ onStart }: SetupPanelProps) {
   const timerRef   = useRef<ReturnType<typeof setTimeout> | null>(null);
   const circuit    = CIRCUIT_META[selections.track];
   const driverMeta = DRIVER_META[selections.driver];
+  const copy       = MODE_COPY[mode];
+
+  // The driver means a different thing in each session, so it is relabelled rather
+  // than duplicated — the options, and every other setting, are identical.
+  const setupItems = SETUP_ITEMS.map(item =>
+    item.id === 'driver' ? { ...item, label: copy.driverLabel, note: copy.driverNote } : item,
+  );
 
   const triggerLoading = useCallback(() => {
     setIsLoading(true);
@@ -213,13 +249,11 @@ export default function SetupPanel({ onStart }: SetupPanelProps) {
           {/* Title block */}
           <div className="px-6 py-6 border-b md:border-b-0 md:border-r border-white/[0.06] flex flex-col justify-center">
             <h2 className="text-2xl font-black tracking-tight text-white mb-2 drop-shadow-md">Simulation Setup</h2>
-            <p className="text-xs font-medium leading-relaxed text-white/35">
-              Pick the circuit and the reference driver lap, then start the simulation.
-            </p>
+            <p className="text-xs font-medium leading-relaxed text-white/35">{copy.intro}</p>
           </div>
 
           {/* Selectors — animated DropdownMenu per setting */}
-          {SETUP_ITEMS.map((item, i) => {
+          {setupItems.map((item, i) => {
             const chosen = item.options.find(o => o.value === selections[item.id]);
             const Icon = item.icon;
             return (
@@ -354,7 +388,7 @@ export default function SetupPanel({ onStart }: SetupPanelProps) {
           title={CONFIG_ITEMS[1].options.find(o => o.value === selections.driver)?.label ?? selections.driver}
           subtitle={driverMeta.team}
           description={driverMeta.bio}
-          caption={`${selections.track.replace(' Grand Prix', '')} reference lap`}
+          caption={copy.driverCaption(selections.track.replace(' Grand Prix', ''))}
           stats={[
             { label: 'WDC Titles', value: `${driverMeta.wdc}` },
             { label: 'Code', value: selections.driver },

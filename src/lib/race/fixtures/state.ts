@@ -26,11 +26,20 @@ function stintAge(pitLaps: number[], lap: number): number {
   return lap - last;
 }
 
-function tyre(side: WorldSide, pitLaps: number[], p: Progress, t: number): TyreState {
+function tyre(
+  side: WorldSide,
+  pitLaps: number[],
+  compounds: string[] | undefined,
+  p: Progress,
+  t: number,
+): TyreState {
   const stintIndex = pitLaps.filter((l) => l <= p.lap).length;
   const age = stintAge(pitLaps, p.lap);
+  // An entry whose stints were planned runs those compounds; the rest of the field has
+  // no supplied plan, so it cycles the three dry compounds in order.
+  const compound = compounds?.[stintIndex] ?? COMPOUNDS[stintIndex % COMPOUNDS.length];
   return {
-    compound: mark(side, COMPOUNDS[stintIndex % COMPOUNDS.length], t, 'measured'),
+    compound: mark(side, compound, t, 'measured'),
     ageLaps: mark(side, age, t, 'measured'),
     conditionPct: mark(side, Math.max(8, 100 - age * 3.4), t, 'estimated'),
   };
@@ -72,6 +81,8 @@ export interface StateInput {
   entry: FixtureEntry;
   progress: Progress;
   pitLaps: number[];
+  /** Planned compound per stint, when a plan was supplied for this entry. */
+  compounds?: string[];
   track: FixtureTrack;
   raceTimeS: number;
   rank: number;
@@ -130,7 +141,7 @@ export function buildParticipantState(input: StateInput): ParticipantState {
         : mark(side, intervalS, t, 'measured'),
     sector: mark(side, Math.min(3, Math.floor(p.frac * 3) + 1), t, 'measured'),
     lapsDown: lapsDown > 0 ? lapsDown : 0,
-    tyre: tyre(side, pitLaps, p, t),
+    tyre: tyre(side, pitLaps, input.compounds, p, t),
     energy: energy(side, entry, p, t),
     fuelKg: mark(side, Number(Math.max(2, 104 - p.distance * 3.3).toFixed(1)), t, 'estimated'),
     paceTarget: mark(side, stintAge(pitLaps, p.lap) > 10 ? 'Manage' : 'Push', t, 'estimated'),

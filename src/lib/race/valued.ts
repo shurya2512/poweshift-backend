@@ -82,6 +82,19 @@ export const inferred = <T>(value: T, interval?: [number, number]): Inferred<T> 
   interval,
 });
 
+export const predicted = <T>(
+  value: T,
+  cutoffS: number,
+  horizonS: number,
+  interval?: [number, number],
+): Predicted<T> => ({
+  status: 'predicted',
+  value,
+  interval,
+  cutoffS,
+  horizonS,
+});
+
 export const simulated = <T>(value: T, scenarioId: string, assumptions: string[] = []): Simulated<T> => ({
   status: 'simulated',
   value,

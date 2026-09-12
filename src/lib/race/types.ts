@@ -90,6 +90,36 @@ export interface DataCoverage {
   permittedEvidence: string[];
 }
 
+// ── The brief we were given ──────────────────────────────────────────────────
+
+/** One planned stint. Laps are inclusive, and come from the supplied plan. */
+export interface PlannedStint {
+  /** Free text so an unfamiliar compound name survives instead of being dropped. */
+  compound: string;
+  fromLap: number;
+  toLap: number;
+}
+
+/**
+ * The call handed to us before the race: which car we are replicating, the stint plan
+ * we were asked to run, and where the plan is expected to finish.
+ *
+ * This is a brief, not a result. Nothing in it is measured, and no view may present
+ * it as an outcome — the expected finish is a `Valued` like any other claim, so it
+ * carries the status of the estimate that produced it.
+ */
+export interface StrategyBrief {
+  /** Who supplied the call, named so the plan is never read as the frontend's own. */
+  author: string;
+  /** The car being replicated, in the team's own designation. */
+  car: string;
+  stints: PlannedStint[];
+  /** The laps the plan calls a stop on. Supplied with the plan, not inferred from it. */
+  pitLaps: number[];
+  expectedFinishPosition: Valued<number>;
+  note?: string;
+}
+
 // ── Participants ─────────────────────────────────────────────────────────────
 
 export type ParticipationState =
@@ -219,13 +249,35 @@ export type EventGroup =
   | 'outcome'
   | 'model';
 
+/**
+ * What happened, where the group alone is too coarse to tell two things apart — a
+ * safety car from a virtual one, a pass from being passed.
+ *
+ * Optional: an event the backend does not classify keeps its group and nothing more,
+ * and a view must fall back to the group rather than guessing a kind for it.
+ * `overtake` and `overtaken` are read from `participantId`'s point of view.
+ */
+export type EventKind =
+  | 'start'
+  | 'overtake'
+  | 'overtaken'
+  | 'pit_stop'
+  | 'safety_car'
+  | 'virtual_safety_car'
+  | 'red_flag'
+  | 'retirement'
+  | 'chequered';
+
 export interface RaceEvent {
   id: string;
   /** `shared` only when the event stays identical after the branch point. */
   world: WorldSide | 'shared';
   group: EventGroup;
+  kind?: EventKind;
   raceTimeS: number;
   lap: number;
+  /** Set when the event covers a stretch of race time rather than an instant. */
+  periodEndS?: number;
   participantId?: string;
   label: string;
 }
@@ -262,6 +314,8 @@ export interface SessionInfo {
   timeBoundary: TimeBoundary;
   supportState: SupportState;
   branchPoint: BranchPoint;
+  /** Absent when no plan was handed down; the page then says so rather than guessing. */
+  brief?: StrategyBrief;
   assumptions: Assumptions;
   validity: Validity;
   coverage: DataCoverage;

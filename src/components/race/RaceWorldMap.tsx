@@ -1,5 +1,41 @@
 import React, { useMemo } from 'react';
 import { Participant, ParticipantState, RaceWorld, TrackGeometry } from '@/lib/race/types';
+import { valueOf } from '@/lib/race/valued';
+
+/**
+ * Our car is the only one in colour. The rest of the field keeps its team colour's
+ * brightness but none of its hue, so the order is still readable at a glance without
+ * competing with the car the page is about.
+ *
+ * The luma is lifted before it is used, or the darker teams would disappear into the
+ * black the map sits on.
+ */
+function greyscale(hex: string): string {
+  const match = /^#?([0-9a-f]{6})$/i.exec(hex.trim());
+  if (!match) return 'rgb(130,130,130)';
+  const n = parseInt(match[1], 16);
+  const luma = 0.2126 * ((n >> 16) & 255) + 0.7152 * ((n >> 8) & 255) + 0.0722 * (n & 255);
+  const lifted = Math.round(72 + luma * 0.45);
+  return `rgb(${lifted},${lifted},${lifted})`;
+}
+
+const DEPLOYING = '#ef4444';
+const RECOVERING = '#22c55e';
+const IDLE = '#ffffff';
+
+/**
+ * What the ring around our car says: red while it is putting energy into the road,
+ * green while it is taking energy back. Neither is claimed when the source cannot
+ * supply the flow — the ring stays neutral rather than guessing which way it is going.
+ */
+export function energyRing(state: ParticipantState): { color: string; label: string } {
+  const delivered = valueOf(state.energy.deliveredKw);
+  const recovered = valueOf(state.energy.recoveredKw);
+  if (delivered !== undefined && delivered > 0) return { color: DEPLOYING, label: 'Deploying' };
+  if (recovered !== undefined && recovered > 0) return { color: RECOVERING, label: 'Recovering' };
+  if (delivered === undefined && recovered === undefined) return { color: IDLE, label: 'No energy flow supplied' };
+  return { color: IDLE, label: 'Neither deploying nor recovering' };
+}
 
 interface RaceWorldMapProps {
   track: TrackGeometry;
@@ -58,36 +94,66 @@ export function RaceWorldMap({ track, world, participants, selectedId, onSelect 
 
   const r = view.scale * 0.011;
 
+  /**
+   * Codes are dropped where they would overlap a code already drawn — a bunched field
+   * under a safety car would otherwise stack twenty labels on the same few pixels. The
+   * dot is always drawn, the selected car always keeps its code, and every marker
+   * carries its name on hover, so nothing is unreachable.
+   */
+  const labelled: { x: number; y: number }[] = [];
+  const hasRoom = (x: number, y: number): boolean =>
+    labelled.every((p) => Math.abs(p.x - x) > r * 5 || Math.abs(p.y - y) > r * 2.6);
+
   const marker = (state: ParticipantState, x: number, y: number) => {
     const participant = lookup.get(state.participantId);
     if (!participant) return null;
     const selected = state.participantId === selectedId;
+    const showCode = selected || hasRoom(x, y);
+    if (showCode) labelled.push({ x, y });
+    const energy = selected ? energyRing(state) : null;
+
     return (
       <g
         key={state.participantId}
         onClick={() => onSelect(state.participantId)}
         className="cursor-pointer"
       >
-        {selected && (
-          <circle cx={x} cy={y} r={r * 2.4} fill="none" stroke="#fff" strokeWidth={r * 0.35} opacity={0.9} />
+        <title>
+          {participant.code} — {participant.name}
+          {energy ? ` · ${energy.label}` : ''}
+        </title>
+        {energy && (
+          <circle
+            cx={x}
+            cy={y}
+            r={r * 2.4}
+            fill="none"
+            stroke={energy.color}
+            strokeWidth={r * 0.45}
+            style={{ filter: `drop-shadow(0 0 ${r * 1.4}px ${energy.color})` }}
+          />
         )}
         <circle
           cx={x}
           cy={y}
           r={selected ? r * 1.35 : r}
-          fill={participant.teamColor}
+          fill={selected ? participant.teamColor : greyscale(participant.teamColor)}
           stroke="rgba(0,0,0,0.55)"
           strokeWidth={r * 0.25}
         />
-        <text
-          x={x}
-          y={y - r * 2.2}
-          textAnchor="middle"
-          fill={selected ? '#fff' : 'rgba(255,255,255,0.45)'}
-          style={{ fontSize: r * 2.1, fontWeight: 700 }}
-        >
-          {participant.code}
-        </text>
+        {showCode && (
+          <text
+            x={x}
+            y={y - r * 2.2}
+            textAnchor="middle"
+            fill={selected ? '#fff' : 'rgba(255,255,255,0.4)'}
+            style={{ fontSize: r * 2.1, fontWeight: 700, paintOrder: 'stroke' }}
+            stroke="rgba(0,0,0,0.85)"
+            strokeWidth={r * 0.5}
+          >
+            {participant.code}
+          </text>
+        )}
       </g>
     );
   };

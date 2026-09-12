@@ -1,15 +1,18 @@
 import {
   Battle,
   ComparisonResult,
+  PlannedStint,
   RaceEvent,
   RaceFrame,
   RaceOutcome,
   ScenarioIdentity,
   SessionInfo,
+  StrategyBrief,
   WorldSide,
 } from '../types';
-import { inferred, observed, simulated } from '../valued';
+import { inferred, observed, predicted, simulated } from '../valued';
 import { buildBattles } from './battles';
+import { positionChangeEvents } from './positions';
 import { ROSTER, byId } from './roster';
 import { buildTrack } from './track';
 import { buildWorld } from './world';
@@ -17,6 +20,7 @@ import {
   ALTERNATIVE_PLAN,
   BASELINE_PLAN,
   BRANCH_LAP,
+  Neutralisation,
   RETIREMENT_ID,
   RETIREMENT_LAP,
   SELECTED_ID,
@@ -47,6 +51,45 @@ const ALTERNATIVE_SCENARIO: ScenarioIdentity = {
 const lapEnd = (timing: WorldTiming, id: string, lap: number): number =>
   timing.get(id)?.[lap - 1] ?? 0;
 
+const NEUTRALISATION_LABEL: Record<Neutralisation['kind'], string> = {
+  safety_car: 'Safety car',
+  virtual_safety_car: 'Virtual safety car',
+};
+
+const sameNeutralisation = (a: Neutralisation, b: Neutralisation): boolean =>
+  a.kind === b.kind && a.fromLap === b.fromLap && a.toLap === b.toLap;
+
+/**
+ * One event per neutralisation rather than a deployed/withdrawn pair, so the stretch of
+ * race time it covers is carried on the event itself and can be drawn as a period.
+ * A neutralisation both races carry is shared history, emitted once from the baseline.
+ */
+function neutralisationEvents(
+  side: WorldSide,
+  plan: WorldPlan,
+  other: WorldPlan,
+  timing: WorldTiming,
+): RaceEvent[] {
+  const at = (lap: number) => lapEnd(timing, SELECTED_ID, lap);
+
+  return plan.neutralisations.flatMap((n) => {
+    const shared = other.neutralisations.some((o) => sameNeutralisation(n, o));
+    if (shared && side === 'alternative') return [];
+    return [
+      {
+        id: `${shared ? 'shared' : side}-${n.kind}-${n.fromLap}`,
+        world: shared ? ('shared' as const) : side,
+        group: 'session_control' as const,
+        kind: n.kind,
+        raceTimeS: at(n.fromLap - 1),
+        periodEndS: at(n.toLap),
+        lap: n.fromLap,
+        label: `${NEUTRALISATION_LABEL[n.kind]}, laps ${n.fromLap}–${n.toLap}`,
+      },
+    ];
+  });
+}
+
 function eventsFor(
   side: WorldSide,
   plan: WorldPlan,
@@ -60,6 +103,7 @@ function eventsFor(
       id: `${side}-ver-pit-${lap}`,
       world: side,
       group: 'strategy',
+      kind: 'pit_stop',
       raceTimeS: at(lap),
       lap,
       participantId: SELECTED_ID,
@@ -75,25 +119,6 @@ function eventsFor(
     lap: 22,
     label: 'Field second stop window',
   });
-
-  if (plan.safetyCar) {
-    out.push({
-      id: `${side}-sc-in`,
-      world: side,
-      group: 'session_control',
-      raceTimeS: at(plan.safetyCar.fromLap, 'NOR'),
-      lap: plan.safetyCar.fromLap,
-      label: 'Safety car deployed',
-    });
-    out.push({
-      id: `${side}-sc-out`,
-      world: side,
-      group: 'session_control',
-      raceTimeS: at(plan.safetyCar.toLap, 'NOR'),
-      lap: plan.safetyCar.toLap,
-      label: 'Safety car in, racing resumes',
-    });
-  }
 
   if (side === 'alternative') {
     out.push({
@@ -111,6 +136,7 @@ function eventsFor(
     id: `${side}-ver-finish`,
     world: side,
     group: 'outcome',
+    kind: 'chequered',
     raceTimeS: at(TOTAL_LAPS),
     lap: TOTAL_LAPS,
     participantId: SELECTED_ID,
@@ -127,6 +153,7 @@ function sharedEvents(timing: WorldTiming): RaceEvent[] {
       id: 'shared-start',
       world: 'shared',
       group: 'session_control',
+      kind: 'start',
       raceTimeS: 0,
       lap: 1,
       label: 'Race start',
@@ -135,6 +162,7 @@ function sharedEvents(timing: WorldTiming): RaceEvent[] {
       id: 'shared-str-retire',
       world: 'shared',
       group: 'outcome',
+      kind: 'retirement',
       raceTimeS: lapEnd(timing, RETIREMENT_ID, RETIREMENT_LAP),
       lap: RETIREMENT_LAP,
       participantId: RETIREMENT_ID,
@@ -151,18 +179,28 @@ function sharedEvents(timing: WorldTiming): RaceEvent[] {
   ];
 }
 
-function outcomeFor(side: WorldSide, timing: WorldTiming, rank: number): RaceOutcome {
+function outcomeFor(plan: WorldPlan, timing: WorldTiming, rank: number): RaceOutcome {
   const total = lapEnd(timing, SELECTED_ID, TOTAL_LAPS);
   const mark = <T,>(v: T) =>
-    side === 'baseline' ? observed(v, 'official classification', total) : simulated(v, ALTERNATIVE_SCENARIO.id, ['fixed-opponent replay']);
+    plan.side === 'baseline' ? observed(v, 'official classification', total) : simulated(v, ALTERNATIVE_SCENARIO.id, ['fixed-opponent replay']);
   return {
     finishPosition: mark(rank),
     classifiedStatus: 'Classified',
     totalTimeS: mark(Number(total.toFixed(2))),
     points: mark(rank === 1 ? 25 : rank === 2 ? 18 : 15),
-    pitCount: pitLapsFor(side === 'baseline' ? BASELINE_PLAN : ALTERNATIVE_PLAN, SELECTED_ID).length,
-    tyreUse: side === 'baseline' ? 'SOFT → MEDIUM → HARD' : 'SOFT → MEDIUM',
+    pitCount: plan.selectedPitLaps.length,
+    tyreUse: plan.selectedCompounds.join(' → '),
   };
+}
+
+/** The stints a set of pit laps and compounds describes, as inclusive lap ranges. */
+function stintsOf(pitLaps: number[], compounds: string[]): PlannedStint[] {
+  const starts = [1, ...pitLaps.map((l) => l + 1)];
+  return compounds.map((compound, i) => ({
+    compound,
+    fromLap: starts[i],
+    toLap: i === compounds.length - 1 ? TOTAL_LAPS : pitLaps[i],
+  }));
 }
 
 export interface FixtureRace {
@@ -189,12 +227,27 @@ export function buildFixtureRace(): FixtureRace {
     );
   };
 
-  const baselineOutcome = outcomeFor('baseline', baselineTiming, rankOf(baselineTiming));
-  const alternativeOutcome = outcomeFor('alternative', alternativeTiming, rankOf(alternativeTiming));
+  const baselineOutcome = outcomeFor(BASELINE_PLAN, baselineTiming, rankOf(baselineTiming));
+  const alternativeOutcome = outcomeFor(ALTERNATIVE_PLAN, alternativeTiming, rankOf(alternativeTiming));
   const relativeTime =
     lapEnd(alternativeTiming, SELECTED_ID, TOTAL_LAPS) - lapEnd(baselineTiming, SELECTED_ID, TOTAL_LAPS);
 
   const branchTimeS = lapEnd(baselineTiming, SELECTED_ID, BRANCH_LAP);
+
+  /**
+   * The call we were handed before the race: run the recorded car's two-stop, and be
+   * inside the top two at the flag. The expectation is `predicted` because it was made
+   * before anything was observed — cutoff 0, horizon the whole race.
+   */
+  const brief: StrategyBrief = {
+    author: 'Team principal',
+    car: 'RB22',
+    stints: stintsOf(BASELINE_PLAN.selectedPitLaps, BASELINE_PLAN.selectedCompounds),
+    pitLaps: BASELINE_PLAN.selectedPitLaps,
+    expectedFinishPosition: predicted(2, 0, durationS, [1, 4]),
+    note:
+      'Two stops, both inside the primary window. Stay out past lap 12 only if the race is neutralised.',
+  };
 
   const session: SessionInfo = {
     identity: {
@@ -217,9 +270,11 @@ export function buildFixtureRace(): FixtureRace {
       description: 'VER pit call on lap 12',
       eventId: 'alt-branch',
     },
+    brief,
     assumptions: {
       weather: 'Dry throughout, no forecast change',
-      interruptions: 'Safety car on laps 15–17 in the alternative world only',
+      interruptions:
+        'Virtual safety car on laps 5–6 in both races; safety car on laps 15–17 in the alternative world only',
       pitLossS: inferred(22.0, [20.4, 23.8]),
       tyreSets: 'Two new mediums and one new hard available at the branch',
       startingStates: 'Both worlds identical up to lap 12',
@@ -257,17 +312,45 @@ export function buildFixtureRace(): FixtureRace {
   const battles = buildBattles((id, lap) => lapEnd(baselineTiming, id, lap));
   const battleEvents: RaceEvent[] = battles.map((b) => ({
     id: `battle-event-${b.id}`,
-    world: 'baseline',
+    world: b.lap <= BRANCH_LAP ? 'shared' : b.baselineSide,
     group: 'competition',
+    kind:
+      b.attackerId === SELECTED_ID
+        ? ('overtake' as const)
+        : b.defenderId === SELECTED_ID
+          ? ('overtaken' as const)
+          : undefined,
     raceTimeS: b.windowStartS,
     lap: b.lap,
     participantId: b.attackerId,
     label: `${b.attackerId} v ${b.defenderId} — ${b.location.split(',')[0]}`,
   }));
 
+  // A lap our car fought over is already on the timeline as that battle, so the
+  // position change derived for the same pair on the same lap is not repeated.
+  const covered = new Set(
+    battles
+      .filter((b) => b.attackerId === SELECTED_ID || b.defenderId === SELECTED_ID)
+      .map((b) => {
+        const other = b.attackerId === SELECTED_ID ? b.defenderId : b.attackerId;
+        const world = b.lap <= BRANCH_LAP ? 'shared' : b.baselineSide;
+        return `${world}|${b.lap}|${other}`;
+      }),
+  );
+
+  const positionEvents = [
+    ...positionChangeEvents('baseline', BASELINE_PLAN, baselineTiming),
+    ...positionChangeEvents('alternative', ALTERNATIVE_PLAN, alternativeTiming),
+  ]
+    .filter(({ event, otherId }) => !covered.has(`${event.world}|${event.lap}|${otherId}`))
+    .map(({ event }) => event);
+
   const events = [
     ...battleEvents,
+    ...positionEvents,
     ...sharedEvents(baselineTiming),
+    ...neutralisationEvents('baseline', BASELINE_PLAN, ALTERNATIVE_PLAN, baselineTiming),
+    ...neutralisationEvents('alternative', ALTERNATIVE_PLAN, BASELINE_PLAN, alternativeTiming),
     ...eventsFor('baseline', BASELINE_PLAN, baselineTiming),
     ...eventsFor('alternative', ALTERNATIVE_PLAN, alternativeTiming),
   ].sort((a, b) => a.raceTimeS - b.raceTimeS);

@@ -70,11 +70,14 @@ export interface OvertakeMove {
   response?: Action;
 }
 
-/** Passes by the selected entry: it attacked, and the solution's order puts it ahead. */
-export function findOvertakes(report: RaceReport): OvertakeMove[] {
-  const id = report.selectedParticipantId;
-
-  return report.battles
+/**
+ * Passes by one entry: it attacked, and the solution's order puts it ahead.
+ *
+ * Takes the battles rather than a report, so the live race page can read the same
+ * moves off the session before a report exists to cut.
+ */
+export function findOvertakeMoves(battles: Battle[], id: string): OvertakeMove[] {
+  return battles
     .filter((battle) => battle.attackerId === id)
     .flatMap((battle) =>
       battle.solutions
@@ -92,6 +95,11 @@ export function findOvertakes(report: RaceReport): OvertakeMove[] {
           response: battle.actions.find((a) => a.id === chosen.response.actionId),
         })),
     );
+}
+
+/** The selected entry's passes, read off a finished report. */
+export function findOvertakes(report: RaceReport): OvertakeMove[] {
+  return findOvertakeMoves(report.battles, report.selectedParticipantId);
 }
 
 /** A running race has no result yet, so a report is only cut once both worlds finish. */

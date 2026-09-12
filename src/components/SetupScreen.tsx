@@ -1,30 +1,24 @@
 'use client';
 
-import React, { use } from 'react';
-import { useRouter } from 'next/navigation';
-import SetupPanel from '@/components/ui/setup-panel';
+import React from 'react';
+import SetupPanel, { SetupMode } from '@/components/ui/setup-panel';
 import { SpinningBorderButton } from '@/components/ui/spinning-border-button';
 import { ShiftHoverText } from '@/components/ShiftHoverText';
 
-/** Setup for both races: `?mode=full-race` sends Start Race to the full race, otherwise to qualifying. */
-export default function SetupPage({
-  searchParams,
+/**
+ * The setup screen both sessions use.
+ *
+ * Qualifying and the full race are set up the same way and must look the same way, so
+ * they share this shell and differ only in `mode` — which changes wording inside the
+ * panel — and in where the start button sends the run.
+ */
+export function SetupScreen({
+  mode,
+  onStart,
 }: {
-  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
+  mode: SetupMode;
+  onStart: (track: string, driver: string, policy: string) => void;
 }) {
-  const router = useRouter();
-  const fullRace = use(searchParams).mode === 'full-race';
-
-  const handleStart = (track: string, driver: string, policy: string) => {
-    // The full race still runs on its fixture, so only qualifying takes the choices.
-    if (fullRace) {
-      router.push('/full-race');
-    } else {
-      const params = new URLSearchParams({ track, driver, policy, year: '2026' });
-      router.push(`/race?${params.toString()}`);
-    }
-  };
-
   return (
     <div className="flex-1 w-full min-h-screen text-white font-sans relative overflow-hidden">
       {/* Ambient glows */}
@@ -52,7 +46,7 @@ export default function SetupPage({
           </div>
         </div>
 
-        <SetupPanel onStart={handleStart} />
+        <SetupPanel mode={mode} onStart={onStart} />
       </div>
     </div>
   );

@@ -21,12 +21,25 @@ export function StatusMark({ status, detail }: { status: SourceStatus; detail?: 
   );
 }
 
+/**
+ * Interval bounds arrive as raw floats, so an arithmetic bound reads as
+ * `0.44000000000000006`. Four significant figures drops the binary noise without
+ * moving the bound anywhere a reader could see.
+ */
+const trim = (n: number): string => String(Number(n.toPrecision(4)));
+
 interface StatusValueProps<T> {
   value: Valued<T>;
   format?: (v: T) => string;
   className?: string;
   /** Hide the status mark where a whole region already declares one status. */
   hideMark?: boolean;
+  /**
+   * Drop the uncertainty interval where there is no room to print it. Only for a
+   * summary that leads somewhere the interval is shown in full — a clipped range is
+   * worse than none, but a range that is never reachable is not an option.
+   */
+  hideInterval?: boolean;
 }
 
 /**
@@ -35,7 +48,13 @@ interface StatusValueProps<T> {
  * An unsupported value renders the word unavailable and its reason — never a zero,
  * an average, or any other stand-in number.
  */
-export function StatusValue<T>({ value, format, className = '', hideMark }: StatusValueProps<T>) {
+export function StatusValue<T>({
+  value,
+  format,
+  className = '',
+  hideMark,
+  hideInterval,
+}: StatusValueProps<T>) {
   if (value.status === 'unsupported') {
     return (
       <span className={`inline-flex items-center gap-1.5 ${className}`} title={value.reason}>
@@ -56,8 +75,8 @@ export function StatusValue<T>({ value, format, className = '', hideMark }: Stat
           : undefined;
 
   const interval =
-    (value.status === 'inferred' || value.status === 'predicted') && value.interval
-      ? `${value.interval[0]}–${value.interval[1]}`
+    !hideInterval && (value.status === 'inferred' || value.status === 'predicted') && value.interval
+      ? `${trim(value.interval[0])}–${trim(value.interval[1])}`
       : null;
 
   return (

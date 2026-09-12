@@ -4,8 +4,21 @@ import { ROSTER } from './roster';
 export const TOTAL_LAPS = 30;
 export const BASE_LAP_S = 88.0;
 export const PIT_LOSS_S = 22.0;
-/** Extra seconds per lap while a safety car is out. */
-const SAFETY_CAR_LAP_PENALTY_S = 34.0;
+
+export type NeutralisationKind = 'safety_car' | 'virtual_safety_car';
+
+/** A stretch of laps the race is neutralised for. Both bounds inclusive. */
+export interface Neutralisation {
+  kind: NeutralisationKind;
+  fromLap: number;
+  toLap: number;
+}
+
+/** Extra seconds per lap while the race is neutralised, by kind. */
+const NEUTRALISATION_LAP_PENALTY_S: Record<NeutralisationKind, number> = {
+  safety_car: 34.0,
+  virtual_safety_car: 13.0,
+};
 
 /** The one entry whose energy the fixture deliberately cannot resolve. */
 export const NO_ENERGY_TELEMETRY_ID = 'BOR';
@@ -26,13 +39,25 @@ export interface WorldPlan {
   side: WorldSide;
   /** Pit laps for the selected driver. This is what the two worlds disagree about. */
   selectedPitLaps: number[];
-  safetyCar?: { fromLap: number; toLap: number };
+  /** Compound per stint for the selected driver, in order. One more than the stops. */
+  selectedCompounds: string[];
+  neutralisations: Neutralisation[];
 }
 
-/** Baseline: the recorded two-stop. Alternative: stay out at 12, one stop on 20. */
+/**
+ * A virtual safety car early enough to sit in shared history, so both races carry it
+ * identically. Every entry pays the same per-lap penalty over the same laps, so the
+ * order and every gap are untouched by it — it is there to be seen, not to decide
+ * anything.
+ */
+const SHARED_VSC: Neutralisation = { kind: 'virtual_safety_car', fromLap: 5, toLap: 6 };
+
+/** Baseline: the recorded two-stop, soft to medium to soft. */
 export const BASELINE_PLAN: WorldPlan = {
   side: 'baseline',
   selectedPitLaps: [12, 24],
+  selectedCompounds: ['SOFT', 'MEDIUM', 'SOFT'],
+  neutralisations: [SHARED_VSC],
 };
 
 /**
@@ -43,16 +68,24 @@ export const BASELINE_PLAN: WorldPlan = {
 export const ALTERNATIVE_PLAN: WorldPlan = {
   side: 'alternative',
   selectedPitLaps: [16],
-  safetyCar: { fromLap: 15, toLap: 17 },
+  selectedCompounds: ['SOFT', 'MEDIUM'],
+  neutralisations: [SHARED_VSC, { kind: 'safety_car', fromLap: 15, toLap: 17 }],
 };
 
-/** Pit loss while the race is neutralised. */
-const SAFETY_CAR_PIT_LOSS_S = 9.0;
+/** Pit loss while the race is neutralised — the field is slowed, so the stop is cheap. */
+const NEUTRALISED_PIT_LOSS_S = 9.0;
+
+export const neutralisationAt = (plan: WorldPlan, lap: number): Neutralisation | undefined =>
+  plan.neutralisations.find((n) => lap >= n.fromLap && lap <= n.toLap);
 
 export const pitLapsFor = (plan: WorldPlan, id: string): number[] => {
   if (id === SELECTED_ID) return plan.selectedPitLaps;
   return ROSTER.findIndex((e) => e.id === id) % 2 === 0 ? FIELD_TWO_STOP : FIELD_ONE_STOP;
 };
+
+/** Only the selected entry's compounds are planned; the field falls back to the cycle. */
+export const compoundsFor = (plan: WorldPlan, id: string): string[] | undefined =>
+  id === SELECTED_ID ? plan.selectedCompounds : undefined;
 
 /**
  * Cumulative time at the end of each lap, per entry.
@@ -74,17 +107,16 @@ export function buildTiming(plan: WorldPlan): WorldTiming {
       // Tyre loss is mildly non-linear in stint age, not runaway quadratic:
       // a 20-lap stint costs about 1.5 s/lap at the end, which is realistic.
       const tyreLoss = (entry.degPerLapS / 6) * stintAge * stintAge;
-      const neutralised =
-        !!plan.safetyCar && lap >= plan.safetyCar.fromLap && lap <= plan.safetyCar.toLap;
+      const neutralised = neutralisationAt(plan, lap);
       let lapTime = BASE_LAP_S + entry.paceOffsetS + tyreLoss;
       if (pitLaps.includes(lap)) {
-        lapTime += neutralised ? SAFETY_CAR_PIT_LOSS_S : PIT_LOSS_S;
+        lapTime += neutralised ? NEUTRALISED_PIT_LOSS_S : PIT_LOSS_S;
         stintAge = 0;
       } else {
         stintAge += 1;
       }
       if (neutralised) {
-        lapTime += SAFETY_CAR_LAP_PENALTY_S;
+        lapTime += NEUTRALISATION_LAP_PENALTY_S[neutralised.kind];
       }
       elapsed += lapTime;
       ends.push(elapsed);
