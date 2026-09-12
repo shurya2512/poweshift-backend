@@ -26,7 +26,7 @@ export default function SetupPage() {
         <div className="relative flex items-center justify-center mb-6 w-full">
           {/* Back Button */}
           <div className="absolute left-0 top-1/2 -translate-y-1/2">
-            <SpinningBorderButton href="/" text="Return to Home" size="sm" />
+            <SpinningBorderButton href="/" text="Return to Home" size="sm" arrowMode="flip" />
           </div>
 
           {/* Page title */}

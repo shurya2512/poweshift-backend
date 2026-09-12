@@ -161,6 +161,41 @@ const StatChip = ({ label, value }: { label: string; value: string }) => (
   </div>
 );
 
+// Site's brand gradient: blue on the left, red on the right.
+const SPOT_BLUE: [number, number, number] = [59, 130, 246];
+const SPOT_RED: [number, number, number] = [239, 68, 68];
+const lerp = (a: number, b: number, t: number) => Math.round(a + (b - a) * t);
+
+// Cursor-tracked glow: follows the pointer and blends blue→red across the card's width.
+function useSpotlight() {
+  const ref = useRef<HTMLDivElement>(null);
+  const onMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    const el = ref.current;
+    const rect = el?.getBoundingClientRect();
+    if (!el || !rect) return;
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+    const t = Math.min(1, Math.max(0, rect.width ? x / rect.width : 0));
+    const [r, g, b] = [
+      lerp(SPOT_BLUE[0], SPOT_RED[0], t),
+      lerp(SPOT_BLUE[1], SPOT_RED[1], t),
+      lerp(SPOT_BLUE[2], SPOT_RED[2], t),
+    ];
+    el.style.setProperty('--spot-x', `${x}px`);
+    el.style.setProperty('--spot-y', `${y}px`);
+    el.style.setProperty('--spot-color', `rgba(${r}, ${g}, ${b}, 0.4)`);
+  };
+  return { ref, onMouseMove };
+}
+
+const Spotlight = () => (
+  <div
+    aria-hidden
+    className="pointer-events-none absolute inset-0 -z-10 rounded-[inherit] opacity-0 transition-opacity duration-300 group-hover:opacity-100"
+    style={{ background: `radial-gradient(320px circle at var(--spot-x, 50%) var(--spot-y, 50%), var(--spot-color, rgba(150,99,157,0.4)), transparent 60%)` }}
+  />
+);
+
 // ── Main Component ───────────────────────────────────────────────────────────
 
 export default function SetupPanel({ onStart }: SetupPanelProps) {
@@ -173,6 +208,13 @@ export default function SetupPanel({ onStart }: SetupPanelProps) {
   const timerRef   = useRef<ReturnType<typeof setTimeout> | null>(null);
   const circuit    = CIRCUIT_META[selections.track];
   const driverMeta = DRIVER_META[selections.driver];
+
+  const setupSpot   = useSpotlight();
+  const egoSpot     = useSpotlight();
+  const circuitSpot = useSpotlight();
+  const driverSpot  = useSpotlight();
+  const startSpot   = useSpotlight();
+  const regsSpot    = useSpotlight();
 
   const triggerLoading = useCallback(() => {
     setIsLoading(true);
@@ -193,7 +235,12 @@ export default function SetupPanel({ onStart }: SetupPanelProps) {
     <div className="w-full flex flex-col gap-6">
 
       {/* ── TOP: Simulation Setup — title left, selectors right ───────────── */}
-      <div className="relative z-30 bg-neutral-950/60 backdrop-blur-2xl border border-white/[0.08] rounded-3xl shadow-[0_20px_60px_rgba(0,0,0,0.8)]">
+      <div
+        ref={setupSpot.ref}
+        onMouseMove={setupSpot.onMouseMove}
+        className="relative isolate group z-30 bg-neutral-950/90 backdrop-blur-2xl border border-white/[0.08] rounded-3xl shadow-[0_20px_60px_rgba(0,0,0,0.8)] transition-colors duration-300 group-hover:border-blue-400/25"
+      >
+        <Spotlight />
         <div className="grid grid-cols-1 md:grid-cols-[2fr_3fr_3fr]">
 
           {/* Title block */}
@@ -243,7 +290,12 @@ export default function SetupPanel({ onStart }: SetupPanelProps) {
       </div>
 
       {/* ── Ego Car — the simulated vehicle the AI controls ───────────────── */}
-      <div className="bg-neutral-950/60 backdrop-blur-2xl border border-white/[0.08] rounded-3xl shadow-[0_12px_40px_rgba(0,0,0,0.6)] overflow-hidden">
+      <div
+        ref={egoSpot.ref}
+        onMouseMove={egoSpot.onMouseMove}
+        className="relative isolate group bg-neutral-950/90 backdrop-blur-2xl border border-white/[0.08] rounded-3xl shadow-[0_12px_40px_rgba(0,0,0,0.6)] overflow-hidden transition-colors duration-300 group-hover:border-red-400/25"
+      >
+        <Spotlight />
         <div className="grid grid-cols-1 md:grid-cols-3">
 
           <div className="px-6 py-6 border-b md:border-b-0 md:border-r border-white/[0.06] flex flex-col justify-center">
@@ -288,7 +340,12 @@ export default function SetupPanel({ onStart }: SetupPanelProps) {
         </AnimatePresence>
 
         {/* Circuit Hero Card */}
-        <div className="h-full flex flex-col bg-neutral-950/60 backdrop-blur-2xl border border-white/[0.08] rounded-3xl overflow-hidden shadow-[0_12px_40px_rgba(0,0,0,0.6)]">
+        <div
+          ref={circuitSpot.ref}
+          onMouseMove={circuitSpot.onMouseMove}
+          className="relative isolate group h-full flex flex-col bg-neutral-950/90 backdrop-blur-2xl border border-white/[0.08] rounded-3xl overflow-hidden shadow-[0_12px_40px_rgba(0,0,0,0.6)] transition-colors duration-300 group-hover:border-blue-400/25"
+        >
+          <Spotlight />
           <div className="px-6 pt-6 pb-5 border-b border-white/[0.06]">
             <EyebrowLabel className="text-blue-400 mb-2">Selected Circuit</EyebrowLabel>
             <div className="flex items-start justify-between gap-4">
@@ -333,7 +390,12 @@ export default function SetupPanel({ onStart }: SetupPanelProps) {
         </div>
 
         {/* Driver Info Card — full profile */}
-        <div className="h-full flex flex-col bg-neutral-950/60 backdrop-blur-2xl border border-white/[0.08] rounded-3xl overflow-hidden shadow-[0_12px_40px_rgba(0,0,0,0.5)]">
+        <div
+          ref={driverSpot.ref}
+          onMouseMove={driverSpot.onMouseMove}
+          className="relative isolate group h-full flex flex-col bg-neutral-950/90 backdrop-blur-2xl border border-white/[0.08] rounded-3xl overflow-hidden shadow-[0_12px_40px_rgba(0,0,0,0.5)] transition-colors duration-300 group-hover:border-blue-300/25"
+        >
+          <Spotlight />
 
           {/* Header */}
           <div className="px-6 pt-6 pb-5 border-b border-white/[0.06] flex items-start justify-between gap-4">
@@ -409,7 +471,12 @@ export default function SetupPanel({ onStart }: SetupPanelProps) {
       </div>
 
       {/* ── Start Race ────────────────────────────────────────────────────── */}
-      <div className="bg-neutral-950/60 backdrop-blur-2xl border border-white/[0.08] rounded-3xl px-6 py-5 shadow-[0_12px_40px_rgba(0,0,0,0.6)] flex flex-col sm:flex-row sm:items-center gap-4">
+      <div
+        ref={startSpot.ref}
+        onMouseMove={startSpot.onMouseMove}
+        className="relative isolate group bg-neutral-950/90 backdrop-blur-2xl border border-white/[0.08] rounded-3xl px-6 py-5 shadow-[0_12px_40px_rgba(0,0,0,0.6)] flex flex-col sm:flex-row sm:items-center gap-4 transition-colors duration-300 group-hover:border-red-400/25"
+      >
+        <Spotlight />
         <div className="min-w-0 flex-1">
           <EyebrowLabel className="mb-1">Ready to launch</EyebrowLabel>
           <p className="text-sm font-semibold text-white truncate">
@@ -425,7 +492,12 @@ export default function SetupPanel({ onStart }: SetupPanelProps) {
       </div>
 
       {/* ── BOTTOM: 2026 Regs Banner ──────────────────────────────────────── */}
-      <div className="bg-blue-950/20 border border-blue-500/15 rounded-2xl px-6 py-4">
+      <div
+        ref={regsSpot.ref}
+        onMouseMove={regsSpot.onMouseMove}
+        className="relative isolate group bg-blue-950/35 border border-blue-500/15 rounded-2xl px-6 py-4 transition-colors duration-300 group-hover:border-blue-400/40"
+      >
+        <Spotlight />
         <p className="text-xs font-semibold text-blue-300/80 mb-1">2026 F1 Regulations</p>
         <p className="text-xs text-blue-300/40 leading-relaxed">
           Maximum <span className="text-blue-300/70 font-semibold">350 kW</span> electrical output from a{' '}
@@ -452,7 +524,7 @@ export default function SetupPanel({ onStart }: SetupPanelProps) {
               className="fixed inset-0 z-50 flex items-center justify-center p-6 pointer-events-none"
             >
               <div 
-                className="relative w-full max-w-md bg-neutral-950/80 backdrop-blur-2xl border border-white/[0.12] rounded-3xl overflow-hidden shadow-[0_24px_60px_rgba(0,0,0,0.9)] pointer-events-auto"
+                className="relative w-full max-w-md bg-neutral-950/95 backdrop-blur-2xl border border-white/[0.12] rounded-3xl overflow-hidden shadow-[0_24px_60px_rgba(0,0,0,0.9)] pointer-events-auto"
                 onClick={e => e.stopPropagation()}
               >
                 {/* Header */}

@@ -6,14 +6,16 @@ const ROOT_CLASS =
 
 const SIZES = {
   default: {
-    surface: "px-12 py-5 text-lg md:text-xl",
+    surface: "px-12 py-5 text-lg md:text-xl gap-3",
+    icon: "w-6 h-6",
     leftArrow: "absolute w-6 h-6 left-[-25%] z-[9] group-hover:left-5 transition-all duration-[800ms] ease-[cubic-bezier(0.34,1.56,0.64,1)]",
     rightArrow: "absolute w-6 h-6 right-5 z-[9] group-hover:right-[-25%] transition-all duration-[800ms] ease-[cubic-bezier(0.34,1.56,0.64,1)]",
     textShift: "relative z-[1] -translate-x-4 group-hover:translate-x-4 transition-all duration-[800ms] ease-out",
     circle: "absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-4 h-4 bg-[#111111] rounded-[50%] opacity-0 group-hover:w-[400px] group-hover:h-[400px] group-hover:opacity-100 transition-all duration-[800ms] ease-[cubic-bezier(0.19,1,0.22,1)]",
   },
   sm: {
-    surface: "px-5 py-2 text-xs md:text-sm",
+    surface: "px-5 py-2 text-xs md:text-sm gap-2",
+    icon: "w-4 h-4",
     leftArrow: "absolute w-4 h-4 left-[-25%] z-[9] group-hover:left-3 transition-all duration-[800ms] ease-[cubic-bezier(0.34,1.56,0.64,1)]",
     rightArrow: "absolute w-4 h-4 right-3 z-[9] group-hover:right-[-25%] transition-all duration-[800ms] ease-[cubic-bezier(0.34,1.56,0.64,1)]",
     textShift: "relative z-[1] -translate-x-2 group-hover:translate-x-2 transition-all duration-[800ms] ease-out",
@@ -32,11 +34,14 @@ export function SpinningBorderButton({
   href,
   onClick,
   size = "default",
+  arrowMode = "slide",
 }: {
   text?: string;
   href?: string;
   onClick?: () => void;
   size?: keyof typeof SIZES;
+  /** "slide": right arrow slides out, left arrow slides in (default). "flip": a single arrow stays on the left and reverses direction on hover. */
+  arrowMode?: "slide" | "flip";
 }) {
   const s = SIZES[size];
 
@@ -50,18 +55,29 @@ export function SpinningBorderButton({
 
       {/* Button surface; arrows inherit the text colour */}
       <span className={`relative flex h-full w-full items-center justify-center overflow-hidden rounded-full bg-white font-bold uppercase tracking-widest text-black transition-colors duration-[600ms] ease-[cubic-bezier(0.23,1,0.32,1)] group-hover:text-white ${s.surface}`}>
-        {/* Left arrow — slides in on hover */}
-        <ArrowRight className={s.leftArrow} />
+        {arrowMode === "flip" ? (
+          <>
+            {/* Arrow stays on the left; points right at rest, flips to point left on hover */}
+            <ArrowRight className={`relative z-[1] transition-transform duration-500 ease-[cubic-bezier(0.34,1.56,0.64,1)] group-hover:rotate-180 ${s.icon}`} />
+            <span className="relative z-[1]">{text}</span>
+            <span className={s.circle} />
+          </>
+        ) : (
+          <>
+            {/* Left arrow — slides in on hover */}
+            <ArrowRight className={s.leftArrow} />
 
-        <span className={s.textShift}>
-          {text}
-        </span>
+            <span className={s.textShift}>
+              {text}
+            </span>
 
-        {/* Dark circle that expands to fill the surface */}
-        <span className={s.circle} />
+            {/* Dark circle that expands to fill the surface */}
+            <span className={s.circle} />
 
-        {/* Right arrow — slides out on hover */}
-        <ArrowRight className={s.rightArrow} />
+            {/* Right arrow — slides out on hover */}
+            <ArrowRight className={s.rightArrow} />
+          </>
+        )}
       </span>
     </>
   );
