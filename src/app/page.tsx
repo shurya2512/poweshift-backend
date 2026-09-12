@@ -1,6 +1,7 @@
 import React from 'react';
 import FeaturesGrid from "@/components/FeaturesGrid";
 import { SpinningBorderButton } from "@/components/ui/spinning-border-button";
+import { ShiftHoverText } from "@/components/ShiftHoverText";
 
 export const metadata = {
   title: "Power-Shift | Energy Deployment Intelligence",
@@ -22,7 +23,7 @@ export default function LandingPage() {
 
         <div className="space-y-4">
           <h1 className="text-6xl md:text-8xl lg:text-[120px] font-bold tracking-tighter uppercase leading-[0.85] select-none drop-shadow-sm text-white">
-            POWER<span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-500 to-red-500">-SHIFT</span>
+            POWER<ShiftHoverText />
           </h1>
           <p className="text-lg md:text-xl text-neutral-400 font-medium leading-relaxed max-w-3xl mx-auto">
             Energy Deployment Intelligence. A machine learning model trained to optimally deploy 350kW of electrical power under the strict 2026 Formula 1 regulations.
