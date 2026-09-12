@@ -37,13 +37,13 @@ def load_bahrain_test_day(
         candidate_log.unlink()
         raise FileExistsError(f"immutable loader log differs: {log_path}")
     candidate_log.replace(log_path)
-    laps = _records(lambda: pd.DataFrame(session.laps))
+    laps = _records(lambda: pd.DataFrame(session.laps).assign(NativeSourceRow=session.laps.index))
     return identity, [str(driver) for driver in session.drivers], {
         "car": _records(lambda: _driver_frames(session.car_data)),
         "position": _records(lambda: _driver_frames(session.pos_data)),
         "laps": laps,
         "tyres": laps.reindex(
-            columns=["Time", "DriverNumber", "LapNumber", "Stint", "Compound", "TyreLife", "FreshTyre"]
+            columns=["NativeSourceRow", "Time", "DriverNumber", "LapNumber", "Stint", "Compound", "TyreLife", "FreshTyre"]
         ) if laps is not None else None,
         "weather": _records(lambda: session.weather_data),
         "session_status": _records(lambda: session.session_status),
@@ -53,7 +53,7 @@ def load_bahrain_test_day(
 
 
 def _driver_frames(records: Mapping[str, pd.DataFrame]) -> pd.DataFrame:
-    frames = [frame.assign(DriverNumber=driver) for driver, frame in records.items()]
+    frames = [frame.assign(DriverNumber=driver, NativeSourceRow=frame.index) for driver, frame in records.items()]
     return pd.concat(frames, ignore_index=True) if frames else pd.DataFrame()
 
 
