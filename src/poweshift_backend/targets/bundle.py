@@ -1,6 +1,7 @@
 """TargetBundle: isolated, kind-separated target records that never feed reconstruction inputs."""
 
 from enum import Enum
+from math import isfinite
 from typing import Literal
 
 from pydantic import model_validator
@@ -61,6 +62,77 @@ class LiveProgressTarget(_TargetRecord):
 
 
 TargetRecord = LapTimeTarget | RaceGapTarget | ClassificationTarget | LiveProgressTarget
+
+
+class ComparableTimingPair(StrictModel):
+    """A signed timing comparison with complete observed context."""
+
+    first: LapTimeTarget
+    second: LapTimeTarget
+    session_kind: Literal["practice", "qualifying"]
+    qualifying_segment: Literal["Q1", "Q2", "Q3"] | None
+    first_session_key: str
+    second_session_key: str
+    first_segment: str
+    second_segment: str
+    cutoff_s: float
+    tyre_matched: bool
+    fuel_known: bool
+    weather_known: bool
+    track_phase_known: bool
+    traffic_clear: bool
+    pit_free: bool
+    coverage_complete: bool
+    comparison_mask: bool
+
+    @model_validator(mode="after")
+    def _requires_complete_comparable_context(self) -> "ComparableTimingPair":
+        if self.first.entry == self.second.entry:
+            raise ValueError("a timing pair must contain two entries")
+        if (
+            self.first.units != "s"
+            or self.second.units != "s"
+            or self.first.value is None
+            or self.second.value is None
+            or not isfinite(self.first.value)
+            or not isfinite(self.second.value)
+            or not isfinite(self.cutoff_s)
+        ):
+            raise ValueError("a timing pair requires finite second values")
+        if self.session_kind == "qualifying" and self.qualifying_segment is None:
+            raise ValueError("a qualifying pair must name one segment")
+        if self.session_kind == "practice" and self.qualifying_segment is not None:
+            raise ValueError("a practice pair cannot name a qualifying segment")
+        if (
+            self.first_session_key != self.second_session_key
+            or self.first_segment != self.second_segment
+            or self.first_segment != (self.qualifying_segment or "practice")
+            or self.first.observed_availability_time_s > self.cutoff_s
+            or self.second.observed_availability_time_s > self.cutoff_s
+        ):
+            raise ValueError("a timing pair requires the same session, segment and cutoff")
+        eligible = (
+            self.first.status is TargetStatus.VALID
+            and self.second.status is TargetStatus.VALID
+            and self.first.comparison_mask
+            and self.second.comparison_mask
+            and self.weather_known
+            and self.track_phase_known
+            and self.pit_free
+            and self.coverage_complete
+        )
+        if self.session_kind == "practice":
+            eligible = eligible and self.tyre_matched and self.fuel_known and self.traffic_clear
+        if self.comparison_mask and not eligible:
+            raise ValueError("a true comparison mask requires complete comparable context")
+        return self
+
+    @property
+    def signed_gap_s(self) -> float:
+        """Return first minus second in seconds."""
+        if self.first.value is None or self.second.value is None:
+            raise ValueError("a signed gap requires valid timing values")
+        return self.first.value - self.second.value
 
 
 class TargetBundle(StrictModel):

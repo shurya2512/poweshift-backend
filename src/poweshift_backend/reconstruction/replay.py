@@ -5,6 +5,8 @@ from dataclasses import dataclass, replace
 import numpy as np
 
 from poweshift_backend.driver.controller import DriverDemand, DriverMode, ForecastController, KnownInputController
+from poweshift_backend.energy.accounting import AccountingConfig
+from poweshift_backend.energy.integration import CoupledEnergyState, EnergyStage, integrate_energy_stages
 from poweshift_backend.physics.forces import mechanics_derivative
 from poweshift_backend.physics.integrate import integrate
 from poweshift_backend.physics.state import MechanicsState, RoadInput
@@ -27,6 +29,25 @@ class ReplayChunk:
     regime: np.ndarray
     anchor: str
     exclusion: str | None = None
+
+
+@dataclass(frozen=True)
+class OfflineEnergyReplay:
+    """Separately selected energy replay that cannot enable runtime."""
+
+    mode: str
+    states: tuple[CoupledEnergyState, ...]
+    accounting_evidence_id: str
+    runtime_enabled: bool = False
+
+
+def replay_offline_energy(
+    initial: CoupledEnergyState,
+    stages: tuple[EnergyStage, ...],
+    config: AccountingConfig,
+) -> OfflineEnergyReplay:
+    """Run source-stage accounting outside the active reconstruction path."""
+    return OfflineEnergyReplay("offline_energy", integrate_energy_stages(initial, stages, config), config.evidence_id)
 
 
 def replay_final_evaluation(
@@ -80,8 +101,11 @@ def replay_chunk(
     """Replay one recorded interval with known controls or a frozen prefix demand."""
     if len(chunk.time_s) < 2:
         return _excluded(chunk, mode, anchor, "chunk has fewer than two observations"), None
-    if not all(np.all(chunk.valid[name]) for name in ("speed_ms", "throttle_pct", "brake")):
+    required = ("speed_ms", "throttle_pct", "brake") if mode is DriverMode.KNOWN_INPUT else ("speed_ms",)
+    if not all(np.all(chunk.valid[name]) for name in required):
         return _excluded(chunk, mode, anchor, "chunk has invalid motion controls"), None
+    if mode is DriverMode.FORECAST and (not chunk.valid["throttle_pct"][0] or not chunk.valid["brake"][0]):
+        return _excluded(chunk, mode, anchor, "chunk lacks a declared forecast prefix"), None
     if initial_state is None:
         state = MechanicsState(chunk.time_s[0], chunk.speed_ms[0], 0.0, 0.0, 30.0)
     elif not np.isclose(initial_state.time_s, chunk.time_s[0], rtol=0.0, atol=1e-12):
@@ -151,13 +175,20 @@ def replay_with_step(chunk: TelemetryChunk, baseline: FittedBaseline, step_s: fl
 
 
 def _controller(chunk: TelemetryChunk, mode: DriverMode, forecast_prefix: DriverDemand | None = None):
-    throttle = np.clip(chunk.controls["throttle_pct"] / 100.0, 0.0, 1.0)
-    brake = np.clip(chunk.controls["brake"], 0.0, 1.0)
     if mode is DriverMode.KNOWN_INPUT:
+        throttle = np.clip(chunk.controls["throttle_pct"] / 100.0, 0.0, 1.0)
+        brake = np.clip(chunk.controls["brake"], 0.0, 1.0)
         return KnownInputController(chunk.time_s, throttle, brake, np.full(len(chunk.time_s), 0.5))
     if forecast_prefix is not None:
         return ForecastController(forecast_prefix)
-    return ForecastController(DriverDemand(float(throttle[0]), float(brake[0]), 0.5, DriverMode.FORECAST))
+    return ForecastController(
+        DriverDemand(
+            float(np.clip(chunk.controls["throttle_pct"][0] / 100.0, 0.0, 1.0)),
+            float(np.clip(chunk.controls["brake"][0], 0.0, 1.0)),
+            0.5,
+            DriverMode.FORECAST,
+        )
+    )
 
 
 def is_verified_continuation(

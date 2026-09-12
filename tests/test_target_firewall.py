@@ -6,6 +6,7 @@ from pydantic import ValidationError
 from poweshift_backend.contracts.acquisition import SessionIdentity
 from poweshift_backend.contracts.preparation import ArtifactProvenance, CoverageState, EvaluationSpec, TargetKind
 from poweshift_backend.targets.bundle import (
+    ComparableTimingPair,
     LapTimeTarget,
     LiveProgressTarget,
     RaceGapTarget,
@@ -239,3 +240,109 @@ def test_targets_available_by_cutoff_excludes_future_records_beyond_the_cutoff()
     )
 
     assert targets_available_by(bundle, cutoff_s=30.0) == (on_time, exactly_at_cutoff)
+
+
+def test_comparable_qualifying_pair_requires_one_segment_and_complete_context() -> None:
+    first = _lap_time_target(availability_s=20.0, value=90.0, entry="1")
+    second = _lap_time_target(availability_s=20.0, value=91.0, entry="2")
+
+    pair = ComparableTimingPair(
+        first=first,
+        second=second,
+        session_kind="qualifying",
+        qualifying_segment="Q2",
+        first_session_key="2026-03-07",
+        second_session_key="2026-03-07",
+        first_segment="Q2",
+        second_segment="Q2",
+        cutoff_s=20.0,
+        tyre_matched=True,
+        fuel_known=True,
+        weather_known=True,
+        track_phase_known=True,
+        traffic_clear=True,
+        pit_free=True,
+        coverage_complete=True,
+        comparison_mask=True,
+    )
+
+    assert pair.signed_gap_s == -1.0
+
+
+def test_comparable_practice_pair_refuses_a_true_mask_when_fuel_context_is_missing() -> None:
+    first = _lap_time_target(availability_s=20.0, value=90.0, entry="1")
+    second = _lap_time_target(availability_s=20.0, value=91.0, entry="2")
+
+    with pytest.raises(ValidationError, match="complete comparable context"):
+        ComparableTimingPair(
+            first=first,
+            second=second,
+            session_kind="practice",
+            qualifying_segment=None,
+            first_session_key="2026-03-06",
+            second_session_key="2026-03-06",
+            first_segment="practice",
+            second_segment="practice",
+            cutoff_s=20.0,
+            tyre_matched=True,
+            fuel_known=False,
+            weather_known=True,
+            track_phase_known=True,
+            traffic_clear=True,
+            pit_free=True,
+            coverage_complete=True,
+            comparison_mask=True,
+        )
+
+
+def test_comparable_qualifying_pair_does_not_require_fuel_context() -> None:
+    first = _lap_time_target(availability_s=20.0, value=90.0, entry="1")
+    second = _lap_time_target(availability_s=20.0, value=91.0, entry="2")
+
+    pair = ComparableTimingPair(
+        first=first,
+        second=second,
+        session_kind="qualifying",
+        qualifying_segment="Q2",
+        first_session_key="2026-03-07",
+        second_session_key="2026-03-07",
+        first_segment="Q2",
+        second_segment="Q2",
+        cutoff_s=20.0,
+        tyre_matched=False,
+        fuel_known=False,
+        weather_known=True,
+        track_phase_known=True,
+        traffic_clear=True,
+        pit_free=True,
+        coverage_complete=True,
+        comparison_mask=True,
+    )
+
+    assert pair.comparison_mask is True
+
+
+def test_comparable_pair_refuses_future_or_cross_segment_timing() -> None:
+    first = _lap_time_target(availability_s=20.0, value=90.0, entry="1")
+    second = _lap_time_target(availability_s=21.0, value=91.0, entry="2")
+
+    with pytest.raises(ValidationError, match="same session, segment and cutoff"):
+        ComparableTimingPair(
+            first=first,
+            second=second,
+            session_kind="qualifying",
+            qualifying_segment="Q2",
+            first_session_key="2026-03-07",
+            second_session_key="2026-03-07",
+            first_segment="Q2",
+            second_segment="Q3",
+            cutoff_s=20.0,
+            tyre_matched=False,
+            fuel_known=False,
+            weather_known=True,
+            track_phase_known=True,
+            traffic_clear=True,
+            pit_free=True,
+            coverage_complete=True,
+            comparison_mask=True,
+        )

@@ -14,12 +14,15 @@ class IntegrationConfig:
 
     step_s: float
     event_tie_order: tuple[str, ...]
+    event_time_tolerance_s: float = 1e-12
 
     def __post_init__(self) -> None:
         if self.step_s <= 0.0:
             raise ValueError("integration step must be positive")
         if len(set(self.event_tie_order)) != len(self.event_tie_order):
             raise ValueError("event tie order must not repeat a kind")
+        if self.event_time_tolerance_s < 0.0:
+            raise ValueError("event time tolerance cannot be negative")
 
 
 @dataclass(frozen=True)
@@ -75,7 +78,9 @@ def integrate(
     states = [initial_state]
     state = initial_state
     index = 0
-    while index < len(event_queue) and event_queue[index].time_s == state.time_s:
+    while index < len(event_queue) and np.isclose(
+        event_queue[index].time_s, state.time_s, rtol=0.0, atol=config.event_time_tolerance_s
+    ):
         state = _apply_event(event_queue[index], state)
         states.append(state)
         index += 1
@@ -86,7 +91,9 @@ def integrate(
             raise IntegrationInfeasible("integration could not advance to its next event")
         state = rk4_step(state, target - state.time_s, derivative)
         states.append(state)
-        while index < len(event_queue) and np.isclose(event_queue[index].time_s, state.time_s, rtol=0.0, atol=1e-12):
+        while index < len(event_queue) and np.isclose(
+            event_queue[index].time_s, state.time_s, rtol=0.0, atol=config.event_time_tolerance_s
+        ):
             state = _apply_event(event_queue[index], state)
             states.append(state)
             index += 1

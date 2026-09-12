@@ -9,6 +9,7 @@ dependencies = [
   "pyarrow>=25,<26",
   "pydantic>=2.13,<3",
   "scipy>=1.17,<1.18",
+  "torch>=2.8,<2.9",
 ]
 
 [dependency-groups]

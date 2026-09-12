@@ -6,4 +6,8 @@ data/acquisition_verified_*/
 data/preparation_verified*/
 data/reconstruction_phase3/*/
 data/phase1_fastf1_cache/
+data/phase4_weekend_cache/
+data/phase4_weekend_acquisition/
+data/phase4_qualifying_cache/
+data/representation_phase4/
 __pycache__/

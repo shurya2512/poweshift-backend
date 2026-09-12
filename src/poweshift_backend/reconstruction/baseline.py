@@ -15,6 +15,7 @@ from poweshift_backend.contracts.reconstruction import (
     MechanicsAssumptions,
     SupportState,
 )
+from poweshift_backend.contracts.representation import NumericalPolicy
 from poweshift_backend.driver.controller import DriverDemand, DriverMode
 from poweshift_backend.physics.forces import mechanics_derivative
 from poweshift_backend.physics.integrate import IntegrationConfig
@@ -43,6 +44,7 @@ class BaselineRuntime:
     solve_config: AxleSolveConfig
     integration: IntegrationConfig
     forces: EffectiveForceAssumptions
+    numerical_policy: NumericalPolicy
 
 
 @dataclass(frozen=True)
@@ -63,23 +65,29 @@ class _Observation:
     acceleration_ms2: float
 
 
-def fit_effective_profile(inputs: Phase3Inputs, sample_budget: int = 320, entry: str | None = None) -> FittedBaseline:
+def fit_effective_profile(
+    inputs: Phase3Inputs,
+    sample_budget: int = 320,
+    entry: str | None = None,
+    numerical_policy: NumericalPolicy | None = None,
+) -> FittedBaseline:
     """Fit four bounded effective terms for one entry using training chunks only."""
     entries = {chunk.entry for chunk in inputs.chunks}
     if entry is None:
         if len(entries) != 1:
             raise ValueError("an effective baseline requires one explicit entry")
         entry = next(iter(entries))
+    numerical_policy = numerical_policy or NumericalPolicy(step_s=0.04, axle_tolerance_n=0.1, event_time_tolerance_s=1e-12)
     training = _sample_observations(inputs.chunks, "training", sample_budget, entry)
     if len(training) < 4:
         raise ValueError("admitted training telemetry has too few motion observations")
     selection = _sample_observations(inputs.chunks, "selection", sample_budget, entry)
-    runtime = _runtime_from_vector(_initial_vector(training))
+    runtime = _runtime_from_vector(_initial_vector(training), numerical_policy)
     lower, upper, recipe = _data_bounds(training)
     observed = np.array([item.acceleration_ms2 for item in training], dtype=np.float64)
 
     def residuals(vector: np.ndarray) -> np.ndarray:
-        candidate = _runtime_from_vector(vector)
+        candidate = _runtime_from_vector(vector, numerical_policy)
         predicted = _accelerations(training, candidate)
         invalid = ~np.isfinite(predicted)
         if invalid.any():
@@ -95,7 +103,7 @@ def fit_effective_profile(inputs: Phase3Inputs, sample_budget: int = 320, entry:
         x_scale="jac",
         max_nfev=80,
     )
-    runtime = _runtime_from_vector(result.x)
+    runtime = _runtime_from_vector(result.x, numerical_policy)
     profile = _profile_from_runtime(runtime)
     selection_predicted = _accelerations(selection, runtime) if selection else np.array([], dtype=np.float64)
     selection_observed = np.array([item.acceleration_ms2 for item in selection], dtype=np.float64)
@@ -124,8 +132,9 @@ def fit_effective_profile(inputs: Phase3Inputs, sample_budget: int = 320, entry:
             "event_tie_order": list(runtime.integration.event_tie_order),
             "axle_tolerance_n": runtime.solve_config.tolerance_n,
             "axle_max_iterations": runtime.solve_config.max_iterations,
-            "status": "initial numerical setting; refined-step difference is reported",
+            "event_time_tolerance_s": runtime.integration.event_time_tolerance_s,
         },
+        "numerical_policy": numerical_policy.model_dump(mode="json"),
     }
     diagnostics = {
         "training_observations": len(training),
@@ -167,7 +176,7 @@ def build_fit_report(inputs: Phase3Inputs, baseline: FittedBaseline, settings_pi
     )
 
 
-def runtime_from_profile(profile: EffectiveProfile) -> BaselineRuntime:
+def runtime_from_profile(profile: EffectiveProfile, numerical_policy: NumericalPolicy) -> BaselineRuntime:
     """Recreate the shared runtime only from frozen profile values."""
     values = {component.name: component.value for component in profile.components}
     mass = profile.assumptions.reference_mass_kg.value
@@ -180,9 +189,10 @@ def runtime_from_profile(profile: EffectiveProfile) -> BaselineRuntime:
             0.30,
         ),
         tyre=DryTyreCondition(values["grip"], values["grip"]),
-        solve_config=AxleSolveConfig(9.80665, 0.1, 32),
-        integration=IntegrationConfig(0.04, ("chunk_boundary",)),
+        solve_config=AxleSolveConfig(9.80665, numerical_policy.axle_tolerance_n, numerical_policy.axle_max_iterations),
+        integration=IntegrationConfig(numerical_policy.step_s, ("chunk_boundary",), numerical_policy.event_time_tolerance_s),
         forces=EffectiveForceAssumptions(values["propulsion"], values["braking"], values["resistance"], 0.0, 0.0, 0.0),
+        numerical_policy=numerical_policy,
     )
 
 
@@ -237,14 +247,15 @@ def _initial_vector(observations: list[_Observation]) -> np.ndarray:
     return upper * 0.5
 
 
-def _runtime_from_vector(vector: np.ndarray) -> BaselineRuntime:
+def _runtime_from_vector(vector: np.ndarray, numerical_policy: NumericalPolicy) -> BaselineRuntime:
     return BaselineRuntime(
         mass=MassAssumptions(800.0, True, True, True, FuelPolicy(FuelPolicyKind.FIXED)),
         geometry=CgGeometry(1.60, 1.60, 0.30),
         tyre=DryTyreCondition(float(vector[3]), float(vector[3])),
-        solve_config=AxleSolveConfig(9.80665, 0.1, 32),
-        integration=IntegrationConfig(0.04, ("chunk_boundary",)),
+        solve_config=AxleSolveConfig(9.80665, numerical_policy.axle_tolerance_n, numerical_policy.axle_max_iterations),
+        integration=IntegrationConfig(numerical_policy.step_s, ("chunk_boundary",), numerical_policy.event_time_tolerance_s),
         forces=EffectiveForceAssumptions(float(vector[0]), float(vector[1]), float(vector[2]), 0.0, 0.0, 0.0),
+        numerical_policy=numerical_policy,
     )
 
 

@@ -1,0 +1,169 @@
+{
+  "limitations": [
+    "The fitted car profiles and source adapters are diagnostic and not admission eligible.",
+    "Traffic gaps are source-derived, but pass and defence labels use declared heuristic thresholds rather than a validated interaction world.",
+    "Incremental progress is a proxy from added longitudinal force, not a demonstrated lap-time or finishing-position gain.",
+    "Ten race updates test reward direction but do not establish convergence of the deployment distribution."
+  ],
+  "profile_diagnosis": {
+    "electric_power_scale_w": {
+      "at_median_profile_and_p90_speed": 105973.0182614378,
+      "at_median_profile_and_speed": 78332.03786940116
+    },
+    "harvest_cap_basis": "5 MJ per lap fallback requested for circuits without an available cap.",
+    "maximum_drive_force_n": {
+      "maximum": 6372.861054637612,
+      "median": 6313.303695144094,
+      "minimum": 6186.982019048548
+    },
+    "observed_race_speed_ms": {
+      "median": 62.03728004535138,
+      "p90": 83.92833877368155
+    },
+    "profile_artifact_admission_eligible": false,
+    "profile_count": 20,
+    "selected_electric_boost_fraction": 0.2,
+    "selection_basis": "The fitted profiles identify aggregate effective drive force, not an ICE/electric split. Twenty percent is an explicit additive diagnostic prior, not a fitted result.",
+    "usable_store_basis": "5 MJ diagnostic fallback because no admitted usable-store value is available."
+  },
+  "qualifying": {
+    "evaluation_after": {
+      "attack_opportunity_steps": 0.0,
+      "defence_threat_steps": 0.0,
+      "gross_deployment_j": 77801418.51680936,
+      "gross_harvest_j": 20229634.962044526,
+      "incremental_progress_proxy_m": 82294.24333691946,
+      "mean_requested_deployment_fraction": 0.5080469172252803,
+      "mean_reward": 73.20957816165749,
+      "remaining_store_j": 0.0
+    },
+    "evaluation_before": {
+      "attack_opportunity_steps": 0.0,
+      "defence_threat_steps": 0.0,
+      "gross_deployment_j": 76242392.13470608,
+      "gross_harvest_j": 20201244.819411416,
+      "incremental_progress_proxy_m": 80597.51322902285,
+      "mean_requested_deployment_fraction": 0.49772888156797673,
+      "mean_reward": 71.72180331919725,
+      "remaining_store_j": 0.0
+    },
+    "evaluation_delta": {
+      "gross_deployment_j": 1559026.3821032792,
+      "gross_harvest_j": 28390.142633110285,
+      "incremental_progress_proxy_m": 1696.730107896612,
+      "mean_reward": 1.4877748424602402
+    },
+    "traffic_intelligence_enabled": false,
+    "training": {
+      "attack_opportunity_steps": 0.0,
+      "defence_threat_steps": 0.0,
+      "deployment_step_rate": 1.0,
+      "electric_boost_fraction": 0.2,
+      "gross_deployment_j": 378208611.2621728,
+      "gross_harvest_j": 94430885.62528884,
+      "harvest_cap_j_per_lap": 5000000.0,
+      "harvest_curtailed_j": 3821353.725185952,
+      "incremental_progress_proxy_m": 416078.2181340085,
+      "mean_first_reward": 76.04396814845524,
+      "mean_last_reward": 69.09585752358231,
+      "mean_requested_deployment_fraction": 0.5149417345345553,
+      "mean_total_loss": 108.73590915679932,
+      "net_battery_change_j": -302663902.76194173,
+      "race_interaction_prior": {
+        "attack_gain_weight": 1.0,
+        "attack_gap_s": 1.0,
+        "defend_gain_weight": 0.5,
+        "defend_gap_s": 0.8,
+        "deployment_cost_per_mj": 1.0,
+        "enabled": false,
+        "free_air_gain_weight": 0.1,
+        "gain_normalization": "equal_share_per_lap_step",
+        "late_race_cost_floor": 0.25,
+        "minimum_closing_ms": 0.5,
+        "reserve_shortfall_weight": 2.0
+      },
+      "remaining_store_j": null,
+      "reward_change": -6.948110624872925,
+      "reward_findings": [],
+      "source_partition": "training",
+      "status": "diagnostic_only",
+      "updates": 100,
+      "usable_store_j": 5000000.0
+    },
+    "updates": 100
+  },
+  "race": {
+    "ego_entry": "1",
+    "evaluation_after": {
+      "attack_opportunity_steps": 308.0,
+      "defence_threat_steps": 78.0,
+      "gross_deployment_j": 6432265.1104442505,
+      "gross_harvest_j": 1790331.3880553131,
+      "incremental_progress_proxy_m": 6320.748317479484,
+      "mean_requested_deployment_fraction": 0.5084547015226177,
+      "mean_reward": -1.3564066427247745,
+      "remaining_store_j": 0.0
+    },
+    "evaluation_before": {
+      "attack_opportunity_steps": 308.0,
+      "defence_threat_steps": 78.0,
+      "gross_deployment_j": 6432265.110444254,
+      "gross_harvest_j": 1790331.3880553131,
+      "incremental_progress_proxy_m": 6322.359575754883,
+      "mean_requested_deployment_fraction": 0.5119360609117158,
+      "mean_reward": -1.3565207898030391,
+      "remaining_store_j": 0.0
+    },
+    "evaluation_delta": {
+      "gross_deployment_j": -3.725290298461914e-09,
+      "gross_harvest_j": 0.0,
+      "incremental_progress_proxy_m": -1.6112582753985407,
+      "mean_reward": 0.00011414707826462589
+    },
+    "field_context_entries": 20,
+    "laps": 10,
+    "route_length_m": 5239.304427662223,
+    "traffic_intelligence_enabled": true,
+    "training": {
+      "attack_opportunity_steps": 308.0,
+      "defence_threat_steps": 78.0,
+      "deployment_step_rate": 0.9873096446700508,
+      "electric_boost_fraction": 0.2,
+      "gross_deployment_j": 6432265.110444257,
+      "gross_harvest_j": 1790331.3880553131,
+      "harvest_cap_j_per_lap": 5000000.0,
+      "harvest_curtailed_j": 1.2164491636212915e-11,
+      "incremental_progress_proxy_m": 6445.308963710945,
+      "mean_first_reward": -2.9324691510536494,
+      "mean_last_reward": -0.2542203766833749,
+      "mean_requested_deployment_fraction": 0.5194702591123012,
+      "mean_total_loss": 0.5087049201130867,
+      "net_battery_change_j": -5000000.0000000065,
+      "race_interaction_prior": {
+        "attack_gain_weight": 1.0,
+        "attack_gap_s": 1.0,
+        "defend_gain_weight": 0.5,
+        "defend_gap_s": 0.8,
+        "deployment_cost_per_mj": 1.0,
+        "enabled": true,
+        "free_air_gain_weight": 0.1,
+        "gain_normalization": "equal_share_per_lap_step",
+        "late_race_cost_floor": 0.25,
+        "minimum_closing_ms": 0.5,
+        "reserve_shortfall_weight": 2.0
+      },
+      "remaining_store_j": 0.0,
+      "reward_change": 2.6782487743702745,
+      "reward_findings": [
+        "store was exhausted; ten race updates did not yet adapt deployment to the shaped objective"
+      ],
+      "source_partition": "training",
+      "status": "diagnostic_only",
+      "updates": 10,
+      "usable_store_j": 5000000.0
+    },
+    "updates": 10
+  },
+  "source_partition": "training",
+  "status": "diagnostic_only"
+}

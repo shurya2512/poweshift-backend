@@ -25,8 +25,8 @@ def solve_reference(
         (initial.time_s, end_time_s),
         np.array([initial.speed_ms, initial.distance_m, initial.progress_m, initial.fuel_mass_kg], dtype=np.float64),
         method="DOP853",
-        rtol=1e-9,
-        atol=1e-11,
+        rtol=runtime.numerical_policy.reference_rtol,
+        atol=runtime.numerical_policy.reference_atol,
         max_step=runtime.integration.step_s,
     )
     if not solution.success:

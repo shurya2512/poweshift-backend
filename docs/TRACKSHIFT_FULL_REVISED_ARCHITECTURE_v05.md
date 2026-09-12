@@ -353,28 +353,27 @@ The mathematical baseline first fits supported effective propulsion, resistance,
 
 ```mermaid
 flowchart TB
-    Split["Permitted chronological development evidence"] --> Base["Numerical profile fit"]
-    Split --> Windows["Ordered completed-stint features<br/>time, context and masks"]
-    Windows --> GRU["Candidate A: compact recurrent encoder"]
-    Windows --> Transformer["Candidate B: compact Transformer"]
-    GRU --> Update["Quality-aware latent update"]
-    Transformer --> Update
-    Update --> Decoder["Bounded physical-profile decoder"]
-    Base --> Plant["Same equations and declared controls"]
-    Decoder --> Plant
-    Plant --> Loss["Motion plus eligible ordering/gap losses<br/>regularity and support checks"]
-    Loss -.->|"training only"| Base
-    Loss -.->|"training only"| Windows
-    Decoder --> Select["Inner-validation selection<br/>then frozen final evaluation"]
-    Base --> Select
-    Select --> Bundle["One selected encoder/decoder bundle<br/>one profile per supported entry"]
+    Evidence["Audited field telemetry and masks"] --> Encoder["Telemetry encoder: cars x 16"]
+    Encoder --> Params["Bounded physical parameters"]
+    Controls["Recorded controls and initial state"] --> Plant["Shared batched full-race physics"]
+    Geometry["Static source geometry"] --> Plant
+    Params --> Plant
+    Plant --> Internal["Internal continuous telemetry"]
+    Internal --> Loss["Joint valid 4 Hz rank and gap loss"]
+    Loss --> Encoder
+    Internal --> Gate["Separate 5% motion admission gate"]
 ```
 
-**Inherited prototype candidates, not empirically chosen sizes:** latent dimension 16; 64-wide window representation; two-layer 64-wide GRU versus two Transformer blocks with width 64, four heads and 128-wide feed-forward layer. Use separate matched training runs and one operational winner. The model manifest, not a prose default, fixes the actual experiment sizes.
+The active starting latent is 16 dimensions. A matched Belgium selection may compare 32 only under
+the frozen budget; no wider search is implied. Historical recurrent/Transformer prototype sizes are
+preserved as prior evidence, not the active direct-reconstruction architecture.
 
 The decoder emits the common profile contract with explicit axis units, bounds, reference condition and support. Initially it can emit effective-total propulsion while `energy_control_ready=false`. Later energy compatibility requires a selected map/response/loss contract; a richer latent cannot bypass this step.
 
 ### 7.3 Completed-stint inference and change handling
+
+This operational post-training update is separate from full-race reconstruction training. A completed
+stint does not shorten, reset or define the learned full-race rollout.
 
 At completion of an eligible real stint, freeze the input cutoff, apply the saved transforms and evaluate the selected encoder with the previous latent. Decode a candidate profile; assess support, schema and energy compatibility; record its previous version and update reason; then stage it for the declared activation boundary.
 
@@ -384,18 +383,57 @@ Use gradual quality-aware updates with a change detector and controlled resets. 
 
 ### 7.4 Training objectives and what constitutes improvement
 
-The preserved objective families are masked motion error, contextual entry ordering, signed timing-gap error, physical/state regularity and controlled latent drift. No fixed numeric weights are approved. [P1 §§5,9; P5]
+The historical diagonal Gaussian NLL teacher comparison remains a retained result, not the active
+direct-reconstruction objective. The approved objective is joint rank loss at every valid 4 Hz
+common-clock row and signed gap loss at matching source-supported checkpoint crossings. There is no
+absolute-position loss term, motion-loss weight or regularity loss in this active objective; separate
+motion and gradient gates decide admission.
 
-$$
-\mathcal L_{N1}=\lambda_v\mathcal L_{motion}+\lambda_g\mathcal L_{gap}
-+\lambda_o\mathcal L_{ordering}+\lambda_r\mathcal L_{regularity}.
-$$
+### 7.4.1 Approved direct reconstruction boundary
+
+Phase 4 implementation is in progress for direct reconstruction of audited 2026 weekend observations
+through one latent-conditioned mechanics path. The telemetry encoder emits `[cars, 16]`; bounded
+physical parameters, recorded controls, initial state and static source geometry feed shared batched
+physics that generates an internal continuous trajectory. Observed telemetry never resets that state
+at a telemetry, lap or stint boundary. Relative order and signed timing gaps are primary,
+while full supported trajectories, parameter-intervention sanity and separate speed, progress and
+elapsed-time thresholds remain required admission evidence. No profile is admitted by this status
+change.
+
+Practice, qualifying and race targets remain distinct. Qualifying compares valid entrants within
+Q1, Q2 or Q3. Race progress order at a common wall time is not timing order at a common
+completed-lap checkpoint; pits, safety cars and lapping can separate them. Whole-race official
+classification remains external validation until a rules/world model supports it.
+
+Direct training is blocked until an audited weekend manifest and an admitted full-race geometry path
+exist, and until a gradient-capable mechanics path has independently passed reference parity,
+finite-difference/JVP,
+convergence, fixed-active-set and event/clipping checks. Every normalized parameter basis uses a
+fixed `1e-4` difference step; each output state must meet 5% relative norm error or, below the
+normalized `1e-6` floor, `5e-8` absolute normalized error. The existing SciPy path does not establish
+these gradients. Motion admission separately limits speed RMS, progress-displacement RMS and elapsed
+endpoint error to 5% using their frozen floors. Before the 100-step smoke, the run record must freeze
+target-family scales, progress standardization, eligible-pair normalization, calibration treatment
+and all loss constants. Full training uses reshuffled whole-field minibatches with at most 10 optimizer
+updates per chunk; the pre-run record states batch count and measured throughput before the full run.
 
 This is a loss-family specification, not proof that the physical variables can be separated. For comparable timing targets, `G_ij = T_i - T_j`; negative means entry i is faster for that target. Keep FP/qualifying lap-time gaps separate from race elapsed gaps and lap deficits. A differentiable ordering surrogate may train the model; exact session-aware metrics evaluate it.
 
-Known-input reconstruction may receive recorded target controls but must be labelled accordingly. A pre-run forecast uses its declared driver and initial-state assumptions without target-future controls. Continuous lap evaluation cannot be manufactured by summing repeatedly anchored short windows.
+Known-input reconstruction may receive native recorded controls but must be labelled accordingly. Its
+4 Hz observation clock is a derived, source-linked loss grid rather than an ODE step; provenance and
+masks retain irregular-source gaps. Rank and gap supervision stays dense over valid common-clock rows,
+while timing gaps use matching source-supported checkpoint crossings without converting distance or
+lap deficits into invented seconds. Position labels retain a 1.1-second source bound. Controls may use
+linear interpolation inside a declared 2.0-second recorded bracket, with an inferred-control mask;
+wider brackets refuse the rollout. A qualifying full timed-lap batch may smoke mechanics against
+same-segment finish gaps, but it is not race validation. A pre-run forecast uses its declared driver and initial-state assumptions without
+target-future controls. Race reconstruction carries one predicted state through lap and stint
+boundaries. Source geometry keeps an unwrapped common-clock reference and records pits, events and
+missing paths separately. Event and timing masks do not erase valid source geometry; missing paths
+and unsupported pit segments fail the full-race trajectory gate. Continuous evaluation cannot be
+manufactured by summing repeatedly anchored short windows.
 
-Evaluate both frozen profiles and predict-score-update profiles, sequential primary. Shared weights remain fixed inside each adaptation experiment. Later shared-weight retraining uses completed authorised weekends and is scored on later evidence. The numerical baseline receives the same permitted evidence when the corpus expands. Neural improvement is required for promotion, not guaranteed or created by weakening the comparator.
+Evaluate both frozen profiles and predict-score-update profiles, sequential primary. Shared weights remain fixed inside each adaptation experiment. The current comparison uses four runs per split and one anchored two-sample known-input interval for each run; it is not a continuous full-motion trajectory or full-lap result. Later shared-weight retraining uses completed authorised weekends and is scored on later evidence. The numerical baseline receives the same permitted evidence when the corpus expands. Neural improvement is required for promotion, not guaranteed or created by weakening the comparator.
 
 No future pit manifest is supplied to Network 1's earlier reconstruction input. Required news is first evaluated against a clean telemetry-only comparison. Synthetic ego experience trains decision behaviour; it never becomes measured evidence for the real donor.
 
@@ -1108,27 +1146,84 @@ rather than treating chunk scores as a full-lap result.
 
 ### Phase 4 | Network 1 comparison and entry updates
 
+The legacy implemented NLL comparison retained the numerical baseline because its selection evidence
+had propulsion rows only; it does not establish physics, rank, timing-gap, energy or strategy accuracy.
+The approved expanded Phase 4 has a stable mechanics interface and a completed diagnostic qualifying smoke:
+it freezes and audits 2026 weekend sources, uses
+practice, qualifying and acquired race targets with separate semantics, and is intended to train through
+one verified mechanics path. Training uses Australia through Britain, Belgium only for selection, and
+one untuned final score on each of Hungary and Dutch after their non-use audit; Italy remains reserved.
+It does not treat existing teacher artifacts as the main objective or cached data as automatically
+admitted evidence.
+
 ```mermaid
 flowchart TB
-    Input["Previous latent and completed stint<br/>context, time and masks"] --> GRU["Compact recurrent candidate"]
-    Input --> TF["Compact Transformer candidate"]
-    GRU --> Update["Quality-aware update and reset detector"]
-    TF --> Update
-    Update --> Decoder["Common bounded profile decoder"]
-    Decoder --> Plant["Same continuous motion implementation"]
-    Plant --> Select["Matched validation and final frozen comparison"]
-    Select --> Output["Selected EncoderBundle<br/>one supported profile per entry"]
+    Audit["Audited weekend source and target manifest"] --> Geometry["Supported continuous geometry"]
+    Geometry --> Encoder["Telemetry encoder: cars x 16"]
+    Encoder --> Engine["Shared batched physics rollout"]
+    Engine --> Gradient["Verified gradient-capable mechanics"]
+    Gradient --> Train["Joint 4 Hz rank and gap reconstruction"]
+    Train --> Score["Order, timing-gap and motion evidence"]
+    Score --> Gate{"Frozen admission gates pass?"}
+    Gate -->|"yes"| Output["Admitted reconstruction profile"]
+    Gate -->|"no"| Hold["Retain numerical baseline"]
+    classDef evidence fill:#1d4ed8,color:#ffffff,stroke:#1e3a8a
+    classDef process fill:#0f766e,color:#ffffff,stroke:#134e4a
+    classDef gate fill:#b45309,color:#ffffff,stroke:#78350f
+    classDef output fill:#7c3aed,color:#ffffff,stroke:#4c1d95
+    class Audit evidence
+    class Geometry,Encoder,Engine,Gradient,Train,Score process
+    class Gate gate
+    class Output,Hold output
 ```
 
 | Contract | Requirement |
 |---|---|
-| Inputs | Prior latent, StintPackage, dynamic/context inputs and baseline-compatible schema. |
-| Outputs | EncoderBundle, candidate EntryProfile, update reason and validation evidence. |
-| Python requirements | PyTorch `representation/` modules; common physics and target evaluator. |
-| At inference | Selected frozen encoder/decoder runs on completed real evidence only. |
-| Exit evidence | Neural improvement over equally informed baseline; frozen/sequential results; support, cutoff and ablation checks. |
+| Inputs | Audited cutoff-safe weekend context, target and mask contracts; identity is manifest metadata, not an encoder shortcut. |
+| Outputs | Proposed direct reconstruction record, evidence report and retained baseline or admitted profile. |
+| At inference | Recorded controls are labelled reconstruction inputs; a forecast requires its declared controller and assumptions. |
+| Exit evidence | Same-information baseline comparison; order, signed timing-gap, trajectory, calibration, support and cutoff evidence. |
 
-Full-lap ordering/gap losses require a supported continuous path. If they are not yet enabled, they remain pending; short-window improvements do not silently satisfy later strategy admission.
+The current default representation command still runs the legacy numerical-teacher comparison. The
+new weekend audit and acquisition artifacts are offline evidence, not a direct-reconstruction runtime
+entrypoint. Current plumbing includes source, diagnostic common-clock geometry, a Q-only source-bound
+static route, and a model/trainer/checkpoint backend. Qualifying preflight v8 uses the agreed
+0.04-second step, 0.1 N axle tolerance and 32 iterations. Diagnostic v8 completed 100 updates in
+892.04 seconds, but it zeroed curvature, mapped Boolean braking to 0.2 demand and clamped throttle.
+Its checkpoint is provisional and cannot freeze car profiles or satisfy motion admission. The stable
+interface permits Phase 5 offline experiments, but the admissible smoke, comparison and
+promotion gates remain separate. The later Japan checkpoint supplies the provisionally promoted
+profile set; the qualifying checkpoint itself remains diagnostic. Short-window or rank-only
+improvements cannot satisfy trajectory, energy or strategy admission.
+
+The bounded Australia race diagnostic uses the same shared mechanics and 4 Hz rank/gap objective
+with exactly one optimizer update per shuffled 30-second whole-field batch. A car is present only
+when its position, speed and controls are complete within that window; occasional skips discard that
+car from the affected window. Window starts are source-anchored, so this run measures race-wide error
+and coverage but does not qualify as the continuous full-race trajectory required for promotion.
+Diagnostic v2 completed all 164 updates over 4,920 race-clock seconds and 322,707 car-observation
+rows. Its 98.924% progress-rank accuracy and 1.327-second signed-gap MAE coexist with 17.008% speed,
+5.493% progress and 5.743% crossing normalized errors. Checkpoint prediction coverage is 99.321%,
+and timing uncertainty is broad at 5.932 seconds mean predicted sigma.
+
+China and Japan were prepared together and optimized sequentially from the Australia checkpoint.
+China completed 185 updates and Japan completed 173 of 174; the omitted Japan window refused a
+negative speed or fuel state. China records 95.679% rank accuracy, 2.013-second gap MAE and 23.567%,
+7.469% and 7.008% speed, progress and crossing normalized errors. Japan records 97.379% rank
+accuracy, 1.586-second gap MAE and 18.643%, 5.620% and 5.580% normalized errors. Replaying the final
+Japan checkpoint without updates retains 99.028% rank accuracy on Australia and 95.451% on China.
+Some speed, progress and coverage measurements improve across weekends, while China gap MAE rises
+to 2.177 seconds and crossing error rises to 7.585% after Japan. This supports an executable,
+partly transferable optimization path. It does not establish convergence or motion admission because
+no weekend passes all three 5% limits.
+
+The final Japan vectors are provisionally promoted under a declared 6% progress/crossing policy.
+Speed admission is waived because zero curvature, estimated Boolean braking and throttle clamping
+remain explicit priors. The immutable registry activates 22 entry profiles under admission ID
+`87daf272e8ec8f275fae47cade4c71f3c6815c617726b3a9756562ae208871c2` and binds the exact checkpoint,
+training report, profile source and both retention reports. Downstream components may bind this
+identity as the frozen Phase 4 profile. The registry marks physics admission false, so the promotion
+does not establish absolute vehicle physics, energy accuracy, runtime readiness or strategy quality.
 
 ### Phase 5 | Energy-ready powertrain and rules
 
@@ -1154,6 +1249,22 @@ flowchart TB
 
 A neural residual is not compulsory at deployment. Low-speed, charging and shift modes have explicit support/disable gates. Later rule editions never fill historical gaps silently.
 
+The Phase 5 structural and offline experiment paths are implemented. The stable Phase 4 mechanics
+and bound diagnostic training artifact enable offline Phase 5 work.
+A source allocation replaces effective propulsion at one axle boundary and cannot coexist with
+effective throttle. Mechanics still owns fuel mass; the separate energy state owns stored energy and
+cumulative throughput. Positive motor DC means motoring, positive terminal power reduces storage,
+and recovery is limited by its declared efficiency and capacity. Source maps refuse unsupported
+shaft speed and shifts. Historical snapshots bind an exact event, session, time interval, source hash,
+measurement boundary and line map without substituting another edition.
+
+These paths currently have synthetic contract and numerical checks only. Readiness records the Phase 4
+training artifact separately from its promoted profile, and an admitted energy bundle carries that
+profile identity into the policy training gate, checkpoint and report. No frozen real response,
+accounting or historical-rule evidence has been supplied, so readiness reports keep runtime disabled.
+The bounded neural residual is a comparison candidate for one named response mechanism; runnable or
+lower synthetic error does not promote it.
+
 ### Phase 6 | Reference world, attack and defence
 
 ```mermaid
@@ -1178,6 +1289,14 @@ flowchart TB
 
 Retain the opponent's one-defence counter through the whole encounter. Reference pace limits what defence claims can be made; unsupported cases remain in coverage/error reports.
 
+The two-corner route, scenario, action, observation, fixed-pit, ego, replay, occupancy, wake and
+encounter contracts are implemented. Routes require two connected source-bound segments, every
+requested rule line and supported continuation. A no-pit shortcut refuses any window containing a
+recorded pit event. Ego state advances only through an injected shared-physics boundary with a
+compatible admitted energy bundle. Encounter defence and abort state persists while both identities
+advance. The executable interaction world remains disabled because no admitted energy bundle or
+frozen interaction evidence exists.
+
 ### Phase 7 | Policy learning and recommendation quality
 
 ```mermaid
@@ -1196,11 +1315,21 @@ flowchart TB
 |---|---|
 | Inputs | Environment, FeatureSchema, ActionSchema, RewardSpec, information policy and episode design. |
 | Outputs | Actor/critic weights, optional outcome-head weights, action transform and admission report. |
-| Python requirements | `policy/`, `simulation/gym_env.py`, `recommendations/`; PyTorch and Gymnasium. |
+| Python requirements | `policy/` and `simulation/`; PyTorch, with an environment adapter only after physical admission. |
 | At inference | One frozen actor forward pass plus guard; no PPO update or pit/tactical search. |
 | Exit evidence | Meaningful energy allocation, two-corner setup/defence, nonzero race consideration, valid calibration/abstention and expanded-schema checks. |
 
 Do not add DP/ECMS as a benchmark or teacher. Use subsystem tests, matched physical interventions, model ablations, temporal evaluation and explicit recommendation-outcome tests. The numerical car reconstruction comparator remains separate and required.
+
+The recurrent schema, masked GRU actor/critic, rollout records, checkpoint compatibility, physical
+training gate, tactical reward boundary and admission report are implemented. A structural synthetic
+forward/backward diagnostic is available. It stores sampled, issued and delivered actions separately
+and retains the original sampled joint log probability. True termination suppresses bootstrap while
+truncation does not. The training gate refuses when the requested continuous profile differs from the
+admitted energy bundle, and checkpoints and reports retain both identities. Physical PPO and tactical
+evaluation refuse until a continuous profile, admitted
+energy bundle, supported route and continuation, fixed-pit manifest, interaction evidence and frozen
+held-out criteria are available. No current result is policy-quality or strategy evidence.
 
 ### Phase 8 | Fixed pit manifest and execution
 
@@ -1225,6 +1354,8 @@ flowchart TB
 | Exit evidence | No future non-pit fields, incorrect visit pairing, doubled travel delay, unreachable-clock repair or state refill. |
 
 Implement manifest preparation before integrated policy training. The phase number is organisational, not a reason to postpone the required input until after a policy learns the wrong pit semantics.
+The approved `PHASE_8_PLAN.md` keeps PPO in Phase 7, completes fixed-pit execution in Phase 8 and
+uses one source-bound optimizer update as the gate before a 100-update physical-policy smoke.
 
 ### Phase 9 | News and later 2026 adaptation
 
