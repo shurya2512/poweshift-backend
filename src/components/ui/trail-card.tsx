@@ -16,10 +16,12 @@ interface TrailCardProps extends React.ComponentProps<typeof motion.div> {
   imageUrl: string;
   /** Extra classes for the hero image, e.g. `object-top` to keep a portrait's face in frame. */
   imageClassName?: string;
-  thumbnailUrl: string;
+  /** Short line above the title, e.g. the car number. */
+  eyebrow: string;
   title: string;
   subtitle: string;
-  highlight: string;
+  /** Body text at the top of the details section. */
+  description: string;
   caption: string;
   stats: Stat[];
   actionLabel: string;
@@ -41,10 +43,10 @@ function TrailCard({
   className,
   imageUrl,
   imageClassName,
-  thumbnailUrl,
+  eyebrow,
   title,
   subtitle,
-  highlight,
+  description,
   caption,
   stats,
   actionLabel,
@@ -71,6 +73,7 @@ function TrailCard({
         <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent" />
         <div className="absolute bottom-0 left-0 flex w-full items-end justify-between p-4">
           <div className="text-white">
+            <p className="text-sm font-semibold text-white/80">{eyebrow}</p>
             <h3 className="text-xl font-bold">{title}</h3>
             <p className="text-sm text-white/90">{subtitle}</p>
           </div>
@@ -85,14 +88,8 @@ function TrailCard({
 
       {/* Details */}
       <div className="p-5">
-        <div className="flex items-center justify-between">
-          <div>
-            <p className="font-bold text-card-foreground">{highlight}</p>
-            <p className="text-xs text-muted-foreground">{caption}</p>
-          </div>
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src={thumbnailUrl} alt="" className="h-10 w-20 object-contain" />
-        </div>
+        <p className="text-sm leading-relaxed text-card-foreground/80">{description}</p>
+        <p className="mt-2 text-xs text-muted-foreground">{caption}</p>
         <div className="my-4 h-px w-full bg-border" />
         <div className="flex justify-between">
           {stats.map(stat => (

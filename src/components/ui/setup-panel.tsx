@@ -345,16 +345,16 @@ export default function SetupPanel({ onStart }: SetupPanelProps) {
           </div>
         </BentoCard>
 
-        {/* Driver Info Card — photo, reference lap and stats; "Profile" opens the full bio */}
+        {/* Driver Info Card — photo, bio and stats; "Profile" opens the full profile */}
         <TrailCard
           className="h-full max-w-none rounded-3xl border border-white/[0.08] shadow-[0_12px_40px_rgba(0,0,0,0.5)]"
           imageUrl={`/${selections.driver}.png`}
           imageClassName="object-top"
+          eyebrow={`Car #${driverMeta.number}`}
           title={CONFIG_ITEMS[1].options.find(o => o.value === selections.driver)?.label ?? selections.driver}
           subtitle={driverMeta.team}
-          highlight={`Car #${driverMeta.number}`}
+          description={driverMeta.bio}
           caption={`${selections.track.replace(' Grand Prix', '')} reference lap`}
-          thumbnailUrl={circuit.mapUrl}
           stats={[
             { label: 'WDC Titles', value: `${driverMeta.wdc}` },
             { label: 'Code', value: selections.driver },
