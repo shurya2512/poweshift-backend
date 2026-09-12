@@ -21,7 +21,7 @@ export default function SetupPage() {
       <div className="absolute top-[35%] left-[35%] w-[35%] h-[45%] bg-blue-500/5 blur-[140px] rounded-full pointer-events-none" />
 
       {/* Page content */}
-      <div className="max-w-7xl mx-auto px-6 lg:px-10 pt-4 pb-10 lg:pt-6 lg:pb-14">
+      <div className="max-w-7xl mx-auto px-6 lg:px-10 pt-14 pb-10 lg:pt-20 lg:pb-14">
         {/* Top Header Row */}
         <div className="relative flex items-center justify-center mb-6 w-full">
           {/* Back Button */}
