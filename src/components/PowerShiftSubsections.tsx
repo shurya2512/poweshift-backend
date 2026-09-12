@@ -9,6 +9,7 @@ const subsections = [
     title: 'Machine Learning',
     description: 'A HistGradientBoostingClassifier dynamically evaluates the track and telemetry to predict optimal battery deployment.',
     color: 'text-blue-500',
+    headingClassName: 'translate-y-px',
   },
   {
     title: 'Real Physics Engine',
@@ -77,14 +78,14 @@ export function PowerShiftSubsections() {
 
   return (
     <div ref={ref} className="space-y-12">
-      {subsections.map(({ title, description, color }, i) => (
+      {subsections.map(({ title, description, color, headingClassName }, i) => (
         <div
           key={title}
           className={`grid grid-cols-1 md:grid-cols-[280px_1px_1fr] gap-8 md:gap-12 text-left transition-opacity duration-500 ${step >= 2 * i ? 'opacity-100' : 'opacity-0'}`}
         >
           <div className="flex items-start gap-3 md:pl-6">
             <CornerDownRight className={`${color} shrink-0 mt-0.5`} size={24} aria-hidden="true" />
-            <h3 className="text-xl md:text-2xl font-bold uppercase tracking-tight leading-tight">
+            <h3 className={`text-xl md:text-2xl font-bold uppercase tracking-tight leading-tight ${headingClassName ?? ''}`}>
               <Typewriter text={title} active={step === 2 * i} speed={TITLE_SPEED_MS} onDone={advance} />
             </h3>
           </div>

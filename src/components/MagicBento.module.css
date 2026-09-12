@@ -38,7 +38,7 @@
     0 0 30px rgba(var(--glow-color), 0.2);
 }
 
-/* Clips particles and ripples to the card without clipping the card's own content (e.g. dropdown menus). */
+/* Clips particles to the card without clipping the card's own content (e.g. dropdown menus). */
 .layer {
   position: absolute;
   inset: 0;
@@ -64,18 +64,6 @@
   z-index: -1;
   border-radius: 50%;
   background: rgba(var(--glow-color), 0.2);
-}
-
-.ripple {
-  position: absolute;
-  z-index: 1000;
-  border-radius: 50%;
-  background: radial-gradient(
-    circle,
-    rgba(var(--glow-color), 0.4) 0%,
-    rgba(var(--glow-color), 0.2) 30%,
-    transparent 70%
-  );
 }
 
 /* Page-wide glow that follows the cursor over the section; appended to <body>. */

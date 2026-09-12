@@ -4,6 +4,19 @@ import { ArrowRight } from "lucide-react";
 const ROOT_CLASS =
   "group relative inline-flex items-center justify-center overflow-hidden rounded-full p-[4px] transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[-8px_0_25px_rgba(59,130,246,0.35),8px_0_25px_rgba(239,68,68,0.35)]";
 
+// Masks the border layers down to the 4px padding ring, so a hollow surface can stay see-through.
+// `exclude` sits inside the shorthand: `mask` resets mask-composite, so a separate class loses to it.
+const RING_MASK = "p-[4px] [mask:linear-gradient(#fff_0_0)_content-box_exclude,linear-gradient(#fff_0_0)]";
+
+// Blue→red edge beam. --beam-gap (registered in globals.css) is the unlit share of the ring.
+const BEAM_GRADIENT =
+  "bg-[conic-gradient(from_90deg_at_50%_50%,transparent_0%,transparent_var(--beam-gap),#3b82f6_calc(var(--beam-gap)_+_25%),#ef4444_100%)]";
+
+const BEAM_MOTION = {
+  spin: "animate-[spin_3s_linear_infinite]",
+  once: "group-hover:animate-[beam-lap-fill_2s_ease-in-out_forwards]",
+};
+
 const SIZES = {
   default: {
     surface: "px-12 py-5 text-lg md:text-xl gap-3",
@@ -24,9 +37,10 @@ const SIZES = {
 };
 
 /**
- * White pill button. On hover a blue→red beam spins around its edge while a dark
- * circle floods the surface, the text turns white and slides right, and the
- * arrow swaps from the right edge to the left.
+ * Pill button. On hover a blue→red beam lights its edge, the text slides
+ * right and the arrow swaps from the right edge to the left.
+ * "solid" fill: white surface that a dark circle floods on hover, turning the text white.
+ * "hollow" fill: transparent surface with only the edge drawn, staying transparent on hover.
  * Renders a Link when `href` is given, otherwise a button calling `onClick`.
  */
 export function SpinningBorderButton({
@@ -35,6 +49,8 @@ export function SpinningBorderButton({
   onClick,
   size = "default",
   arrowMode = "slide",
+  fill = "solid",
+  beam = "spin",
 }: {
   text?: string;
   href?: string;
@@ -42,25 +58,34 @@ export function SpinningBorderButton({
   size?: keyof typeof SIZES;
   /** "slide": right arrow slides out, left arrow slides in (default). "flip": a single arrow stays on the left and reverses direction on hover. */
   arrowMode?: "slide" | "flip";
+  /** "solid": white surface (default). "hollow": transparent inside, only the edge is drawn. */
+  fill?: "solid" | "hollow";
+  /** "spin": the beam circles the edge while hovered (default). "once": one lap, then it fills the whole edge and stops. */
+  beam?: keyof typeof BEAM_MOTION;
 }) {
   const s = SIZES[size];
+  const hollow = fill === "hollow";
+  const surfaceColors = hollow ? "bg-transparent text-white" : "bg-white text-black group-hover:text-white";
+  const circle = hollow ? null : <span className={s.circle} />;
 
   const content = (
     <>
-      {/* Spinning blue→red border beam (visible on hover), matching the grid gradient */}
-      <span className="absolute inset-[-100%] animate-[spin_3s_linear_infinite] bg-[conic-gradient(from_90deg_at_50%_50%,transparent_0%,transparent_50%,#3b82f6_75%,#ef4444_100%)] opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
+      <span className={`absolute inset-0 overflow-hidden rounded-full ${hollow ? RING_MASK : ""}`}>
+        {/* Blue→red border beam (visible on hover), matching the grid gradient */}
+        <span className={`absolute inset-[-100%] opacity-0 transition-opacity duration-300 group-hover:opacity-100 ${BEAM_GRADIENT} ${BEAM_MOTION[beam]}`} />
 
-      {/* Default static border */}
-      <span className="absolute inset-0 rounded-full bg-neutral-300 transition-opacity duration-300 group-hover:opacity-0" />
+        {/* Default static border */}
+        <span className="absolute inset-0 rounded-full bg-neutral-300 transition-opacity duration-300 group-hover:opacity-0" />
+      </span>
 
       {/* Button surface; arrows inherit the text colour */}
-      <span className={`relative flex h-full w-full items-center justify-center overflow-hidden rounded-full bg-white font-bold uppercase tracking-widest text-black transition-colors duration-[600ms] ease-[cubic-bezier(0.23,1,0.32,1)] group-hover:text-white ${s.surface}`}>
+      <span className={`relative flex h-full w-full items-center justify-center overflow-hidden rounded-full font-bold uppercase tracking-widest transition-colors duration-[600ms] ease-[cubic-bezier(0.23,1,0.32,1)] ${surfaceColors} ${s.surface}`}>
         {arrowMode === "flip" ? (
           <>
             {/* Arrow stays on the left; points right at rest, flips to point left on hover */}
             <ArrowRight className={`relative z-[1] transition-transform duration-500 ease-[cubic-bezier(0.34,1.56,0.64,1)] group-hover:rotate-180 ${s.icon}`} />
             <span className="relative z-[1]">{text}</span>
-            <span className={s.circle} />
+            {circle}
           </>
         ) : (
           <>
@@ -72,7 +97,7 @@ export function SpinningBorderButton({
             </span>
 
             {/* Dark circle that expands to fill the surface */}
-            <span className={s.circle} />
+            {circle}
 
             {/* Right arrow — slides out on hover */}
             <ArrowRight className={s.rightArrow} />

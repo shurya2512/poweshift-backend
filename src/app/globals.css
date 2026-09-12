@@ -8,6 +8,14 @@
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+  /* shadcn tokens used by components/ui (button, trail-card), set to the site's dark palette. */
+  --color-card: rgb(10 10 10 / 0.9);
+  --color-card-foreground: #ffffff;
+  --color-muted-foreground: rgb(255 255 255 / 0.45);
+  --color-border: rgb(255 255 255 / 0.08);
+  --color-secondary: #ffffff;
+  --color-secondary-foreground: #0a0a0a;
+  --color-ring: #3b82f6;
   --font-sans: var(--font-space-grotesk);
   --font-mono: var(--font-geist-mono);
 }
@@ -37,6 +45,29 @@ body {
 @keyframes spin {
   to {
     transform: rotate(360deg);
+  }
+}
+
+/* Unlit share of the spinning-border-button beam's ring; registered so it can animate. */
+@property --beam-gap {
+  syntax: "<percentage>";
+  inherits: false;
+  initial-value: 50%;
+}
+
+/* spinning-border-button beam="once": one lap, then the lit arc grows until the whole edge is lit. */
+@keyframes beam-lap-fill {
+  0% {
+    transform: rotate(0deg);
+    --beam-gap: 50%;
+  }
+  60% {
+    transform: rotate(360deg);
+    --beam-gap: 50%;
+  }
+  100% {
+    transform: rotate(360deg);
+    --beam-gap: -25%;
   }
 }
 

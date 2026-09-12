@@ -14,21 +14,17 @@ export default function LandingPage() {
     <main className="flex-1 w-full bg-transparent text-white font-sans">
       <div className="flex flex-col items-center justify-center text-center px-6 max-w-5xl mx-auto min-h-screen pointer-events-none">
 
-        <div className="flex items-center gap-4 mb-6 justify-center">
-          <div className="h-[2px] w-12 bg-blue-500" aria-hidden="true" />
-          <span className="font-mono text-xs tracking-[0.5em] text-blue-500 uppercase">
-            2026 F1 REGULATIONS PROTOTYPE
-          </span>
-          <div className="h-[2px] w-12 bg-blue-500" aria-hidden="true" />
-        </div>
+        <span className="mb-6 -translate-y-1.5 font-mono text-xs tracking-[0.5em] text-blue-500 uppercase">
+          2026 F1 REGULATIONS PROTOTYPE
+        </span>
 
-        <h1 className="text-6xl md:text-8xl lg:text-[120px] font-bold tracking-tighter uppercase leading-[0.85] select-none drop-shadow-sm text-white">
-          POWER<ShiftHoverText />
+        <h1 className="text-[75px] md:text-[120px] lg:text-[150px] font-bold tracking-tighter uppercase leading-[0.85] select-none drop-shadow-sm text-white">
+          POWER<ShiftHoverText italic />
         </h1>
 
         <div className="flex flex-wrap justify-center pointer-events-auto mt-12 gap-5">
-          <SpinningBorderButton href="/setup" text="Qualifying" />
           <SpinningBorderButton href="/full-race" text="Full race" />
+          <SpinningBorderButton href="/setup" text="Qualifying" fill="hollow" />
         </div>
       </div>
 

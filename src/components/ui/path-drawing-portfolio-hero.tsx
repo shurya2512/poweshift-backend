@@ -29,7 +29,10 @@ type SvgPathDrawingTextAnimationProps = {
   fontSize?: number;
   fontFamily?: string;
   fontWeight?: string;
+  fontStyle?: string;
   letterSpacing?: string;
+  /** Per-glyph horizontal nudges in viewBox units, as an SVG dx list */
+  dx?: string;
   /** Start-of-baseline point in viewBox units; centres the text when omitted */
   origin?: { x: number; y: number };
   className?: string;
@@ -143,7 +146,9 @@ export function SvgPathDrawingTextAnimation({
   fontSize = 88,
   fontFamily = "Arial, Helvetica, sans-serif",
   fontWeight = "bold",
+  fontStyle = "normal",
   letterSpacing = "0.02em",
+  dx,
   origin,
   className,
   onComplete,
@@ -264,8 +269,10 @@ export function SvgPathDrawingTextAnimation({
           strokeLinecap="round"
           fontSize={fontSize}
           fontWeight={fontWeight}
+          fontStyle={fontStyle}
           fontFamily={fontFamily}
           letterSpacing={letterSpacing}
+          dx={dx}
         >
           {display}
         </text>

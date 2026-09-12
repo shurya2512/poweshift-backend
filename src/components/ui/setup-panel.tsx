@@ -1,11 +1,12 @@
 "use client";
 
 import React, { useState, useEffect, useRef, useCallback } from 'react';
-import { Check, X, ChevronRight, MapPin, User, Cpu, Flag, Loader2 } from 'lucide-react';
+import { Check, X, MapPin, User, Cpu, Flag, Loader2 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { SpinningBorderButton } from '@/components/ui/spinning-border-button';
 import { DropdownMenu } from '@/components/ui/dropdown-menu';
 import { BentoSection, BentoCard } from '@/components/MagicBento';
+import { TrailCard } from '@/components/ui/trail-card';
 
 // ── Types ────────────────────────────────────────────────────────────────────
 
@@ -303,10 +304,9 @@ export default function SetupPanel({ onStart }: SetupPanelProps) {
         {/* Circuit Hero Card */}
         <BentoCard className="relative isolate group h-full flex flex-col bg-neutral-950/90 backdrop-blur-2xl border border-white/[0.08] rounded-3xl overflow-hidden shadow-[0_12px_40px_rgba(0,0,0,0.6)] transition-colors duration-300 group-hover:border-blue-400/25">
           <div className="px-6 pt-6 pb-5 border-b border-white/[0.06]">
-            <EyebrowLabel className="text-blue-400 mb-2">Selected Circuit</EyebrowLabel>
             <div className="flex items-start justify-between gap-4">
               <div className="min-w-0">
-                <h2 className="text-2xl font-bold tracking-tight text-white truncate">
+                <h2 className="text-3xl font-bold tracking-tight text-white truncate">
                   {selections.track.replace(' Grand Prix', '')}
                 </h2>
                 <p className="text-xs text-white/30 mt-0.5 truncate">{selections.track}</p>
@@ -345,80 +345,30 @@ export default function SetupPanel({ onStart }: SetupPanelProps) {
           </div>
         </BentoCard>
 
-        {/* Driver Info Card — full profile */}
-        <BentoCard className="relative isolate group h-full flex flex-col bg-neutral-950/90 backdrop-blur-2xl border border-white/[0.08] rounded-3xl overflow-hidden shadow-[0_12px_40px_rgba(0,0,0,0.5)] transition-colors duration-300 group-hover:border-blue-300/25">
-
-          {/* Header */}
-          <div className="px-6 pt-6 pb-5 border-b border-white/[0.06] flex items-start justify-between gap-4">
-            <div className="min-w-0">
-              <EyebrowLabel className="text-blue-300 mb-2">Reference Driver</EyebrowLabel>
-              <h2 className="text-2xl font-bold tracking-tight text-white truncate">
-                {CONFIG_ITEMS[1].options.find(o => o.value === selections.driver)?.label}
-              </h2>
-              <p className="text-xs text-white/30 mt-0.5 truncate">{driverMeta.team}</p>
-            </div>
-            <button
-              type="button"
-              onClick={() => setShowDriverModal(true)}
-              className="w-8 h-8 rounded-full bg-white/[0.05] border border-white/[0.08] flex items-center justify-center flex-shrink-0 text-white/30 hover:text-white hover:bg-white/[0.12] transition-colors"
-            >
-              <ChevronRight size={12} />
-            </button>
-          </div>
-
-          {/* Driver photo */}
-          <div className="relative w-full aspect-[4/3] bg-neutral-950/40 overflow-hidden border-b border-white/[0.05]">
-            <AnimatePresence mode="wait">
-              <motion.div
-                key={selections.driver}
-                initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-                transition={{ duration: 0.3 }}
-                className="absolute inset-0"
-              >
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  src={`/${selections.driver}.png`}
-                  alt={selections.driver}
-                  className="absolute inset-0 w-full h-full object-contain object-bottom opacity-90 z-10"
-                  onError={(e) => { e.currentTarget.style.opacity = '0'; }}
-                />
-                <div className="absolute inset-0 flex flex-col items-center justify-center z-0 bg-neutral-900/40">
-                  <User size={40} className="text-white/10 mb-3" />
-                  <p className="text-[10px] font-medium uppercase tracking-widest text-white/20">Photo missing (/{selections.driver}.png)</p>
-                </div>
-              </motion.div>
-            </AnimatePresence>
-            <div className="absolute inset-x-0 bottom-0 h-20 bg-gradient-to-t from-neutral-950 to-transparent z-10 pointer-events-none" />
-            <div
-              className="absolute bottom-2 right-5 text-[56px] leading-none font-black italic tracking-tighter z-20 pointer-events-none"
-              style={{ color: driverMeta.color, textShadow: '0 4px 24px rgba(0,0,0,0.8)' }}
-            >
-              {driverMeta.number}
-            </div>
-          </div>
-
-          {/* Stats */}
-          <div className="grid grid-cols-3 gap-3 p-5 pb-3">
-            <StatChip label="WDC Titles"  value={`${driverMeta.wdc}`} />
-            <StatChip label="Code"        value={selections.driver} />
-            <StatChip label="Nationality" value={driverMeta.nationality} />
-          </div>
-
-          {/* Telemetry profile */}
-          <div className="px-6 pb-6 pt-2 mt-auto">
-            <EyebrowLabel className="mb-2">Telemetry Profile</EyebrowLabel>
-            <p className="text-xs text-white/45 leading-relaxed font-medium line-clamp-4">
-              {driverMeta.bio}
-            </p>
-          </div>
-        </BentoCard>
+        {/* Driver Info Card — photo, reference lap and stats; "Profile" opens the full bio */}
+        <TrailCard
+          className="h-full max-w-none rounded-3xl border border-white/[0.08] shadow-[0_12px_40px_rgba(0,0,0,0.5)]"
+          imageUrl={`/${selections.driver}.png`}
+          imageClassName="object-top"
+          title={CONFIG_ITEMS[1].options.find(o => o.value === selections.driver)?.label ?? selections.driver}
+          subtitle={driverMeta.team}
+          highlight={`Car #${driverMeta.number}`}
+          caption={`${selections.track.replace(' Grand Prix', '')} reference lap`}
+          thumbnailUrl={circuit.mapUrl}
+          stats={[
+            { label: 'WDC Titles', value: `${driverMeta.wdc}` },
+            { label: 'Code', value: selections.driver },
+            { label: 'Nationality', value: driverMeta.nationality },
+          ]}
+          actionLabel="Profile"
+          onAction={() => setShowDriverModal(true)}
+        />
       </div>
 
       {/* ── Start Race ────────────────────────────────────────────────────── */}
-      <BentoCard className="relative isolate group bg-neutral-950/90 backdrop-blur-2xl border border-white/[0.08] rounded-3xl px-6 py-5 shadow-[0_12px_40px_rgba(0,0,0,0.6)] flex flex-col sm:flex-row sm:items-center gap-4 transition-colors duration-300 group-hover:border-red-400/25">
+      <BentoCard enableStars className="relative isolate group bg-neutral-950/90 backdrop-blur-2xl border border-white/[0.08] rounded-3xl px-6 py-5 shadow-[0_12px_40px_rgba(0,0,0,0.6)] flex flex-col sm:flex-row sm:items-center gap-4 transition-colors duration-300 group-hover:border-red-400/25">
         <div className="min-w-0 flex-1">
-          <EyebrowLabel className="mb-1">Ready to launch</EyebrowLabel>
-          <p className="text-sm font-semibold text-white truncate">
+          <p className="text-xl font-semibold text-white truncate">
             {selections.track.replace(' Grand Prix', '')}
             <span className="text-white/25 font-normal"> · </span>
             {CONFIG_ITEMS[1].options.find(o => o.value === selections.driver)?.label}
@@ -430,16 +380,15 @@ export default function SetupPanel({ onStart }: SetupPanelProps) {
         />
       </BentoCard>
 
-      {/* ── BOTTOM: 2026 Regs Banner ──────────────────────────────────────── */}
-      <BentoCard className="relative isolate group bg-blue-950/35 border border-blue-500/15 rounded-2xl px-6 py-4 transition-colors duration-300 group-hover:border-blue-400/40">
-        <p className="text-xs font-semibold text-blue-300/80 mb-1">2026 F1 Regulations</p>
-        <p className="text-xs text-blue-300/40 leading-relaxed">
-          Maximum <span className="text-blue-300/70 font-semibold">350 kW</span> electrical output from a{' '}
-          <span className="text-blue-300/70 font-semibold">4 MJ</span> battery cap per lap.
-          Car mass: <span className="text-blue-300/70 font-semibold">798 kg</span>.
-          The AI learns optimal deployment timing to minimise lap time.
-        </p>
-      </BentoCard>
+      {/* ── BOTTOM: 2026 Regs caption ─────────────────────────────────────── */}
+      <p className="px-6 text-center text-xs text-blue-300/40 leading-relaxed">
+        <span className="text-blue-300/80 font-semibold">2026 F1 Regulations</span>
+        {' · '}
+        Maximum <span className="text-blue-300/70 font-semibold">350 kW</span> electrical output from a{' '}
+        <span className="text-blue-300/70 font-semibold">4 MJ</span> battery cap per lap.
+        Car mass: <span className="text-blue-300/70 font-semibold">798 kg</span>.
+        The AI learns optimal deployment timing to minimise lap time.
+      </p>
 
       {/* ── DRIVER INFO MODAL ─────────────────────────────────────────────── */}
       <AnimatePresence>

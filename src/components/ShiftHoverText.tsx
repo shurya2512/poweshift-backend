@@ -6,6 +6,8 @@ import { SvgPathDrawingTextAnimation } from "@/components/ui/path-drawing-portfo
 const TEXT = "-SHIFT";
 /** Extra width on each side of the word, so the outline is never clipped. */
 const SIDE_PAD = 0.15;
+/** Pulls the T left so its crossbar overlaps the F's top bar; edge to edge they left a hairline seam. */
+const FT_OVERLAP_EM = 0.02;
 
 type Box = {
   width: number;
@@ -15,6 +17,7 @@ type Box = {
   fontSize: number;
   fontFamily: string;
   fontWeight: string;
+  fontStyle: string;
   letterSpacing: string;
 };
 /** draw: intro outline → fill: gradient fades in → idle → hover: looping outline. */
@@ -24,8 +27,10 @@ type Phase = "draw" | "fill" | "idle" | "hover";
  * The gradient "-SHIFT" of the landing title. On load its outline is drawn once,
  * then the gradient fill fades in. On hover the fill fades out and the outline
  * is path-drawn in a loop until the pointer leaves.
+ * `italic` slants the word; the fill gets extra right padding (cancelled by a
+ * negative margin) so the leaning "T" isn't clipped by bg-clip-text's box.
  */
-export function ShiftHoverText() {
+export function ShiftHoverText({ italic = false }: { italic?: boolean }) {
   const ref = useRef<HTMLSpanElement>(null);
   const probeRef = useRef<HTMLSpanElement>(null);
   const [box, setBox] = useState<Box | null>(null);
@@ -43,6 +48,7 @@ export function ShiftHoverText() {
       fontSize: parseFloat(style.fontSize),
       fontFamily: style.fontFamily,
       fontWeight: style.fontWeight,
+      fontStyle: style.fontStyle,
       letterSpacing: style.letterSpacing,
     });
   };
@@ -66,13 +72,14 @@ export function ShiftHoverText() {
       ref={ref}
       onMouseEnter={onEnter}
       onMouseLeave={() => phase === "hover" && setPhase("idle")}
-      className="relative inline-block pointer-events-auto"
+      className={`relative inline-block pointer-events-auto ${italic ? "italic" : ""}`}
     >
       <span
         onTransitionEnd={() => phase === "fill" && setPhase("idle")}
-        className={`text-transparent bg-clip-text bg-gradient-to-r from-blue-500 to-red-500 transition-opacity duration-500 ${filled ? "opacity-100" : "opacity-0"}`}
+        className={`text-transparent bg-clip-text bg-gradient-to-r from-blue-500 to-red-500 transition-opacity duration-500 ${italic ? "pr-[0.25em] -mr-[0.25em]" : ""} ${filled ? "opacity-100" : "opacity-0"}`}
       >
-        {TEXT}
+        {TEXT.slice(0, -1)}
+        <span style={{ marginLeft: `${-FT_OVERLAP_EM}em` }}>{TEXT.slice(-1)}</span>
       </span>
       <span ref={probeRef} aria-hidden className="inline-block" />
 
@@ -87,7 +94,9 @@ export function ShiftHoverText() {
             fontSize={box.fontSize}
             fontFamily={box.fontFamily}
             fontWeight={box.fontWeight}
+            fontStyle={box.fontStyle}
             letterSpacing={box.letterSpacing}
+            dx={`${"0 ".repeat(TEXT.length - 1)}${-FT_OVERLAP_EM * box.fontSize}`}
             origin={{ x: box.width * SIDE_PAD, y: box.baseline }}
             strokeWidth={2.4}
             durationSec={2.5}

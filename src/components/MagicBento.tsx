@@ -120,20 +120,20 @@ export function BentoSection({
 type BentoCardProps = {
   children: React.ReactNode;
   className?: string;
+  enableStars?: boolean;
   particleCount?: number;
   enableTilt?: boolean;
   enableMagnetism?: boolean;
-  clickEffect?: boolean;
 };
 
-/** A panel with MagicBento effects: border glow (driven by BentoSection), hover particles, magnetism, optional tilt and click ripple. */
+/** A panel with MagicBento effects: border glow (driven by BentoSection), magnetism, and optional hover particles and tilt. */
 export function BentoCard({
   children,
   className = '',
+  enableStars = false,
   particleCount = DEFAULT_PARTICLE_COUNT,
   enableTilt = false,
   enableMagnetism = true,
-  clickEffect = true,
 }: BentoCardProps) {
   const cardRef = useRef<HTMLDivElement>(null);
   const layerRef = useRef<HTMLDivElement>(null);
@@ -186,7 +186,7 @@ export function BentoCard({
 
     const handleMouseEnter = () => {
       hovered = true;
-      spawnParticles();
+      if (enableStars) spawnParticles();
     };
 
     const handleMouseLeave = () => {
@@ -214,43 +214,18 @@ export function BentoCard({
       if (enableMagnetism) gsap.to(card, { x: dx * 0.05, y: dy * 0.05, duration: 0.3, ease: 'power2.out', overwrite: 'auto' });
     };
 
-    const handleClick = (e: MouseEvent) => {
-      const rect = card.getBoundingClientRect();
-      const x = e.clientX - rect.left;
-      const y = e.clientY - rect.top;
-      // Reach the farthest corner so the ripple covers the whole card.
-      const radius = Math.max(
-        Math.hypot(x, y),
-        Math.hypot(x - rect.width, y),
-        Math.hypot(x, y - rect.height),
-        Math.hypot(x - rect.width, y - rect.height)
-      );
-      const ripple = document.createElement('div');
-      ripple.className = styles.ripple;
-      Object.assign(ripple.style, {
-        width: `${radius * 2}px`,
-        height: `${radius * 2}px`,
-        left: `${x - radius}px`,
-        top: `${y - radius}px`,
-      });
-      layer.appendChild(ripple);
-      gsap.fromTo(ripple, { scale: 0, opacity: 1 }, { scale: 1, opacity: 0, duration: 0.8, ease: 'power2.out', onComplete: () => ripple.remove() });
-    };
-
     card.addEventListener('mouseenter', handleMouseEnter);
     card.addEventListener('mouseleave', handleMouseLeave);
     card.addEventListener('mousemove', handleMouseMove);
-    if (clickEffect) card.addEventListener('click', handleClick);
 
     return () => {
       hovered = false;
       card.removeEventListener('mouseenter', handleMouseEnter);
       card.removeEventListener('mouseleave', handleMouseLeave);
       card.removeEventListener('mousemove', handleMouseMove);
-      card.removeEventListener('click', handleClick);
       clearParticles();
     };
-  }, [isMobile, particleCount, enableTilt, enableMagnetism, clickEffect]);
+  }, [isMobile, enableStars, particleCount, enableTilt, enableMagnetism]);
 
   return (
     <div ref={cardRef} data-bento-card className={`${styles.card} ${className}`}>
