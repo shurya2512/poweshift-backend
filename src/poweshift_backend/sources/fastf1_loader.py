@@ -35,7 +35,7 @@ def load_bahrain_test_day(
         "position": _driver_frames(session.pos_data),
         "laps": pd.DataFrame(session.laps),
         "tyres": pd.DataFrame(session.laps).reindex(
-            columns=["DriverNumber", "LapNumber", "Stint", "Compound", "TyreLife", "FreshTyre"]
+            columns=["Time", "DriverNumber", "LapNumber", "Stint", "Compound", "TyreLife", "FreshTyre"]
         ),
         "weather": session.weather_data,
         "session_status": session.session_status,

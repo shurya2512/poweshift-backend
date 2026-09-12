@@ -3,6 +3,7 @@
 from hashlib import sha256
 from pathlib import Path
 
+import fastf1
 from poweshift_backend.contracts.acquisition import SessionRequest
 from poweshift_backend.data.coverage import entry_exclusions, parser_quality
 from poweshift_backend.data.export import write_manifest, write_table
@@ -32,6 +33,7 @@ def acquire_all(cache_dir: Path, output_dir: Path) -> Path:
             sessions.append(_acquire_day(request, cache_dir, output_dir))
     bundle = {
         "cache_hashes": cache_inventory(cache_dir),
+        "parser_version": fastf1.__version__,
         "coverage_review": "pending_human_approval",
         "downstream_ready": False,
         "reason": "critical gaps block later work until coverage review",
@@ -54,8 +56,8 @@ def _acquire_day(request: SessionRequest, cache_dir: Path, output_dir: Path) -> 
         records = streams[name].copy()
         records.insert(0, "source_row", range(len(records)))
         exports[name] = {"path": str(day_dir / f"{name}.parquet"), "sha256": write_table(records, day_dir / f"{name}.parquet")}
-        report = audit_stream(records, set(roster)) if "SessionTime" in records else None
-        coverage[name] = report.__dict__ if report else {"status": "present" if len(records) else "verified_empty"}
+        expected_roster = set(roster) if name in {"car", "position", "laps", "tyres"} else set()
+        coverage[name] = audit_stream(records, expected_roster).__dict__
     laps = streams["laps"]
     return {
         "identity": identity.model_dump(mode="json"),

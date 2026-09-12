@@ -18,14 +18,28 @@ class StreamAudit:
     missing_roster: list[str]
     unexpected_roster: list[str]
     fields: list[str]
+    error: str | None = None
 
 
 def audit_stream(
-    records: pd.DataFrame,
+    records: pd.DataFrame | None,
     expected_roster: set[str],
     max_gap: timedelta = timedelta(seconds=15),
+    error: str | None = None,
 ) -> StreamAudit:
     """Describe time and roster coverage without changing records."""
+    if records is None:
+        return StreamAudit(
+            status=StreamStatus.FAILED if error else StreamStatus.MISSING,
+            first_time_s=None,
+            last_time_s=None,
+            gap_count=0,
+            out_of_order_count=0,
+            missing_roster=sorted(expected_roster),
+            unexpected_roster=[],
+            fields=[],
+            error=error,
+        )
     if records.empty:
         return StreamAudit(
             status=StreamStatus.VERIFIED_EMPTY,
@@ -38,7 +52,8 @@ def audit_stream(
             fields=list(records.columns),
         )
 
-    times = pd.to_timedelta(records["SessionTime"])
+    time_column = "SessionTime" if "SessionTime" in records else "Time"
+    times = pd.to_timedelta(records[time_column])
     deltas = times.diff()
     observed_roster = set(records.get("DriverNumber", pd.Series(dtype=str)).dropna().astype(str))
     return StreamAudit(

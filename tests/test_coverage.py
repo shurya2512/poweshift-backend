@@ -22,3 +22,12 @@ def test_audit_reports_gaps_ordering_roster_and_available_fields() -> None:
     assert report.missing_roster == ["3"]
     assert report.unexpected_roster == ["2"]
     assert report.fields == ["SessionTime", "DriverNumber", "Speed"]
+
+
+def test_audit_distinguishes_missing_and_failed_streams() -> None:
+    missing = audit_stream(None, expected_roster=set())
+    failed = audit_stream(None, expected_roster=set(), error="public source timed out")
+
+    assert missing.status.value == "missing"
+    assert failed.status.value == "failed"
+    assert failed.error == "public source timed out"
