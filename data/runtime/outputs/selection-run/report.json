@@ -1,0 +1,24 @@
+{
+  "run_id": "selection-run",
+  "status": "completed",
+  "partition": "selection",
+  "source_id": "selection-source",
+  "source_sha256": "478af8b419c1c435df32867a924ae2c076db2480600715ebfb6bace6965b0d1a",
+  "target_id": "protected-target",
+  "checkpoint_id": "checkpoint-a",
+  "recommendation_count": 2,
+  "fallback_count": 0,
+  "recommendations_sha256": "88684a09dfd577a5f367840e6dae6875085abea17c98ef406404dcb279e8d078",
+  "policy_id": "schema-a",
+  "energy_bundle_id": "bundle-a",
+  "continuous_profile_id": "profile-a",
+  "physics_id": "physics-a",
+  "rules_id": "rules-a",
+  "pit_manifest_id": "pit-a",
+  "route_id": "route-a",
+  "scenario_id": "scenario-a",
+  "limitations": [
+    "retrospective weekend observations do not establish live-feed latency",
+    "recommendations are not realised delivery or strategy superiority evidence"
+  ]
+}

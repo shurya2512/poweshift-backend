@@ -1,0 +1,71 @@
+{
+  "frontend_inference": {
+    "decision_hz": 5.0,
+    "input_hz": 4.0,
+    "websocket": "/runs/{run_id}/live"
+  },
+  "physics_admission": false,
+  "status": "diagnostic_only",
+  "tracks": [
+    {
+      "event_name": "Australian Grand Prix",
+      "partition": "training_replay",
+      "profiles_with_laps": 19,
+      "summary": "australian/summary.json"
+    },
+    {
+      "event_name": "Chinese Grand Prix",
+      "partition": "training_replay",
+      "profiles_with_laps": 22,
+      "summary": "chinese/summary.json"
+    },
+    {
+      "event_name": "Japanese Grand Prix",
+      "partition": "training_replay",
+      "profiles_with_laps": 22,
+      "summary": "japanese/summary.json"
+    },
+    {
+      "event_name": "Miami Grand Prix",
+      "partition": "training_replay",
+      "profiles_with_laps": 22,
+      "summary": "miami/summary.json"
+    },
+    {
+      "event_name": "Canadian Grand Prix",
+      "partition": "training_replay",
+      "profiles_with_laps": 22,
+      "summary": "canadian/summary.json"
+    },
+    {
+      "event_name": "Monaco Grand Prix",
+      "partition": "training_replay",
+      "profiles_with_laps": 22,
+      "summary": "monaco/summary.json"
+    },
+    {
+      "event_name": "Barcelona Grand Prix",
+      "partition": "training_replay",
+      "profiles_with_laps": 22,
+      "summary": "barcelona/summary.json"
+    },
+    {
+      "event_name": "Austrian Grand Prix",
+      "partition": "training_replay",
+      "profiles_with_laps": 22,
+      "summary": "austrian/summary.json"
+    },
+    {
+      "event_name": "British Grand Prix",
+      "partition": "training_replay",
+      "profiles_with_laps": 22,
+      "summary": "british/summary.json"
+    },
+    {
+      "event_name": "Spanish Grand Prix",
+      "partition": "final_evaluation",
+      "profiles_with_laps": 19,
+      "summary": "spanish/summary.json"
+    }
+  ]
+}

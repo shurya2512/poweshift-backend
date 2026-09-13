@@ -8,18 +8,18 @@ from math import isfinite
 class DeploymentPrior:
     """Explicit diagnostic power and storage assumptions."""
 
-    electric_boost_fraction: float
     usable_store_j: float
     harvest_cap_j_per_lap: float
     motor_efficiency: float
     harvest_efficiency: float
+    maximum_electric_power_w: float
 
     def __post_init__(self) -> None:
         values = self.__dict__.values()
         if not all(isfinite(value) and value > 0.0 for value in values):
             raise ValueError("deployment prior values must be positive and finite")
-        if max(self.electric_boost_fraction, self.motor_efficiency, self.harvest_efficiency) > 1.0:
-            raise ValueError("deployment fractions and efficiencies cannot exceed one")
+        if max(self.motor_efficiency, self.harvest_efficiency) > 1.0:
+            raise ValueError("efficiencies cannot exceed one")
 
 
 @dataclass(frozen=True)
@@ -62,19 +62,26 @@ def allocate_additive_power(
     brake: float,
     deployment_fraction: float,
     maximum_drive_force_n: float,
+    maximum_brake_force_n: float,
     step_s: float,
 ) -> AdditivePowerResult:
     """Add motor boost to ICE power or harvest during braking."""
-    values = (speed_ms, throttle, brake, deployment_fraction, maximum_drive_force_n, step_s)
-    if not all(isfinite(value) for value in values) or speed_ms <= 0.0 or maximum_drive_force_n <= 0.0 or step_s <= 0.0:
+    values = (speed_ms, throttle, brake, deployment_fraction, maximum_drive_force_n, maximum_brake_force_n, step_s)
+    if (
+        not all(isfinite(value) for value in values)
+        or speed_ms <= 0.0
+        or maximum_drive_force_n <= 0.0
+        or maximum_brake_force_n <= 0.0
+        or step_s <= 0.0
+    ):
         raise ValueError("power allocation inputs are invalid")
     if not all(0.0 <= value <= 1.0 for value in (throttle, brake, deployment_fraction)):
         raise ValueError("driver and deployment fractions must be bounded")
     ice_force_n = maximum_drive_force_n * throttle
     ice_power_w = ice_force_n * speed_ms
-    maximum_motor_wheel_w = maximum_drive_force_n * speed_ms * prior.electric_boost_fraction
     if brake > 0.0:
-        requested_harvest_j = maximum_motor_wheel_w * brake * step_s
+        recoverable_wheel_w = min(maximum_brake_force_n * brake * speed_ms, prior.maximum_electric_power_w)
+        requested_harvest_j = recoverable_wheel_w * step_s
         lap_room_j = max(0.0, prior.harvest_cap_j_per_lap - state.harvested_this_lap_j)
         terminal_harvest_j = min(requested_harvest_j, lap_room_j)
         stored_j = terminal_harvest_j * prior.harvest_efficiency
@@ -90,7 +97,7 @@ def allocate_additive_power(
             state.curtailed_energy_j + curtailed_j,
         )
         return AdditivePowerResult(0.0, 0.0, 0.0, 0.0, curtailed_j, updated)
-    requested_motor_wheel_w = maximum_motor_wheel_w * deployment_fraction
+    requested_motor_wheel_w = prior.maximum_electric_power_w * deployment_fraction
     storage_motor_wheel_w = state.stored_energy_j / step_s * prior.motor_efficiency
     motor_wheel_w = min(requested_motor_wheel_w, storage_motor_wheel_w)
     delivered_dc_j = motor_wheel_w / prior.motor_efficiency * step_s

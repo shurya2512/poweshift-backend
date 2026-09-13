@@ -1,0 +1,51 @@
+{
+  "best_diagnostic_attainable_lap_time_s": 77.62637529899388,
+  "best_observed_lap_time_s": 96.906,
+  "checkpoint_sha256": "57cb26db2ec70d3f6515f8ceb95dbdbafe9ebaeadfe1bff54264d5d8458fe7b1",
+  "checkpoint_stage": "2026-07-05-british-entry-11",
+  "event_name": "Chinese Grand Prix",
+  "final_stored_energy_j": 0.0,
+  "gross_deployment_j": 12727862.35210143,
+  "gross_harvest_j": 9659827.940126784,
+  "lap_time_semantics": "idealized_additive_power_ratio_proxy_not_physical_prediction",
+  "laps": [
+    {
+      "diagnostic_attainable_lap_time_s": 77.62637529899388,
+      "diagnostic_time_gain_proxy_s": 19.897624701006123,
+      "gross_deployment_j": 8727862.35210143,
+      "gross_harvest_j": 4659827.940126783,
+      "mean_delivered_deployment_fraction": 0.2429734574211386,
+      "mean_requested_deployment_fraction": 0.24717143132136418,
+      "mean_uncalibrated_action_probability": 1.0,
+      "observed_lap_time_s": 97.524,
+      "path": "hold",
+      "peak_motor_wheel_power_kw": 241.79418981075287,
+      "source_lap": 2.0,
+      "stored_energy_end_j": 0.0,
+      "stored_energy_start_j": 5000000.0
+    },
+    {
+      "diagnostic_attainable_lap_time_s": 86.43163741811057,
+      "diagnostic_time_gain_proxy_s": 10.474362581889437,
+      "gross_deployment_j": 4000000.0,
+      "gross_harvest_j": 5000000.000000001,
+      "mean_delivered_deployment_fraction": 0.112218530823182,
+      "mean_requested_deployment_fraction": 0.11382103197334349,
+      "mean_uncalibrated_action_probability": 1.0,
+      "observed_lap_time_s": 96.906,
+      "path": "hold",
+      "peak_motor_wheel_power_kw": 241.70680046081543,
+      "source_lap": 5.0,
+      "stored_energy_end_j": 0.0,
+      "stored_energy_start_j": 0.0
+    }
+  ],
+  "optimizer_updates": 0,
+  "partition": "training_replay",
+  "physics_admission": false,
+  "probability_semantics": "uncalibrated_action_selection_probability",
+  "profile_entry": "11",
+  "session": "Qualifying",
+  "source_manifest_sha256": "f996eaea8a0ed10a3e0ebb06a96caacc75b7c146289ae91d4e337ab8054ed0e7",
+  "status": "diagnostic_only"
+}

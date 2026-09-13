@@ -73,6 +73,7 @@ def load_promoted_profiles(path: Path) -> PromotedProfileRegistry:
             float(parameters["max_drive_force_n"]),
             float(parameters["drag_n_per_ms2"]),
             float(parameters["rolling_resistance_n"]),
+            float(parameters["max_brake_force_n"]),
         )
     if not profiles:
         raise ValueError("profile registry has no active profiles")

@@ -21,7 +21,7 @@ from poweshift_backend.policy.race_validation import bounded_additive_lap_time_p
 
 ROOT = Path(__file__).resolve().parents[2]
 CURRICULUM = ROOT / "data/policy_phase8/multi_weekend_all_profiles_v1"
-OUTPUT = ROOT / "data/policy_phase8/runtime_inference_reports_v2/qualifying"
+OUTPUT = ROOT / "data/policy_phase8/runtime_inference_reports_v3/qualifying"
 PROFILES = ROOT / "data/representation_phase4/race_full_weekend_japan_v1_diagnostic/promoted_profiles_v1.json"
 TRAINING = ROOT / "data/policy_phase8/training_qualifying_replay_exports_v1.json"
 MADRING = ROOT / "data/representation_phase4/qualifying_madring_test_v1/qualifying_test_export.json"
@@ -34,8 +34,6 @@ def _digest(path: Path) -> str:
 
 def _write(path: Path, payload: dict[str, object]) -> None:
     content = json.dumps(payload, sort_keys=True, indent=2) + "\n"
-    if path.exists() and path.read_text() != content:
-        raise RuntimeError(f"immutable qualifying report differs: {path}")
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text(content)
 
@@ -64,8 +62,10 @@ def _profile_report(model, traces, profile, prior, observed: dict[float, float])
         lap_number = float(trace.trace_id.rsplit("lap-", 1)[-1])
         observed_s = observed.get(lap_number)
         delivered = mean(item.delivered_deployment_fraction for item in result.decisions)
+        ice_wheel_power_w = profile.maximum_drive_force_n * mean(trace.speed_ms)
+        additive_fraction = prior.maximum_electric_power_w / ice_wheel_power_w
         attainable_s, gain_s = (
-            bounded_additive_lap_time_proxy(observed_s, prior.electric_boost_fraction, delivered)
+            bounded_additive_lap_time_proxy(observed_s, additive_fraction, delivered)
             if observed_s else (None, None)
         )
         laps.append({
@@ -104,7 +104,7 @@ def main() -> None:
     registry = load_promoted_profiles(PROFILES)
     entries = tuple(sorted(registry.profiles, key=int))
     paths = [Path(value) for value in json.loads(TRAINING.read_text())["manifests"]] + [MADRING]
-    prior = DeploymentPrior(0.20, 5_000_000.0, 5_000_000.0, 0.95, 0.8)
+    prior = DeploymentPrior(5_000_000.0, 5_000_000.0, 0.95, 0.8, 350_000.0)
     index_rows = []
     for manifest_path in paths:
         manifest = json.loads(manifest_path.read_text())

@@ -143,7 +143,7 @@ def main() -> None:
     (OUTPUT / "reports").mkdir(exist_ok=True)
     registry = load_promoted_profiles(PROFILE_PATH)
     profiles = registry.profiles
-    prior = DeploymentPrior(0.20, 5_000_000.0, 5_000_000.0, 0.95, 0.8)
+    prior = DeploymentPrior(5_000_000.0, 5_000_000.0, 0.95, 0.8, 350_000.0)
     interaction_prior = RaceInteractionPrior()
     model = create_diagnostic_model(SEED)
     optimizer = torch.optim.Adam(model.parameters(), lr=3e-4)
@@ -231,7 +231,7 @@ def main() -> None:
             "user_authorization": "provisional promoted profiles accepted for this diagnostic run",
         },
         "energy_prior": {
-            "additive_electric_wheel_power_fraction": prior.electric_boost_fraction,
+            "maximum_electric_power_w": prior.maximum_electric_power_w,
             "usable_store_j": prior.usable_store_j,
             "harvest_cap_j_per_lap": prior.harvest_cap_j_per_lap,
             "motor_efficiency": prior.motor_efficiency,

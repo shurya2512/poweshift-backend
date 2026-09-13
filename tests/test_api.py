@@ -78,3 +78,28 @@ def test_api_serves_registered_diagnostic_reports_to_local_frontend(tmp_path) ->
     assert index.json()["status"] == "diagnostic_only"
     assert nested.json()["tracks"][0]["event_name"] == "British Grand Prix"
     assert preflight.headers["access-control-allow-origin"] == "http://localhost:3000"
+
+
+def test_live_stream_accepts_an_accelerated_replay_speed(tmp_path) -> None:
+    registry_path, outputs = registered_run(tmp_path)
+    supervisor = RunSupervisor(registry_path, outputs)
+    app = create_app(supervisor)
+
+    with TestClient(app) as client:
+        started = time.monotonic()
+        with client.websocket_connect("/runs/selection-run/live?speed=20") as stream:
+            stream.send_json({
+                "sequence": 0,
+                "observed_at_s": 0.0,
+                "values": [20.0, 4_000_000.0],
+                "feature_mask": [True, True],
+                "action_mask": [True, True, True, True],
+                "deployment_available": True,
+                "news_prior_ids": [],
+            })
+            first = stream.receive_json()
+        elapsed = time.monotonic() - started
+
+    assert first["decision_sequence"] == 0
+    assert first["decision_hz"] == 5.0
+    assert elapsed < 0.2

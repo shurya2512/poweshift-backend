@@ -186,7 +186,7 @@ def main() -> None:
     entries = tuple(sorted(registry.profiles, key=lambda value: int(value)))
     native = load_native_race_data(RACE_BATCH_PATH, RACE_REPORT_PATH, entries)
     split_manifest, split_digest = _freeze_split(native, entries)
-    prior = DeploymentPrior(0.20, 5_000_000.0, 5_000_000.0, 0.95, 0.8)
+    prior = DeploymentPrior(5_000_000.0, 5_000_000.0, 0.95, 0.8, 350_000.0)
     interaction = RaceInteractionPrior()
     scenario = P23ScenarioPrior(5.0, 800.0, 16_000.0)
     reports = {
@@ -221,7 +221,7 @@ def main() -> None:
         "p23_decision_ticks_5hz": sum(int(report["p23"]["decision_ticks"]) for report in reports.values()),
         "reference_field_mode": "22_fitted_ice_profiles_with_source_controls_no_policy_or_electric",
         "energy_prior": {
-            "additive_electric_wheel_power_fraction": prior.electric_boost_fraction,
+            "maximum_electric_power_w": prior.maximum_electric_power_w,
             "usable_store_j": prior.usable_store_j,
             "harvest_cap_j_per_lap": prior.harvest_cap_j_per_lap,
             "motor_efficiency": prior.motor_efficiency,

@@ -64,10 +64,11 @@ class FittedProfile:
     maximum_drive_force_n: float
     drag_n_per_ms2: float
     rolling_resistance_n: float
+    maximum_brake_force_n: float
 
     def __post_init__(self) -> None:
         if not self.entry or not all(isfinite(value) and value > 0.0 for value in (
-            self.maximum_drive_force_n, self.drag_n_per_ms2, self.rolling_resistance_n,
+            self.maximum_drive_force_n, self.drag_n_per_ms2, self.rolling_resistance_n, self.maximum_brake_force_n,
         )):
             raise ValueError("fitted profile values must be positive and finite")
 
@@ -280,7 +281,7 @@ def _rollout(
         before_harvest_j = state.gross_harvest_j
         allocation = allocate_additive_power(
             prior, state, speed, throttle, brake, deployment_fraction,
-            profile.maximum_drive_force_n, trace.step_s,
+            profile.maximum_drive_force_n, profile.maximum_brake_force_n, trace.step_s,
         )
         state = allocation.state
         deployment_j = state.gross_deployment_j - before_deployment_j
@@ -290,8 +291,7 @@ def _rollout(
         incremental_speed_ms += incremental_force_n / 800.0 * trace.step_s
         incremental_progress_proxy_m += incremental_speed_ms * trace.step_s
         local_gain = incremental_force_n / 800.0 * trace.step_s
-        maximum_motor_wheel_w = profile.maximum_drive_force_n * speed * prior.electric_boost_fraction
-        delivered_fraction = allocation.motor_wheel_power_w / maximum_motor_wheel_w if maximum_motor_wheel_w > 0.0 else 0.0
+        delivered_fraction = allocation.motor_wheel_power_w / prior.maximum_electric_power_w
         if trace.race_context:
             reward = race_step_reward(
                 interaction_prior, delivered_fraction, deployment_j,
@@ -437,7 +437,7 @@ def run_diagnostic_updates(
         "status": "diagnostic_only",
         "updates": updates,
         "source_partition": "training",
-        "electric_boost_fraction": prior.electric_boost_fraction,
+        "maximum_electric_power_w": prior.maximum_electric_power_w,
         "usable_store_j": prior.usable_store_j,
         "harvest_cap_j_per_lap": prior.harvest_cap_j_per_lap,
         "gross_deployment_j": aggregate_deployment_j,

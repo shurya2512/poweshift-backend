@@ -115,8 +115,9 @@ def create_app(
             raise HTTPException(status_code=425, detail=str(error)) from error
 
     @app.websocket("/runs/{run_id}/stream")
-    async def stream_run(websocket: WebSocket, run_id: str, after_sequence: int = -1):
+    async def stream_run(websocket: WebSocket, run_id: str, after_sequence: int = -1, speed: float = 1.0):
         await websocket.accept()
+        speed = min(50.0, max(1.0, speed))
         sequence = after_sequence
         while True:
             try:
@@ -131,11 +132,13 @@ def create_app(
             if status.status in {"completed", "stopped", "failed"}:
                 await websocket.close(code=1000)
                 return
-            await asyncio.sleep(0.02)
+            await asyncio.sleep(0.02 / speed)
 
     @app.websocket("/runs/{run_id}/live")
-    async def live_run(websocket: WebSocket, run_id: str):
+    async def live_run(websocket: WebSocket, run_id: str, speed: float = 1.0):
         await websocket.accept()
+        speed = min(50.0, max(1.0, speed))
+        period = 0.2 / speed
         try:
             session = supervisor.live(run_id)
         except (KeyError, FileNotFoundError, ValueError) as error:
@@ -150,7 +153,7 @@ def create_app(
                     payload = await receive
                     session.ingest(_live_observation(payload))
                     receive = asyncio.create_task(websocket.receive_json())
-                    next_decision = loop.time() + 0.2
+                    next_decision = loop.time() + period
                     continue
                 timeout = max(0.0, next_decision - loop.time())
                 done, _ = await asyncio.wait((receive,), timeout=timeout)
@@ -160,7 +163,7 @@ def create_app(
                     receive = asyncio.create_task(websocket.receive_json())
                     continue
                 await websocket.send_json(session.decide().model_dump(mode="json"))
-                next_decision += 0.2
+                next_decision += period
         except WebSocketDisconnect:
             return
         except (LookupError, ValidationError, ValueError) as error:

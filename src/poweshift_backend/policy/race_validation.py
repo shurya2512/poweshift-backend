@@ -7,6 +7,7 @@ from math import isfinite
 from pathlib import Path
 from statistics import median
 
+import numpy as np
 import pandas as pd
 import torch
 from torch.distributions import Beta, Categorical
@@ -42,13 +43,12 @@ class P23ScenarioPrior:
     decision_hz: float
     vehicle_mass_kg: float
     maximum_brake_force_n: float
-    speed_control_band_ms: float = 10.0
-    maximum_speed_ms: float = 120.0
+    maximum_additive_speed_ms: float = 5.0
 
     def __post_init__(self) -> None:
         values = (
-            self.decision_hz, self.vehicle_mass_kg, self.maximum_brake_force_n,
-            self.speed_control_band_ms, self.maximum_speed_ms,
+            self.decision_hz, self.vehicle_mass_kg,
+            self.maximum_brake_force_n, self.maximum_additive_speed_ms,
         )
         if not all(isfinite(value) and value > 0.0 for value in values):
             raise ValueError("P23 scenario values must be positive and finite")
@@ -139,6 +139,78 @@ def load_major_race_events(
             "source_row": int(row.source_row),
         })
     return tuple(events)
+
+
+def load_source_pit_strategy(binding_path: Path, entry: str) -> dict[str, object]:
+    """Load one entry's recorded stints and pit laps from the hash-verified lap export."""
+    binding = json.loads(binding_path.read_text())
+    manifest_path = Path(binding["acquisition_manifest"])
+    if _sha256(manifest_path) != binding["acquisition_manifest_sha256"]:
+        raise ValueError("race acquisition manifest hash changed")
+    manifest = json.loads(manifest_path.read_text())
+    export = manifest["exports"]["laps"]
+    path = Path(export["path"])
+    if _sha256(path) != export["sha256"]:
+        raise ValueError("race laps export hash changed")
+    columns = ["DriverNumber", "LapNumber", "Stint", "Compound", "TyreLife", "PitInTime", "PitOutTime", "LapStartTime"]
+    laps = pd.read_parquet(path, columns=columns)
+    race_start = laps["LapStartTime"].dropna().min()
+    rows = laps[laps["DriverNumber"].astype(str) == str(entry)].sort_values("LapNumber")
+    if rows.empty:
+        return {"entry": entry, "status": "unavailable", "stints": [], "pit_laps": []}
+    stints: list[dict[str, object]] = []
+    for stint, group in rows.groupby("Stint", sort=True):
+        compound = group["Compound"].dropna()
+        ages = group["TyreLife"].dropna()
+        stints.append({
+            "stint": int(stint),
+            "compound": str(compound.iloc[0]) if not compound.empty else "UNKNOWN",
+            "from_lap": int(group["LapNumber"].min()),
+            "to_lap": int(group["LapNumber"].max()),
+            "end_tyre_life_laps": int(ages.max()) if not ages.empty else None,
+        })
+    pit_laps = []
+    for row in rows.itertuples(index=False):
+        if pd.isna(row.PitInTime):
+            continue
+        pit_laps.append({
+            "lap": int(row.LapNumber),
+            "pit_in_time_s": float((row.PitInTime - race_start).total_seconds()) if not pd.isna(race_start) else None,
+        })
+    return {
+        "entry": entry,
+        "status": "source_bound",
+        "stints": stints,
+        "pit_laps": pit_laps,
+        "total_source_laps": int(rows["LapNumber"].max()),
+    }
+
+
+def load_source_route_geometry(binding_path: Path, point_limit: int = 400) -> dict[str, object]:
+    """Load the track's recorded metric centreline from its static route artifact."""
+    binding = json.loads(binding_path.read_text())
+    route_path = Path(binding["route_manifest"])
+    if _sha256(route_path) != binding["route_manifest_sha256"]:
+        raise ValueError("static route manifest hash changed")
+    manifest = json.loads(route_path.read_text())
+    arrays_path = route_path.parent / manifest["arrays_path"]
+    if _sha256(arrays_path) != manifest["arrays_sha256"]:
+        raise ValueError("static route arrays hash changed")
+    with np.load(arrays_path) as arrays:
+        x = np.asarray(arrays["x_m"], dtype=float)
+        y = np.asarray(arrays["y_m"], dtype=float)
+        progress = np.asarray(arrays["progress_m"], dtype=float)
+    step = max(1, len(x) // point_limit)
+    return {
+        "status": "source_bound",
+        "closed": bool(manifest.get("closed", False)),
+        "loop_closure_m": float(manifest.get("loop_closure_m", float("nan"))),
+        "lap_length_m": float(progress[-1]),
+        "point_count": int(len(x[::step])),
+        "x_m": [round(value, 2) for value in x[::step]],
+        "y_m": [round(value, 2) for value in y[::step]],
+        "progress_m": [round(value, 2) for value in progress[::step]],
+    }
 
 
 def _episode_rows(
@@ -335,9 +407,23 @@ def _nearest_traffic(
     ego_speed: float,
     progress: dict[str, float],
     speed: dict[str, float],
+    route_length_m: float,
+    own_entry: str | None = None,
 ) -> tuple[float, float, float, float]:
-    ahead = [(value - ego_progress, speed[entry]) for entry, value in progress.items() if value > ego_progress]
-    behind = [(ego_progress - value, speed[entry]) for entry, value in progress.items() if value < ego_progress]
+    """Nearest lap-wrapped traffic ahead and behind the ego's on-track position."""
+    ego_on_track = ego_progress % route_length_m
+    ahead: list[tuple[float, float]] = []
+    behind: list[tuple[float, float]] = []
+    for entry, value in progress.items():
+        if entry == own_entry:
+            continue
+        other_on_track = value % route_length_m
+        forward = (other_on_track - ego_on_track) % route_length_m
+        backward = (ego_on_track - other_on_track) % route_length_m
+        if forward > 0.0:
+            ahead.append((forward, speed[entry]))
+        if backward > 0.0:
+            behind.append((backward, speed[entry]))
     ahead_distance, ahead_speed = min(ahead, default=(10_000.0, ego_speed))
     behind_distance, behind_speed = min(behind, default=(10_000.0, ego_speed))
     return (
@@ -346,28 +432,6 @@ def _nearest_traffic(
         behind_distance / max(behind_speed, 1.0),
         max(0.0, behind_speed - ego_speed),
     )
-
-
-def _advance_reference_field(
-    progress: dict[str, float],
-    speed: dict[str, float],
-    throttle: dict[str, float],
-    brake: dict[str, float],
-    profiles: dict[str, FittedProfile],
-    scenario: P23ScenarioPrior,
-    step_s: float,
-) -> None:
-    for entry in progress:
-        profile = profiles[entry]
-        current_speed = speed[entry]
-        braking = brake.get(entry, 0.0)
-        drive_force_n = 0.0 if braking > 0.0 else profile.maximum_drive_force_n * throttle.get(entry, 0.0)
-        resistance_n = profile.drag_n_per_ms2 * current_speed * current_speed + profile.rolling_resistance_n
-        brake_force_n = scenario.maximum_brake_force_n * braking
-        acceleration = (drive_force_n - resistance_n - brake_force_n) / scenario.vehicle_mass_kg
-        next_speed = min(scenario.maximum_speed_ms, max(1.0, current_speed + acceleration * step_s))
-        progress[entry] += (current_speed + next_speed) * 0.5 * step_s
-        speed[entry] = next_speed
 
 
 def run_p23_diagnostic(
@@ -395,12 +459,20 @@ def run_p23_diagnostic(
         first_speed, first_throttle, first_brake, reference_profiles,
     )):
         raise ValueError("reference field identities, controls and profiles differ")
+    if profile.entry not in first_progress:
+        raise ValueError("P23 diagnostic needs the ego profile in the reference field")
     ordered_progress = sorted(first_progress.values(), reverse=True)
     adjacent = [before - after for before, after in zip(ordered_progress, ordered_progress[1:]) if before > after]
     tail_gap_m = median(adjacent) if adjacent else max(5.0, median(first_speed.values()) / source_hz)
-    ego_progress = min(first_progress.values()) - tail_gap_m
-    ego_speed = min(first_speed.values())
+    grid_offset_m = first_progress[profile.entry] - min(first_progress.values()) + tail_gap_m
+    ego_progress = first_progress[profile.entry] - grid_offset_m
+    ego_speed = first_speed[profile.entry]
     initial_progress = ego_progress
+    additive_progress_m = 0.0
+    ego_evidence_end_s = max(
+        (tick.time_s for tick in field_ticks if profile.entry in dict(tick.speed_by_entry)),
+        default=field_ticks[0].time_s,
+    )
     state = LapEnergyState.full(prior)
     hidden: torch.Tensor | None = None
     field_progress = first_progress.copy()
@@ -415,54 +487,63 @@ def run_p23_diagnostic(
     decisions: list[DiagnosticDecision] = []
     current_lap = 1
     stale_decisions = 0
+    held_baseline_decisions = 0
+    baseline_speed = ego_speed
     for step in range(decision_count):
         time_s = min(end_time, start_time + step * dt)
+        if time_s > ego_evidence_end_s + 1e-9:
+            break
         while frame_index + 1 < len(field_ticks) and field_ticks[frame_index + 1].time_s <= time_s + 1e-9:
-            next_tick = field_ticks[frame_index + 1]
-            source_step_s = next_tick.time_s - field_ticks[frame_index].time_s
-            _advance_reference_field(
-                field_progress, field_speed, field_throttle, field_brake,
-                reference_profiles, scenario, source_step_s,
-            )
             frame_index += 1
             field_throttle.update(dict(field_ticks[frame_index].throttle_by_entry))
             field_brake.update(dict(field_ticks[frame_index].brake_by_entry))
         stale_decisions += int(field_ticks[frame_index].time_s < time_s - 1e-9)
-        target_speed = median(field_speed.values())
-        speed_error = target_speed - ego_speed
-        throttle = min(1.0, max(0.0, speed_error / scenario.speed_control_band_ms))
-        brake = min(1.0, max(0.0, -speed_error / scenario.speed_control_band_ms))
+        field_progress.update(dict(field_ticks[frame_index].progress_by_entry))
+        field_speed.update(dict(field_ticks[frame_index].speed_by_entry))
+        # Without a current sample the ego coasts at its last speed rather than holding a stale pedal.
+        own_sample = dict(field_ticks[frame_index].speed_by_entry)
+        if profile.entry in own_sample:
+            baseline_speed = field_speed[profile.entry]
+            baseline_throttle = field_throttle[profile.entry]
+            baseline_brake = field_brake[profile.entry]
+        else:
+            baseline_throttle = 0.0
+            baseline_brake = 0.0
+            held_baseline_decisions += 1
         ahead_gap_s, ahead_closing, behind_gap_s, behind_closing = _nearest_traffic(
-            ego_progress, ego_speed, field_progress, field_speed,
+            ego_progress, ego_speed, field_progress, field_speed, route_length_m, profile.entry,
         )
         opportunity, threat = classify_race_interaction(
-            interaction, ahead_gap_s, ahead_closing, behind_gap_s, behind_closing, brake > 0.0,
+            interaction, ahead_gap_s, ahead_closing, behind_gap_s, behind_closing, baseline_brake > 0.0,
         )
         remaining = max(0.0, (decision_count - step) / decision_count)
         observation = (
-            ego_speed / 100.0, throttle, brake, state.stored_energy_j / prior.usable_store_j,
+            ego_speed / 100.0, baseline_throttle, baseline_brake, state.stored_energy_j / prior.usable_store_j,
             ahead_gap_s, ahead_closing / 20.0, behind_gap_s, behind_closing / 20.0, remaining,
         )
-        deployment_available = brake == 0.0 and throttle > 0.0 and state.stored_energy_j > 0.0
+        deployment_available = baseline_brake == 0.0 and baseline_throttle > 0.0 and state.stored_energy_j > 0.0
         manoeuvre, probability, requested_fraction, hidden = _select_action(
             model, observation, hidden, deployment_available, deployment_available and threat,
         )
         before = state
         allocation = allocate_additive_power(
-            prior, state, max(ego_speed, 1.0), throttle, brake, requested_fraction,
-            profile.maximum_drive_force_n, dt,
+            prior, state, max(baseline_speed, 1.0), baseline_throttle, baseline_brake, requested_fraction,
+            profile.maximum_drive_force_n, profile.maximum_brake_force_n, dt,
         )
         state = allocation.state
         deployment_j = state.gross_deployment_j - before.gross_deployment_j
         harvest_j = state.gross_harvest_j - before.gross_harvest_j
-        maximum_motor_wheel_w = profile.maximum_drive_force_n * max(ego_speed, 1.0) * prior.electric_boost_fraction
-        delivered_fraction = allocation.motor_wheel_power_w / maximum_motor_wheel_w if maximum_motor_wheel_w else 0.0
-        drag_n = profile.drag_n_per_ms2 * ego_speed * ego_speed
-        resistance_n = drag_n + profile.rolling_resistance_n
-        brake_force_n = scenario.maximum_brake_force_n * brake
-        acceleration = (allocation.axle_force_n - resistance_n - brake_force_n) / scenario.vehicle_mass_kg
-        next_speed = min(scenario.maximum_speed_ms, max(1.0, ego_speed + acceleration * dt))
-        next_progress = ego_progress + (ego_speed + next_speed) * 0.5 * dt
+        delivered_fraction = allocation.motor_wheel_power_w / prior.maximum_electric_power_w
+        additive_speed_ms = 0.0
+        if allocation.ice_wheel_power_w > 0.0 and allocation.motor_wheel_power_w > 0.0:
+            power_ratio = 1.0 + allocation.motor_wheel_power_w / allocation.ice_wheel_power_w
+            additive_speed_ms = min(
+                scenario.maximum_additive_speed_ms,
+                baseline_speed * (power_ratio ** (1.0 / 3.0) - 1.0),
+            )
+        ego_speed = baseline_speed + additive_speed_ms
+        additive_progress_m += additive_speed_ms * dt
+        next_progress = field_progress[profile.entry] - grid_offset_m + additive_progress_m
         position = 1 + sum(value > ego_progress for value in field_progress.values())
         reward = race_step_reward(
             interaction, delivered_fraction, deployment_j, remaining,
@@ -478,8 +559,10 @@ def run_p23_diagnostic(
         if crossed_lap > current_lap:
             state = state.next_lap()
             current_lap = crossed_lap
-        ego_speed = next_speed
         ego_progress = next_progress
+    retired_reference_entries = sum(
+        1 for entry in identities if entry not in dict(field_ticks[-1].progress_by_entry)
+    )
     final_position = 1 + sum(value > ego_progress for value in field_progress.values())
     leader_entry = max(field_progress, key=field_progress.get)
     leader_progress = field_progress[leader_entry]
@@ -502,14 +585,27 @@ def run_p23_diagnostic(
         "starting_grid_position": 23,
         "reference_entries": len(identities),
         "reference_identities": list(identities),
-        "reference_mode": "ice_profile_simulation_from_source_controls",
+        "reference_mode": "source_native_reference_field_replay",
         "reference_policy_actions": 0,
         "reference_electric_deployment_j": 0.0,
+        "retired_reference_entries": retired_reference_entries,
         "field_input_hz": source_hz,
         "decision_hz": scenario.decision_hz,
         "input_hold": "latest_source_sample",
-        "causal_demand_controller": "current_reference_field_median_speed_error",
+        "ego_baseline": "own_profile_source_telemetry",
+        "traffic_excludes_own_reference_entry": True,
+        "held_ego_baseline_decisions": held_baseline_decisions,
+        "maximum_additive_speed_ms": scenario.maximum_additive_speed_ms,
+        "causal_demand_controller": "own_profile_source_telemetry_with_bounded_additive_power",
         "tail_gap_prior_m": tail_gap_m,
+        "grid_offset_m": grid_offset_m,
+        "additive_progress_m": additive_progress_m,
+        "ego_evidence_end_s": ego_evidence_end_s,
+        "ego_covered_span_s": ego_evidence_end_s - start_time,
+        "ego_covered_span_fraction": (ego_evidence_end_s - start_time) / (end_time - start_time),
+        "evidence_status": (
+            "full_span" if ego_evidence_end_s >= end_time - 60.0 else "partial_span"
+        ),
         "vehicle_mass_kg": scenario.vehicle_mass_kg,
         "maximum_brake_force_n": scenario.maximum_brake_force_n,
         "decision_ticks": len(decisions),
@@ -528,7 +624,9 @@ def run_p23_diagnostic(
         "limitations": [
             "The final position and gaps are diagnostic proxies, not physically validated race outcomes.",
             "Reference cars simulate past-only source controls and do not react to the independent ego.",
-            "The causal speed controller is a declared prior and is not a learned ICE driver policy.",
+            "The ego tracks its own profile's source position offset to P23; only the bounded electric gain adds distance.",
+            "A partial_span report means the profile's own telemetry ends before the race does, so its race is cut to the evidence.",
+            "The loaded checkpoint was trained under the old, broken energy model; this inference uses corrected physics, but the learned behaviour was shaped by an energy budget the car never actually had.",
         ],
     })
     return reported

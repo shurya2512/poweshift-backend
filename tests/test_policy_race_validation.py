@@ -13,6 +13,7 @@ from poweshift_backend.policy.diagnostic import (
 )
 from poweshift_backend.policy.race_validation import (
     P23ScenarioPrior,
+    _nearest_traffic,
     bounded_additive_lap_time_proxy,
     consolidate_profile_reports,
     load_major_race_events,
@@ -22,11 +23,11 @@ from poweshift_backend.policy.race_validation import (
 
 
 def _prior() -> DeploymentPrior:
-    return DeploymentPrior(0.2, 5_000_000.0, 5_000_000.0, 0.95, 0.8)
+    return DeploymentPrior(5_000_000.0, 5_000_000.0, 0.95, 0.8, 350_000.0)
 
 
 def _profile(entry: str = "1") -> FittedProfile:
-    return FittedProfile(entry, 7_000.0, 0.8, 120.0)
+    return FittedProfile(entry, 7_000.0, 0.8, 120.0, 16_000.0)
 
 
 def _trace() -> DiagnosticTrace:
@@ -78,9 +79,58 @@ def test_p23_replay_keeps_reference_field_and_adds_independent_ego() -> None:
     assert report["decision_hz"] == 5.0
     assert report["input_hold"] == "latest_source_sample"
     assert report["signed_gap_to_leader_s"] <= 0.0
-    assert report["reference_mode"] == "ice_profile_simulation_from_source_controls"
+    assert report["reference_mode"] == "source_native_reference_field_replay"
     assert report["reference_policy_actions"] == 0
     assert report["reference_electric_deployment_j"] == 0.0
+
+
+def test_p23_retired_reference_entry_is_frozen_and_not_extrapolated() -> None:
+    ticks = (
+        RaceFieldTick(0.0, (("1", 100.0), ("2", 130.0)), (("1", 20.0), ("2", 19.0)),
+                      (("1", 0.5), ("2", 0.4)), (("1", 0.0), ("2", 0.0))),
+        RaceFieldTick(0.25, (("1", 105.0),), (("1", 20.0),), (("1", 0.5),), (("1", 0.0),)),
+        RaceFieldTick(0.5, (("1", 110.0),), (("1", 20.0),), (("1", 0.5),), (("1", 0.0),)),
+    )
+    reference_profiles = {"1": _profile("1"), "2": _profile("2")}
+
+    report = run_p23_diagnostic(
+        create_diagnostic_model(3), ticks, reference_profiles, _profile(), _prior(),
+        P23ScenarioPrior(decision_hz=5.0, vehicle_mass_kg=800.0, maximum_brake_force_n=16_000.0),
+    )
+
+    assert report["retired_reference_entries"] == 1
+    assert report["final_progress_m"] < 130.0
+    assert report["signed_gap_to_leader_m"] == report["final_progress_m"] - 130.0
+
+
+def test_p23_ego_tracks_its_own_profile_baseline_telemetry() -> None:
+    ticks = tuple(
+        RaceFieldTick(0.25 * i, (("1", 100.0 + 20.0 * 0.25 * i),), (("1", 20.0),), (("1", 1.0),), (("1", 0.0),))
+        for i in range(5)
+    )
+    reference_profiles = {"1": _profile("1")}
+    scenario = P23ScenarioPrior(decision_hz=5.0, vehicle_mass_kg=800.0, maximum_brake_force_n=16_000.0)
+
+    report = run_p23_diagnostic(
+        create_diagnostic_model(4), ticks, reference_profiles, _profile(), _prior(), scenario,
+    )
+
+    dt = 1.0 / scenario.decision_hz
+    steps = report["decision_ticks"]
+    baseline_distance = 20.0 * steps * dt
+    additive_ceiling = report["maximum_additive_speed_ms"] * steps * dt
+    initial_progress = min(dict(ticks[0].progress_by_entry).values()) - report["tail_gap_prior_m"]
+    advance = report["final_progress_m"] - initial_progress
+
+    assert advance >= baseline_distance - 1e-6
+    assert advance <= baseline_distance + additive_ceiling + 1e-6
+
+
+def test_nearest_traffic_wraps_a_lap_ahead_car_as_adjacent() -> None:
+    ahead_gap_s, _, _, _ = _nearest_traffic(90.0, 20.0, {"1": 500.0}, {"1": 20.0}, 100.0)
+
+    assert ahead_gap_s < 10_000.0
+    assert ahead_gap_s == 0.5
 
 
 def test_p23_report_binds_major_source_events_to_nearest_policy_decision() -> None:

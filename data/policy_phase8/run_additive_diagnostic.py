@@ -30,6 +30,7 @@ def _profiles() -> tuple[dict[str, FittedProfile], dict[str, object]]:
             values["parameters"]["max_drive_force_n"],
             values["parameters"]["drag_n_per_ms2"],
             values["parameters"]["rolling_resistance_n"],
+            values["parameters"]["max_brake_force_n"],
         )
         for entry, values in payload["profiles"].items()
     }
@@ -148,8 +149,7 @@ def main() -> None:
     speeds = torch.tensor(race_speeds, dtype=torch.float64)
     median_speed = float(speeds.median())
     speed_p90 = float(torch.quantile(speeds, 0.9))
-    boost_fraction = 0.20
-    prior = DeploymentPrior(boost_fraction, 5_000_000.0, 5_000_000.0, 0.95, 0.8)
+    prior = DeploymentPrior(5_000_000.0, 5_000_000.0, 0.95, 0.8, 350_000.0)
     interaction_prior = RaceInteractionPrior()
     seed = 20260913
     model = create_diagnostic_model(seed)
@@ -179,11 +179,11 @@ def main() -> None:
             "maximum": max(force_values),
         },
         "observed_race_speed_ms": {"median": median_speed, "p90": speed_p90},
-        "selected_electric_boost_fraction": boost_fraction,
-        "selection_basis": "The fitted profiles identify aggregate effective drive force, not an ICE/electric split. Twenty percent is an explicit additive diagnostic prior, not a fitted result.",
-        "electric_power_scale_w": {
-            "at_median_profile_and_speed": median(force_values) * median_speed * boost_fraction,
-            "at_median_profile_and_p90_speed": median(force_values) * speed_p90 * boost_fraction,
+        "maximum_electric_power_w": prior.maximum_electric_power_w,
+        "selection_basis": "The rated motor power bounds deployment directly. The fitted profiles identify aggregate effective drive force and carry no ICE/electric split.",
+        "ice_wheel_power_scale_w": {
+            "at_median_profile_and_speed": median(force_values) * median_speed,
+            "at_median_profile_and_p90_speed": median(force_values) * speed_p90,
         },
         "usable_store_basis": "5 MJ diagnostic fallback because no admitted usable-store value is available.",
         "harvest_cap_basis": "5 MJ per lap fallback requested for circuits without an available cap.",

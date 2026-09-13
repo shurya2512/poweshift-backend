@@ -18,14 +18,14 @@ from poweshift_backend.policy.diagnostic import (
 
 
 def test_diagnostic_updates_preserve_additive_energy_ledgers() -> None:
-    prior = DeploymentPrior(0.2, 5_000_000.0, 5_000_000.0, 0.95, 0.8)
+    prior = DeploymentPrior(5_000_000.0, 5_000_000.0, 0.95, 0.8, 350_000.0)
     trace = DiagnosticTrace("training", "trace-a", (40.0, 42.0, 38.0, 35.0), (1.0, 1.0, 0.0, 0.0), (0.0, 0.0, 1.0, 1.0), 1.0)
-    profile = FittedProfile("1", 7_000.0, 0.8, 120.0)
+    profile = FittedProfile("1", 7_000.0, 0.8, 120.0, 16_000.0)
     report = run_diagnostic_updates((trace,), {"1": profile}, prior, updates=2, seed=3)
     assert report["updates"] == 2
     assert report["gross_deployment_j"] >= 0.0
     assert report["gross_harvest_j"] > 0.0
-    assert report["electric_boost_fraction"] == 0.2
+    assert report["maximum_electric_power_w"] == 350_000.0
     assert report["harvest_cap_j_per_lap"] == 5_000_000.0
 
 
@@ -72,19 +72,19 @@ def test_race_reserve_penalty_releases_the_store_on_the_final_lap() -> None:
 
 
 def test_policy_evaluation_reports_requested_deployment() -> None:
-    prior = DeploymentPrior(0.2, 5_000_000.0, 5_000_000.0, 0.95, 0.8)
+    prior = DeploymentPrior(5_000_000.0, 5_000_000.0, 0.95, 0.8, 350_000.0)
     trace = DiagnosticTrace("training", "trace-a", (40.0, 42.0), (1.0, 1.0), (0.0, 0.0), 1.0)
-    profile = FittedProfile("1", 7_000.0, 0.8, 120.0)
+    profile = FittedProfile("1", 7_000.0, 0.8, 120.0, 16_000.0)
     report = evaluate_diagnostic_policy(create_diagnostic_model(4), (trace,), {"1": profile}, prior, seed=4)
     assert 0.0 < report["mean_requested_deployment_fraction"] < 1.0
 
 
 def test_practice_can_deploy_energy_but_only_selects_hold() -> None:
-    prior = DeploymentPrior(0.2, 5_000_000.0, 5_000_000.0, 0.95, 0.8)
+    prior = DeploymentPrior(5_000_000.0, 5_000_000.0, 0.95, 0.8, 350_000.0)
     trace = DiagnosticTrace(
         "training", "practice-a", (40.0, 41.0), (1.0, 0.0), (0.0, 1.0), 0.25,
     )
-    profile = FittedProfile("1", 7_000.0, 0.8, 120.0)
+    profile = FittedProfile("1", 7_000.0, 0.8, 120.0, 16_000.0)
     model = create_diagnostic_model(8)
     with torch.no_grad():
         model.manoeuvre_head.weight.zero_()
@@ -98,11 +98,11 @@ def test_practice_can_deploy_energy_but_only_selects_hold() -> None:
 
 
 def test_protected_trace_can_be_evaluated_but_not_optimized() -> None:
-    prior = DeploymentPrior(0.2, 5_000_000.0, 5_000_000.0, 0.95, 0.8)
+    prior = DeploymentPrior(5_000_000.0, 5_000_000.0, 0.95, 0.8, 350_000.0)
     trace = DiagnosticTrace(
         "final_evaluation", "madrid-qualifying", (40.0, 41.0), (1.0, 1.0), (0.0, 0.0), 0.25,
     )
-    profile = FittedProfile("1", 7_000.0, 0.8, 120.0)
+    profile = FittedProfile("1", 7_000.0, 0.8, 120.0, 16_000.0)
 
     assert evaluate_diagnostic_trace(create_diagnostic_model(8), trace, profile, prior).decisions
     with pytest.raises(ValueError, match="training partition"):
@@ -110,12 +110,12 @@ def test_protected_trace_can_be_evaluated_but_not_optimized() -> None:
 
 
 def test_race_exhaustion_finding_reports_actual_update_count() -> None:
-    prior = DeploymentPrior(0.2, 5_000_000.0, 5_000_000.0, 0.95, 0.8)
+    prior = DeploymentPrior(5_000_000.0, 5_000_000.0, 0.95, 0.8, 350_000.0)
     trace = DiagnosticTrace(
         "training", "race-a", (40.0, 40.0), (1.0, 1.0), (0.0, 0.0), 100.0,
         "1", True, (2.0, 2.0), (0.0, 0.0), (2.0, 2.0), (0.0, 0.0), 1, 2,
     )
-    profile = FittedProfile("1", 7_000.0, 0.8, 120.0)
+    profile = FittedProfile("1", 7_000.0, 0.8, 120.0, 16_000.0)
 
     report = run_diagnostic_updates(
         (trace,), {"1": profile}, prior, updates=2, seed=3,
@@ -126,12 +126,12 @@ def test_race_exhaustion_finding_reports_actual_update_count() -> None:
 
 
 def test_race_training_carries_hidden_state_between_laps() -> None:
-    prior = DeploymentPrior(0.2, 5_000_000.0, 5_000_000.0, 0.95, 0.8)
+    prior = DeploymentPrior(5_000_000.0, 5_000_000.0, 0.95, 0.8, 350_000.0)
     trace = DiagnosticTrace(
         "training", "race-a", (40.0, 41.0), (1.0, 1.0), (0.0, 0.0), 0.25,
         "1", True, (0.8, 0.7), (0.6, 0.7), (2.0, 2.0), (0.0, 0.0), 1, 2,
     )
-    profile = FittedProfile("1", 7_000.0, 0.8, 120.0)
+    profile = FittedProfile("1", 7_000.0, 0.8, 120.0, 16_000.0)
 
     report = run_diagnostic_updates(
         (trace,), {"1": profile}, prior, updates=2, seed=4,
@@ -143,13 +143,13 @@ def test_race_training_carries_hidden_state_between_laps() -> None:
 
 
 def test_deterministic_validation_records_probability_and_energy() -> None:
-    prior = DeploymentPrior(0.2, 5_000_000.0, 5_000_000.0, 0.95, 0.8)
+    prior = DeploymentPrior(5_000_000.0, 5_000_000.0, 0.95, 0.8, 350_000.0)
     trace = DiagnosticTrace(
         "training", "race-a", (40.0, 41.0), (1.0, 0.0), (0.0, 1.0), 0.25,
         "1", True, (0.8, 0.7), (0.6, 0.7), (2.0, 2.0), (0.0, 0.0), 1, 1,
         (10.0, 10.25), (100.0, 110.0), (3, 3),
     )
-    profile = FittedProfile("1", 7_000.0, 0.8, 120.0)
+    profile = FittedProfile("1", 7_000.0, 0.8, 120.0, 16_000.0)
     model = create_diagnostic_model(9)
 
     first = evaluate_diagnostic_trace(model, trace, profile, prior)

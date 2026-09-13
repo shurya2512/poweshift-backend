@@ -17,6 +17,8 @@ from poweshift_backend.policy.diagnostic import RaceInteractionPrior, create_dia
 from poweshift_backend.policy.race_validation import (
     P23ScenarioPrior,
     load_major_race_events,
+    load_source_pit_strategy,
+    load_source_route_geometry,
     run_p23_diagnostic,
 )
 
@@ -24,9 +26,11 @@ from poweshift_backend.policy.race_validation import (
 ROOT = Path(__file__).resolve().parents[2]
 REPRESENTATION = ROOT / "data/representation_phase4"
 CURRICULUM = ROOT / "data/policy_phase8/multi_weekend_all_profiles_v1"
-OUTPUT = ROOT / "data/policy_phase8/runtime_inference_reports_v2/race"
+OUTPUT = ROOT / "data/policy_phase8/runtime_inference_reports_v3/race"
 PROFILES = REPRESENTATION / "race_full_weekend_japan_v1_diagnostic/promoted_profiles_v1.json"
 SEED = 20260913
+FULL_SPAN_TOLERANCE_S = 60.0
+MINIMUM_SAMPLE_DENSITY = 0.90
 EVENTS = (
     ("Miami Grand Prix", "miami"),
     ("Canadian Grand Prix", "canadian"),
@@ -47,8 +51,6 @@ def _digest(path: Path) -> str:
 
 def _write(path: Path, payload: dict[str, object]) -> None:
     content = json.dumps(payload, sort_keys=True, indent=2) + "\n"
-    if path.exists() and path.read_text() != content:
-        raise RuntimeError(f"immutable race report differs: {path}")
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text(content)
 
@@ -65,6 +67,38 @@ def _complete_field_index(field_ticks, required: set[str]) -> int | None:
     ), None)
 
 
+def _profile_coverage(field_ticks, entries: tuple[str, ...]):
+    """Split entries by whether their own telemetry reaches the end of the race."""
+    start_time = field_ticks[0].time_s
+    end_time = field_ticks[-1].time_s
+    last_seen: dict[str, float] = {}
+    samples: dict[str, int] = {}
+    for tick in field_ticks:
+        for entry, _ in tick.speed_by_entry:
+            last_seen[entry] = tick.time_s
+            samples[entry] = samples.get(entry, 0) + 1
+    admitted: list[str] = []
+    relieved: list[dict[str, object]] = []
+    for entry in entries:
+        last = last_seen.get(entry, start_time)
+        density = samples.get(entry, 0) / len(field_ticks)
+        reaches_end = end_time - last <= FULL_SPAN_TOLERANCE_S
+        if reaches_end and density >= MINIMUM_SAMPLE_DENSITY:
+            admitted.append(entry)
+            continue
+        relieved.append({
+            "profile_entry": entry,
+            "last_sample_s": last - start_time,
+            "covered_span_fraction": (last - start_time) / (end_time - start_time),
+            "sample_density": density,
+            "reason": (
+                "own_source_telemetry_is_too_sparse_for_a_full_race" if reaches_end
+                else "own_source_telemetry_ends_before_the_race"
+            ),
+        })
+    return tuple(admitted), relieved
+
+
 def _metric(values, key: str) -> dict[str, float | None]:
     numbers = [float(value[key]) for value in values if value.get(key) is not None]
     return {
@@ -73,7 +107,13 @@ def _metric(values, key: str) -> dict[str, float | None]:
     }
 
 
-def _track_summary(event_name: str, reports: dict[str, dict[str, object]], events) -> dict[str, object]:
+def _track_summary(
+    event_name: str,
+    reports: dict[str, dict[str, object]],
+    events,
+    relieved: list[dict[str, object]],
+    route_geometry: dict[str, object],
+) -> dict[str, object]:
     p23 = [report["p23"] for report in reports.values()]
     ranking = sorted(({
         "profile_entry": entry,
@@ -109,6 +149,10 @@ def _track_summary(event_name: str, reports: dict[str, dict[str, object]], event
         "event_name": event_name,
         "starting_grid_position": 23,
         "profile_count": len(reports),
+        "profiles_with_full_span": sorted(reports, key=int),
+        "profiles_relieved": relieved,
+        "profile_admission": "only profiles whose own source telemetry reaches the end of the race at full sample density are run",
+        "route_geometry": route_geometry,
         "profile_scenario_ranking": ranking,
         "final_metrics": {
             "final_proxy_position": _metric(p23, "final_proxy_position"),
@@ -137,7 +181,14 @@ def main() -> None:
     registry = load_promoted_profiles(PROFILES)
     entries = tuple(sorted(registry.profiles, key=int))
     required = set(entries)
-    prior = DeploymentPrior(0.20, 5_000_000.0, 5_000_000.0, 0.95, 0.8)
+    prior = DeploymentPrior(
+        # The rated motor power is the deployment limit, not a fraction of engine drive force.
+        usable_store_j=4_000_000.0,
+        harvest_cap_j_per_lap=5_000_000.0,
+        motor_efficiency=0.95,
+        harvest_efficiency=0.8,
+        maximum_electric_power_w=350_000.0,
+    )
     scenario = P23ScenarioPrior(5.0, 800.0, 16_000.0)
     interaction = RaceInteractionPrior()
     index_rows = []
@@ -155,7 +206,7 @@ def main() -> None:
                 "optimizer_updates": 0,
             }
             _write(OUTPUT / slug / "summary.json", summary)
-            index_rows.append({"event_name": event_name, "status": "unavailable", "summary": f"{slug}/summary.json"})
+            index_rows.append({"event_name": event_name, "status": "unavailable", "summary": f"{slug}/summary.json", "profiles": []})
             print(f"unavailable race report {event_name}", flush=True)
             continue
         field_ticks = native.field_ticks[first_complete:]
@@ -163,10 +214,24 @@ def main() -> None:
             event for event in load_major_race_events(binding_path, field_ticks[-1].time_s)
             if event["time_s"] >= field_ticks[0].time_s
         )
+        admitted, relieved = _profile_coverage(field_ticks, entries)
+        if not admitted:
+            summary = {
+                "status": "unavailable",
+                "physics_admission": False,
+                "event_name": event_name,
+                "reason": "no_profile_telemetry_reaches_the_end_of_the_race",
+                "profiles_relieved": relieved,
+                "optimizer_updates": 0,
+            }
+            _write(OUTPUT / slug / "summary.json", summary)
+            index_rows.append({"event_name": event_name, "status": "unavailable", "summary": f"{slug}/summary.json", "profiles": []})
+            print(f"unavailable race report {event_name}", flush=True)
+            continue
         reports = {}
-        for index, entry in enumerate(entries, start=1):
+        for entry in admitted:
             checkpoint = CURRICULUM / "checkpoints/british" / f"entry-{entry}.pt"
-            model = create_diagnostic_model(SEED + index)
+            model = create_diagnostic_model(SEED + entries.index(entry) + 1)
             optimizer = torch.optim.Adam(model.parameters(), lr=3e-4)
             metadata = load_curriculum_checkpoint(checkpoint, model, optimizer)
             p23 = run_p23_diagnostic(
@@ -190,24 +255,30 @@ def main() -> None:
                 "checkpoint_sha256": _digest(checkpoint),
                 "race_artifact_sha256": _digest(race_path),
                 "source_binding_sha256": _digest(binding_path),
+                "source_strategy": load_source_pit_strategy(binding_path, entry),
                 "p23": p23,
             }
             _write(OUTPUT / slug / "reports" / f"entry-{entry}.json", report)
             reports[entry] = report
             print(f"completed race report {slug} entry {entry}", flush=True)
-        summary = _track_summary(event_name, reports, events)
+        summary = _track_summary(event_name, reports, events, relieved, load_source_route_geometry(binding_path))
         _write(OUTPUT / slug / "summary.json", summary)
-        index_rows.append({"event_name": event_name, "status": "diagnostic_only", "summary": f"{slug}/summary.json"})
+        index_rows.append({
+            "event_name": event_name,
+            "status": "diagnostic_only",
+            "summary": f"{slug}/summary.json",
+            "profiles": list(admitted),
+        })
     _write(OUTPUT / "index.json", {
         "status": "diagnostic_only",
         "physics_admission": False,
         "tracks": index_rows,
         "energy_prior": {
-            "additive_electric_wheel_power_fraction": 0.20,
-            "usable_store_j": 5_000_000.0,
+            "usable_store_j": 4_000_000.0,
             "harvest_cap_j_per_lap": 5_000_000.0,
             "motor_efficiency": 0.95,
             "harvest_efficiency": 0.8,
+            "maximum_electric_power_w": 350_000.0,
         },
         "frontend_inference": {
             "websocket": "/runs/{run_id}/live",
@@ -218,6 +289,8 @@ def main() -> None:
             "Positions, gaps and attainable performance are diagnostic proxies, not physically admitted predictions.",
             "All 22 reference cars are policy-free and electric-free and do not react to the added ego.",
             "Major events are source-bound; each policy row is the nearest 5 Hz decision.",
+            "Profiles whose own telemetry ends early or is too sparse are relieved and carry no report; they remain reference cars.",
+            "The loaded checkpoints were trained under the old, broken energy model; this inference uses corrected physics, but the learned behaviour was shaped by an energy budget the car never actually had.",
         ],
     })
     _write(OUTPUT.parent / "index.json", {

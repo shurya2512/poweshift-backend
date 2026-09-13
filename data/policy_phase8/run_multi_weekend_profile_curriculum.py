@@ -267,7 +267,7 @@ def main() -> None:
     manifest_path = OUTPUT / "curriculum_manifest.json"
     freeze_curriculum_manifest(manifest_path, manifest)
     manifest_hash = _digest(manifest_path)
-    prior = DeploymentPrior(0.20, 5_000_000.0, 5_000_000.0, 0.95, 0.8)
+    prior = DeploymentPrior(5_000_000.0, 5_000_000.0, 0.95, 0.8, 350_000.0)
     interaction = RaceInteractionPrior()
     scenario = P23ScenarioPrior(5.0, 800.0, 16_000.0)
     models = {entry: create_diagnostic_model(SEED + index) for index, entry in enumerate(entries, start=1)}
@@ -360,7 +360,7 @@ def main() -> None:
         "additional_ego_start": "grid_position_23",
         "reference_field_mode": "22_fitted_ice_profiles_with_source_controls_no_policy_or_electric",
         "energy_prior": {
-            "additive_electric_wheel_power_fraction": prior.electric_boost_fraction,
+            "maximum_electric_power_w": prior.maximum_electric_power_w,
             "usable_store_j": prior.usable_store_j,
             "harvest_cap_j_per_lap": prior.harvest_cap_j_per_lap,
             "motor_efficiency": prior.motor_efficiency,

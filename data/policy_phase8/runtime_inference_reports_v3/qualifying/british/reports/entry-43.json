@@ -1,0 +1,36 @@
+{
+  "best_diagnostic_attainable_lap_time_s": 74.33400575838178,
+  "best_observed_lap_time_s": 91.321,
+  "checkpoint_sha256": "7058b07fea302df7d83c722d3b4019cd983e56f8449cea75f640c0c62bfd5c36",
+  "checkpoint_stage": "2026-07-05-british-entry-43",
+  "event_name": "British Grand Prix",
+  "final_stored_energy_j": 0.0,
+  "gross_deployment_j": 8430000.000000002,
+  "gross_harvest_j": 4287500.0,
+  "lap_time_semantics": "idealized_additive_power_ratio_proxy_not_physical_prediction",
+  "laps": [
+    {
+      "diagnostic_attainable_lap_time_s": 74.33400575838178,
+      "diagnostic_time_gain_proxy_s": 16.98699424161822,
+      "gross_deployment_j": 8430000.000000002,
+      "gross_harvest_j": 4287500.0,
+      "mean_delivered_deployment_fraction": 0.25075538160469674,
+      "mean_requested_deployment_fraction": 0.25731592929526553,
+      "mean_uncalibrated_action_probability": 1.0,
+      "observed_lap_time_s": 91.321,
+      "path": "hold",
+      "peak_motor_wheel_power_kw": 242.48433411121368,
+      "source_lap": 2.0,
+      "stored_energy_end_j": 0.0,
+      "stored_energy_start_j": 5000000.0
+    }
+  ],
+  "optimizer_updates": 0,
+  "partition": "training_replay",
+  "physics_admission": false,
+  "probability_semantics": "uncalibrated_action_selection_probability",
+  "profile_entry": "43",
+  "session": "Qualifying",
+  "source_manifest_sha256": "d41af287bd9d6e880f3378791fea310cc1a15f6c4ee44323650aa7a6098bb395",
+  "status": "diagnostic_only"
+}

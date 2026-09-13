@@ -41,7 +41,7 @@ def main() -> None:
     registry = load_promoted_profiles(PROFILES)
     entries = tuple(sorted(registry.profiles, key=int))
     data = load_qualifying_test_traces(MANIFEST, registry.profiles)
-    prior = DeploymentPrior(0.20, 5_000_000.0, 5_000_000.0, 0.95, 0.8)
+    prior = DeploymentPrior(5_000_000.0, 5_000_000.0, 0.95, 0.8, 350_000.0)
     reports = {}
     for index, entry in enumerate(entries, start=1):
         checkpoint = CURRICULUM / "checkpoints/british" / f"entry-{entry}.pt"

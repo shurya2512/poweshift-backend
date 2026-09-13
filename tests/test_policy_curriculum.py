@@ -32,6 +32,7 @@ def _write_registry(path, *, compatible: bool = True) -> None:
                         "max_drive_force_n": 6_000.0,
                         "drag_n_per_ms2": 0.8,
                         "rolling_resistance_n": 120.0,
+                        "max_brake_force_n": 16_000.0,
                     }
                 },
             }
