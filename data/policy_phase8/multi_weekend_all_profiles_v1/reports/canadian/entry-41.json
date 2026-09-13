@@ -1,0 +1,72 @@
+{
+  "checkpoint_restricted_load": true,
+  "checkpoint_sha256": "77f3c5554dd0d5aea3e45a56949df3362f94fe69ee25bf141682df631177999a",
+  "completed_updates": 131,
+  "event_date": "2026-05-24",
+  "event_name": "Canadian Grand Prix",
+  "physics_admission": false,
+  "practice": [
+    {
+      "attack_opportunity_steps": 0.0,
+      "coverage": "complete_supported_laps",
+      "defence_threat_steps": 0.0,
+      "deployment_step_rate": 0.998189717595945,
+      "electric_boost_fraction": 0.2,
+      "gross_deployment_j": 22707633.70594424,
+      "gross_harvest_j": 22271445.367862493,
+      "harvest_cap_j_per_lap": 5000000.0,
+      "harvest_curtailed_j": 276564.5492038236,
+      "incremental_progress_proxy_m": 32835.73934112406,
+      "mean_first_reward": 39.99542838043492,
+      "mean_last_reward": 28.127750357266557,
+      "mean_requested_deployment_fraction": 0.6740536995105322,
+      "mean_total_loss": 2.0816639282486658,
+      "net_battery_change_j": -4890477.411654245,
+      "race_interaction_prior": {
+        "attack_gain_weight": 1.0,
+        "attack_gap_s": 1.0,
+        "defend_gain_weight": 0.5,
+        "defend_gap_s": 0.8,
+        "deployment_cost_per_mj": 1.0,
+        "enabled": false,
+        "free_air_gain_weight": 0.1,
+        "gain_normalization": "equal_share_per_lap_step",
+        "late_race_cost_floor": 0.25,
+        "minimum_closing_ms": 0.5,
+        "missed_attack_weight": 0.05,
+        "missed_defend_weight": 0.05,
+        "reserve_shortfall_weight": 2.0,
+        "unsupported_path_weight": 0.25
+      },
+      "recurrent_state_carried": true,
+      "remaining_store_j": 109522.58834563105,
+      "reward_change": -11.867678023168367,
+      "reward_findings": [],
+      "session_id": "2026-05-24_Canadian_Grand_Prix:2026-05-22_Practice_1",
+      "source_manifest": "/Users/10doshi12/Desktop/trackshift/poweshift-backend/data/representation_phase4/practice_canadian_fp1_v1/practice_export.json",
+      "source_partition": "training",
+      "status": "diagnostic_only",
+      "updates": 22,
+      "usable_store_j": 5000000.0
+    }
+  ],
+  "profile_entry": "41",
+  "race_training": {
+    "coverage": "no_training_laps_after_holdout",
+    "updates": 0
+  },
+  "race_training_trace_ids": [],
+  "race_validation": {
+    "coverage": "no_complete_supported_laps",
+    "validation_laps": 0
+  },
+  "race_validation_trace_ids": [],
+  "sources": {
+    "curriculum_manifest": "3dab05c40b73ea3de97ed668043bf92a2d2f8f6a1c1b4850728c709d34cf5b40",
+    "practice_1": "5a2928cfa4b3d7fcd831de7c960d3893f487d2d9fc1fa892a7894bf4a8574a47",
+    "previous_checkpoint": "c457c7e9d7a449dc0c898b080f257a7eae6f80f2e60a34bfd505eaba92cc8f84",
+    "race_artifact": "27d33a255fa7836050239772835a5e77c73d735334c927fb3ab2e28b091391ab",
+    "race_source_binding": "dfc8d3ce496c3cbf783219da95267e420f6e843dca8d8345d3d1b1928c342665"
+  },
+  "status": "diagnostic_only"
+}

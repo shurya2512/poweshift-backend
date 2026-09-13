@@ -1,0 +1,77 @@
+{
+  "completed_updates": 2841,
+  "evaluation_after": {
+    "attack_opportunity_steps": 0.0,
+    "defence_threat_steps": 0.0,
+    "gross_deployment_j": 0.0,
+    "gross_harvest_j": 0.0,
+    "incremental_progress_proxy_m": 0.0,
+    "mean_requested_deployment_fraction": 0.0,
+    "mean_reward": 0.0,
+    "remaining_store_j": 0.0
+  },
+  "evaluation_before": {
+    "attack_opportunity_steps": 0.0,
+    "defence_threat_steps": 0.0,
+    "gross_deployment_j": 0.0,
+    "gross_harvest_j": 0.0,
+    "incremental_progress_proxy_m": 0.0,
+    "mean_requested_deployment_fraction": 0.0,
+    "mean_reward": 0.0,
+    "remaining_store_j": 0.0
+  },
+  "evaluation_delta": {
+    "attack_opportunity_steps": 0.0,
+    "defence_threat_steps": 0.0,
+    "gross_deployment_j": 0.0,
+    "gross_harvest_j": 0.0,
+    "incremental_progress_proxy_m": 0.0,
+    "mean_requested_deployment_fraction": 0.0,
+    "mean_reward": 0.0,
+    "remaining_store_j": 0.0
+  },
+  "sources": {
+    "package_manifest": "ee40c69c8d492037a1602926a7bf8dcc60304eecbf3eff2fb7b1311e79c35f6a",
+    "package_table": "964d0ff11335fd93cbeb8c8c074edf8f119a53deb5a6028d93d432d600db3f97",
+    "profile_registry": "29b5a01a9b1ddbf2ff437367c36b43a3e5944cb2cf97a3ab760c99cb1cfaf207"
+  },
+  "stage": "01-preseason-2026-02-11",
+  "stage_updates": 2841,
+  "status": "diagnostic_only",
+  "training": {
+    "attack_opportunity_steps": 0.0,
+    "defence_threat_steps": 0.0,
+    "deployment_step_rate": 1.0,
+    "electric_boost_fraction": 0.2,
+    "gross_deployment_j": 2503141334.161167,
+    "gross_harvest_j": 1090026148.339194,
+    "harvest_cap_j_per_lap": 5000000.0,
+    "harvest_curtailed_j": 72687836.19010329,
+    "incremental_progress_proxy_m": 4961131.086782822,
+    "mean_first_reward": 0.0,
+    "mean_last_reward": 0.0,
+    "mean_requested_deployment_fraction": 0.5165078051601044,
+    "mean_total_loss": 38.23122044249084,
+    "net_battery_change_j": -1631120415.489812,
+    "race_interaction_prior": {
+      "attack_gain_weight": 1.0,
+      "attack_gap_s": 1.0,
+      "defend_gain_weight": 0.5,
+      "defend_gap_s": 0.8,
+      "deployment_cost_per_mj": 1.0,
+      "enabled": false,
+      "free_air_gain_weight": 0.1,
+      "gain_normalization": "equal_share_per_lap_step",
+      "late_race_cost_floor": 0.25,
+      "minimum_closing_ms": 0.5,
+      "reserve_shortfall_weight": 2.0
+    },
+    "remaining_store_j": null,
+    "reward_change": 0.0,
+    "reward_findings": [],
+    "source_partition": "training",
+    "status": "diagnostic_only",
+    "updates": 2841,
+    "usable_store_j": 5000000.0
+  }
+}

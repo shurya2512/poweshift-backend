@@ -1,0 +1,20 @@
+{
+  "best_diagnostic_attainable_lap_time_s": null,
+  "best_observed_lap_time_s": null,
+  "checkpoint_sha256": "73a301b55777b217fa325b44f48beef6e065bf186eb3c88b1ae11822ad4f7a2f",
+  "checkpoint_stage": "2026-07-05-british-entry-6",
+  "event_name": "Spanish Grand Prix",
+  "final_stored_energy_j": null,
+  "gross_deployment_j": 0.0,
+  "gross_harvest_j": 0.0,
+  "lap_time_semantics": "idealized_additive_power_ratio_proxy_not_physical_prediction",
+  "laps": [],
+  "optimizer_updates": 0,
+  "partition": "final_evaluation",
+  "physics_admission": false,
+  "probability_semantics": "uncalibrated_action_selection_probability",
+  "profile_entry": "6",
+  "session": "Qualifying",
+  "source_manifest_sha256": "8e2e2a7e86aefc04b644dcb57b8df2b2b8d9df70be26061bb62370702e7007fb",
+  "status": "diagnostic_only"
+}

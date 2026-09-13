@@ -1,0 +1,51 @@
+{
+  "best_diagnostic_attainable_lap_time_s": 72.1980035281766,
+  "best_observed_lap_time_s": 91.098,
+  "checkpoint_sha256": "dd828d34010b0cd75b55d56961542f37719c65f82f8e987511d71782b580b0a1",
+  "checkpoint_stage": "2026-07-05-british-entry-14",
+  "event_name": "Miami Grand Prix",
+  "final_stored_energy_j": 0.0,
+  "gross_deployment_j": 12999999.999999998,
+  "gross_harvest_j": 10000000.0,
+  "lap_time_semantics": "idealized_additive_power_ratio_proxy_not_physical_prediction",
+  "laps": [
+    {
+      "diagnostic_attainable_lap_time_s": 72.1980035281766,
+      "diagnostic_time_gain_proxy_s": 19.462996471823402,
+      "gross_deployment_j": 9000000.0,
+      "gross_harvest_j": 5000000.0,
+      "mean_delivered_deployment_fraction": 0.2677103718199609,
+      "mean_requested_deployment_fraction": 0.26967816075233564,
+      "mean_uncalibrated_action_probability": 1.0,
+      "observed_lap_time_s": 91.661,
+      "path": "hold",
+      "peak_motor_wheel_power_kw": 241.73886477947235,
+      "source_lap": 2.0,
+      "stored_energy_end_j": 0.0,
+      "stored_energy_start_j": 5000000.0
+    },
+    {
+      "diagnostic_attainable_lap_time_s": 81.35477619652174,
+      "diagnostic_time_gain_proxy_s": 9.743223803478259,
+      "gross_deployment_j": 3999999.999999998,
+      "gross_harvest_j": 5000000.0,
+      "mean_delivered_deployment_fraction": 0.119637937819756,
+      "mean_requested_deployment_fraction": 0.12487238415673416,
+      "mean_uncalibrated_action_probability": 1.0,
+      "observed_lap_time_s": 91.098,
+      "path": "hold",
+      "peak_motor_wheel_power_kw": 241.3147896528244,
+      "source_lap": 5.0,
+      "stored_energy_end_j": 0.0,
+      "stored_energy_start_j": 0.0
+    }
+  ],
+  "optimizer_updates": 0,
+  "partition": "training_replay",
+  "physics_admission": false,
+  "probability_semantics": "uncalibrated_action_selection_probability",
+  "profile_entry": "14",
+  "session": "Qualifying",
+  "source_manifest_sha256": "2c7f7de6aa34915f8c7aa375afebdd169355aebf30ab5ddf1c2da1013f60b5ab",
+  "status": "diagnostic_only"
+}

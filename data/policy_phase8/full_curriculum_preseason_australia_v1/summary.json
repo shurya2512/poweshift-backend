@@ -1,0 +1,461 @@
+{
+  "checkpoint_verification": {
+    "checkpoint_sha256": "2b97cefdc9f71d814c5e338cbed621caff5867e5ccd1668437a40acafd5d85e9",
+    "completed_updates": 8279,
+    "restricted_load": true,
+    "schema_id": "diagnostic-additive-v2"
+  },
+  "curriculum": "preseason_test_1_then_australia_weekend",
+  "energy_prior": {
+    "additive_electric_wheel_power_fraction": 0.2,
+    "harvest_cap_j_per_lap": 5000000.0,
+    "harvest_efficiency": 0.8,
+    "motor_efficiency": 0.95,
+    "usable_store_j": 5000000.0
+  },
+  "limitations": [
+    "The promoted profiles remain provisional and are not physically admitted.",
+    "Japan-fitted provisional profiles are reused for the Australia diagnostic weekend.",
+    "Preseason packages are reduced to 64 chronological samples with an elapsed-time step approximation.",
+    "Traffic gaps are source-derived, while attack and defence labels use declared heuristic thresholds.",
+    "Incremental progress is a force-derived proxy, not demonstrated lap time, position, or strategy superiority."
+  ],
+  "preseason": {
+    "dates": [
+      "2026-02-11",
+      "2026-02-12",
+      "2026-02-13"
+    ],
+    "package_updates": 8069,
+    "sampling": "64 chronological samples per admitted package",
+    "singleton_handling": "repeat the measured row once at the diagnosed 0.24 s training cadence",
+    "singleton_packages": 68,
+    "step_duration": "package elapsed time divided by sampled intervals"
+  },
+  "profile_registry": {
+    "active_profiles": 22,
+    "physics_admission": false,
+    "profile_admission_id": "87daf272e8ec8f275fae47cade4c71f3c6815c617726b3a9756562ae208871c2",
+    "status": "promoted_provisional",
+    "user_authorization": "provisional promoted profiles accepted for this diagnostic run"
+  },
+  "protected_partitions": {
+    "final_2026-02-19_to_2026-02-20": "unopened",
+    "selection_2026-02-18": "unopened"
+  },
+  "race_reward": {
+    "attack_gain_weight": 1.0,
+    "attack_gap_s": 1.0,
+    "defend_gain_weight": 0.5,
+    "defend_gap_s": 0.8,
+    "deployment_cost_per_mj": 1.0,
+    "enabled": true,
+    "free_air_gain_weight": 0.1,
+    "gain_normalization": "equal_share_per_lap_step",
+    "late_race_cost_floor": 0.25,
+    "minimum_closing_ms": 0.5,
+    "reserve_shortfall_weight": 2.0
+  },
+  "race_weekend": {
+    "event": "Australia",
+    "observed_race_speed_ms": {
+      "median": 62.03728103637695,
+      "p90": 83.92833709716797
+    },
+    "qualifying_trace_updates": 157,
+    "race_ego_entry": "1",
+    "race_lap_updates": 53,
+    "route_length_m": 5239.304427662223
+  },
+  "stage_reports": [
+    {
+      "completed_updates": 2841,
+      "evaluation_after": {
+        "attack_opportunity_steps": 0.0,
+        "defence_threat_steps": 0.0,
+        "gross_deployment_j": 0.0,
+        "gross_harvest_j": 0.0,
+        "incremental_progress_proxy_m": 0.0,
+        "mean_requested_deployment_fraction": 0.0,
+        "mean_reward": 0.0,
+        "remaining_store_j": 0.0
+      },
+      "evaluation_before": {
+        "attack_opportunity_steps": 0.0,
+        "defence_threat_steps": 0.0,
+        "gross_deployment_j": 0.0,
+        "gross_harvest_j": 0.0,
+        "incremental_progress_proxy_m": 0.0,
+        "mean_requested_deployment_fraction": 0.0,
+        "mean_reward": 0.0,
+        "remaining_store_j": 0.0
+      },
+      "evaluation_delta": {
+        "attack_opportunity_steps": 0.0,
+        "defence_threat_steps": 0.0,
+        "gross_deployment_j": 0.0,
+        "gross_harvest_j": 0.0,
+        "incremental_progress_proxy_m": 0.0,
+        "mean_requested_deployment_fraction": 0.0,
+        "mean_reward": 0.0,
+        "remaining_store_j": 0.0
+      },
+      "sources": {
+        "package_manifest": "ee40c69c8d492037a1602926a7bf8dcc60304eecbf3eff2fb7b1311e79c35f6a",
+        "package_table": "964d0ff11335fd93cbeb8c8c074edf8f119a53deb5a6028d93d432d600db3f97",
+        "profile_registry": "29b5a01a9b1ddbf2ff437367c36b43a3e5944cb2cf97a3ab760c99cb1cfaf207"
+      },
+      "stage": "01-preseason-2026-02-11",
+      "stage_updates": 2841,
+      "status": "diagnostic_only",
+      "training": {
+        "attack_opportunity_steps": 0.0,
+        "defence_threat_steps": 0.0,
+        "deployment_step_rate": 1.0,
+        "electric_boost_fraction": 0.2,
+        "gross_deployment_j": 2503141334.161167,
+        "gross_harvest_j": 1090026148.339194,
+        "harvest_cap_j_per_lap": 5000000.0,
+        "harvest_curtailed_j": 72687836.19010329,
+        "incremental_progress_proxy_m": 4961131.086782822,
+        "mean_first_reward": 0.0,
+        "mean_last_reward": 0.0,
+        "mean_requested_deployment_fraction": 0.5165078051601044,
+        "mean_total_loss": 38.23122044249084,
+        "net_battery_change_j": -1631120415.489812,
+        "race_interaction_prior": {
+          "attack_gain_weight": 1.0,
+          "attack_gap_s": 1.0,
+          "defend_gain_weight": 0.5,
+          "defend_gap_s": 0.8,
+          "deployment_cost_per_mj": 1.0,
+          "enabled": false,
+          "free_air_gain_weight": 0.1,
+          "gain_normalization": "equal_share_per_lap_step",
+          "late_race_cost_floor": 0.25,
+          "minimum_closing_ms": 0.5,
+          "reserve_shortfall_weight": 2.0
+        },
+        "remaining_store_j": null,
+        "reward_change": 0.0,
+        "reward_findings": [],
+        "source_partition": "training",
+        "status": "diagnostic_only",
+        "updates": 2841,
+        "usable_store_j": 5000000.0
+      }
+    },
+    {
+      "completed_updates": 5569,
+      "evaluation_after": {
+        "attack_opportunity_steps": 0.0,
+        "defence_threat_steps": 0.0,
+        "gross_deployment_j": 33182916.663000602,
+        "gross_harvest_j": 12071665.976466224,
+        "incremental_progress_proxy_m": 55737.5118436428,
+        "mean_requested_deployment_fraction": 0.5719969075277587,
+        "mean_reward": 38.42535097016229,
+        "remaining_store_j": 0.0
+      },
+      "evaluation_before": {
+        "attack_opportunity_steps": 0.0,
+        "defence_threat_steps": 0.0,
+        "gross_deployment_j": 30396100.520111322,
+        "gross_harvest_j": 12042672.984113108,
+        "incremental_progress_proxy_m": 53790.0287140627,
+        "mean_requested_deployment_fraction": 0.5116427731465235,
+        "mean_reward": 35.31812060816354,
+        "remaining_store_j": 0.0
+      },
+      "evaluation_delta": {
+        "attack_opportunity_steps": 0.0,
+        "defence_threat_steps": 0.0,
+        "gross_deployment_j": 2786816.14288928,
+        "gross_harvest_j": 28992.99235311523,
+        "incremental_progress_proxy_m": 1947.483129580105,
+        "mean_requested_deployment_fraction": 0.06035413438123516,
+        "mean_reward": 3.1072303619987522,
+        "remaining_store_j": 0.0
+      },
+      "sources": {
+        "package_manifest": "8cc2cdd5effe4525803fc7e13919e2ed416909bd55314075fcd503d9cdfd41fb",
+        "package_table": "7b09556b31e98fe857572887e8805e9ff7746180601104262406c3a037838243",
+        "profile_registry": "29b5a01a9b1ddbf2ff437367c36b43a3e5944cb2cf97a3ab760c99cb1cfaf207"
+      },
+      "stage": "02-preseason-2026-02-12",
+      "stage_updates": 2728,
+      "status": "diagnostic_only",
+      "training": {
+        "attack_opportunity_steps": 0.0,
+        "defence_threat_steps": 0.0,
+        "deployment_step_rate": 0.9999778073679538,
+        "electric_boost_fraction": 0.2,
+        "gross_deployment_j": 3313326756.257972,
+        "gross_harvest_j": 1372233625.982605,
+        "harvest_cap_j_per_lap": 5000000.0,
+        "harvest_curtailed_j": 136756391.8412427,
+        "incremental_progress_proxy_m": 6186976.856142758,
+        "mean_first_reward": 16.86554243617723,
+        "mean_last_reward": 48.28312058641529,
+        "mean_requested_deployment_fraction": 0.5522801183755937,
+        "mean_total_loss": 50.37545524757519,
+        "net_battery_change_j": -2215539855.4718876,
+        "race_interaction_prior": {
+          "attack_gain_weight": 1.0,
+          "attack_gap_s": 1.0,
+          "defend_gain_weight": 0.5,
+          "defend_gap_s": 0.8,
+          "deployment_cost_per_mj": 1.0,
+          "enabled": false,
+          "free_air_gain_weight": 0.1,
+          "gain_normalization": "equal_share_per_lap_step",
+          "late_race_cost_floor": 0.25,
+          "minimum_closing_ms": 0.5,
+          "reserve_shortfall_weight": 2.0
+        },
+        "remaining_store_j": null,
+        "reward_change": 31.417578150238064,
+        "reward_findings": [],
+        "source_partition": "training",
+        "status": "diagnostic_only",
+        "updates": 2728,
+        "usable_store_j": 5000000.0
+      }
+    },
+    {
+      "completed_updates": 8069,
+      "evaluation_after": {
+        "attack_opportunity_steps": 0.0,
+        "defence_threat_steps": 0.0,
+        "gross_deployment_j": 39699587.54634804,
+        "gross_harvest_j": 13443578.791003842,
+        "incremental_progress_proxy_m": 75305.74369943232,
+        "mean_requested_deployment_fraction": 0.6514867550509253,
+        "mean_reward": 50.75867901678606,
+        "remaining_store_j": 0.0
+      },
+      "evaluation_before": {
+        "attack_opportunity_steps": 0.0,
+        "defence_threat_steps": 0.0,
+        "gross_deployment_j": 35812936.1737564,
+        "gross_harvest_j": 13398464.693351446,
+        "incremental_progress_proxy_m": 69574.76394176228,
+        "mean_requested_deployment_fraction": 0.5793445153668,
+        "mean_reward": 45.657773690723374,
+        "remaining_store_j": 0.0
+      },
+      "evaluation_delta": {
+        "attack_opportunity_steps": 0.0,
+        "defence_threat_steps": 0.0,
+        "gross_deployment_j": 3886651.3725916445,
+        "gross_harvest_j": 45114.09765239619,
+        "incremental_progress_proxy_m": 5730.979757670037,
+        "mean_requested_deployment_fraction": 0.07214223968412536,
+        "mean_reward": 5.100905326062687,
+        "remaining_store_j": 0.0
+      },
+      "sources": {
+        "package_manifest": "8e9ea443baf880e0bef058ff0958ffe1ebe823a7416a3b0d41d34ea951c0c797",
+        "package_table": "a054b68a82b1c4e6e7fef17c3380870cb4a14422a086a7c33ecf8a07f837ec50",
+        "profile_registry": "29b5a01a9b1ddbf2ff437367c36b43a3e5944cb2cf97a3ab760c99cb1cfaf207"
+      },
+      "stage": "03-preseason-2026-02-13",
+      "stage_updates": 2500,
+      "status": "diagnostic_only",
+      "training": {
+        "attack_opportunity_steps": 0.0,
+        "defence_threat_steps": 0.0,
+        "deployment_step_rate": 0.9996464152748601,
+        "electric_boost_fraction": 0.2,
+        "gross_deployment_j": 4324727771.631708,
+        "gross_harvest_j": 1581324465.486598,
+        "harvest_cap_j_per_lap": 5000000.0,
+        "harvest_curtailed_j": 75297963.56323957,
+        "incremental_progress_proxy_m": 8537411.804401247,
+        "mean_first_reward": 31.221740513724633,
+        "mean_last_reward": 55.14398996293712,
+        "mean_requested_deployment_fraction": 0.6256919452885611,
+        "mean_total_loss": 80.86339699097364,
+        "net_battery_change_j": -3059668199.2424297,
+        "race_interaction_prior": {
+          "attack_gain_weight": 1.0,
+          "attack_gap_s": 1.0,
+          "defend_gain_weight": 0.5,
+          "defend_gap_s": 0.8,
+          "deployment_cost_per_mj": 1.0,
+          "enabled": false,
+          "free_air_gain_weight": 0.1,
+          "gain_normalization": "equal_share_per_lap_step",
+          "late_race_cost_floor": 0.25,
+          "minimum_closing_ms": 0.5,
+          "reserve_shortfall_weight": 2.0
+        },
+        "remaining_store_j": null,
+        "reward_change": 23.922249449212487,
+        "reward_findings": [],
+        "source_partition": "training",
+        "status": "diagnostic_only",
+        "updates": 2500,
+        "usable_store_j": 5000000.0
+      }
+    },
+    {
+      "completed_updates": 8226,
+      "evaluation_after": {
+        "attack_opportunity_steps": 0.0,
+        "defence_threat_steps": 0.0,
+        "gross_deployment_j": 100480099.56799512,
+        "gross_harvest_j": 19579079.4574415,
+        "incremental_progress_proxy_m": 106612.36040971962,
+        "mean_requested_deployment_fraction": 0.6889553536102266,
+        "mean_reward": 94.15132659739344,
+        "remaining_store_j": 0.0
+      },
+      "evaluation_before": {
+        "attack_opportunity_steps": 0.0,
+        "defence_threat_steps": 0.0,
+        "gross_deployment_j": 98725415.0474658,
+        "gross_harvest_j": 19573338.67221395,
+        "incremental_progress_proxy_m": 104600.33685972114,
+        "mean_requested_deployment_fraction": 0.6758498728246393,
+        "mean_reward": 92.4359330286537,
+        "remaining_store_j": 0.0
+      },
+      "evaluation_delta": {
+        "attack_opportunity_steps": 0.0,
+        "defence_threat_steps": 0.0,
+        "gross_deployment_j": 1754684.5205293149,
+        "gross_harvest_j": 5740.785227552056,
+        "incremental_progress_proxy_m": 2012.0235499984847,
+        "mean_requested_deployment_fraction": 0.013105480785587376,
+        "mean_reward": 1.7153935687397421,
+        "remaining_store_j": 0.0
+      },
+      "sources": {
+        "profile_registry": "29b5a01a9b1ddbf2ff437367c36b43a3e5944cb2cf97a3ab760c99cb1cfaf207",
+        "qualifying_batches": "45eff6406147c07b8d31bd723fb3e73b19a29521c4192cd676e284efa2192bb8",
+        "qualifying_binding": "bb3d3f43c6680b1bbf380ed6992f4c982d05c45ef6a4ee4433fab12853fc7e3f"
+      },
+      "stage": "04-australia-qualifying",
+      "stage_updates": 157,
+      "status": "diagnostic_only",
+      "training": {
+        "attack_opportunity_steps": 0.0,
+        "defence_threat_steps": 0.0,
+        "deployment_step_rate": 1.0,
+        "electric_boost_fraction": 0.2,
+        "gross_deployment_j": 724245601.0566533,
+        "gross_harvest_j": 136493114.18599695,
+        "harvest_cap_j_per_lap": 5000000.0,
+        "harvest_curtailed_j": 3267799.1661226344,
+        "incremental_progress_proxy_m": 763325.6709571816,
+        "mean_first_reward": 94.9111557041535,
+        "mean_last_reward": 73.722435414658,
+        "mean_requested_deployment_fraction": 0.6763118544852736,
+        "mean_total_loss": 124.68080523059626,
+        "net_battery_change_j": -615051109.7078557,
+        "race_interaction_prior": {
+          "attack_gain_weight": 1.0,
+          "attack_gap_s": 1.0,
+          "defend_gain_weight": 0.5,
+          "defend_gap_s": 0.8,
+          "deployment_cost_per_mj": 1.0,
+          "enabled": false,
+          "free_air_gain_weight": 0.1,
+          "gain_normalization": "equal_share_per_lap_step",
+          "late_race_cost_floor": 0.25,
+          "minimum_closing_ms": 0.5,
+          "reserve_shortfall_weight": 2.0
+        },
+        "remaining_store_j": null,
+        "reward_change": -21.188720289495507,
+        "reward_findings": [],
+        "source_partition": "training",
+        "status": "diagnostic_only",
+        "updates": 157,
+        "usable_store_j": 5000000.0
+      }
+    },
+    {
+      "completed_updates": 8279,
+      "evaluation_after": {
+        "attack_opportunity_steps": 532.0,
+        "defence_threat_steps": 430.0,
+        "gross_deployment_j": 11453995.119588386,
+        "gross_harvest_j": 8067493.899485465,
+        "incremental_progress_proxy_m": 14397.543918562878,
+        "mean_requested_deployment_fraction": 0.5705547304056795,
+        "mean_reward": -1.1319809471664437,
+        "remaining_store_j": 0.0
+      },
+      "evaluation_before": {
+        "attack_opportunity_steps": 532.0,
+        "defence_threat_steps": 430.0,
+        "gross_deployment_j": 11453995.11958838,
+        "gross_harvest_j": 8067493.899485465,
+        "incremental_progress_proxy_m": 14674.98908467952,
+        "mean_requested_deployment_fraction": 0.653547752823215,
+        "mean_reward": -1.1321544060031343,
+        "remaining_store_j": 0.0
+      },
+      "evaluation_delta": {
+        "attack_opportunity_steps": 0.0,
+        "defence_threat_steps": 0.0,
+        "gross_deployment_j": 5.587935447692871e-09,
+        "gross_harvest_j": 0.0,
+        "incremental_progress_proxy_m": -277.4451661166422,
+        "mean_requested_deployment_fraction": -0.08299302241753548,
+        "mean_reward": 0.0001734588366906209,
+        "remaining_store_j": 0.0
+      },
+      "sources": {
+        "profile_registry": "29b5a01a9b1ddbf2ff437367c36b43a3e5944cb2cf97a3ab760c99cb1cfaf207",
+        "race_batches": "bff8201196833fa5035f0cf8db77ce71909ef870228b6352b5227e823aec4e5a",
+        "race_report": "805644481646e0376b93fba1094e28bb0da5b8feb1c662f16510002b412b1faf"
+      },
+      "stage": "05-australia-race",
+      "stage_updates": 53,
+      "status": "diagnostic_only",
+      "training": {
+        "attack_opportunity_steps": 532.0,
+        "defence_threat_steps": 430.0,
+        "deployment_step_rate": 0.9888888888888889,
+        "electric_boost_fraction": 0.2,
+        "gross_deployment_j": 11453995.119588368,
+        "gross_harvest_j": 8067493.899485465,
+        "harvest_cap_j_per_lap": 5000000.0,
+        "harvest_curtailed_j": 5.098854671814479e-11,
+        "incremental_progress_proxy_m": 14500.88891559643,
+        "mean_first_reward": -2.320029859332592,
+        "mean_last_reward": -0.19716984273217664,
+        "mean_requested_deployment_fraction": 0.6240350539268305,
+        "mean_total_loss": 4.96264174861728,
+        "net_battery_change_j": -4999999.999999995,
+        "race_interaction_prior": {
+          "attack_gain_weight": 1.0,
+          "attack_gap_s": 1.0,
+          "defend_gain_weight": 0.5,
+          "defend_gap_s": 0.8,
+          "deployment_cost_per_mj": 1.0,
+          "enabled": true,
+          "free_air_gain_weight": 0.1,
+          "gain_normalization": "equal_share_per_lap_step",
+          "late_race_cost_floor": 0.25,
+          "minimum_closing_ms": 0.5,
+          "reserve_shortfall_weight": 2.0
+        },
+        "remaining_store_j": 0.0,
+        "reward_change": 2.1228600166004155,
+        "reward_findings": [
+          "store was exhausted; ten race updates did not yet adapt deployment to the shaped objective"
+        ],
+        "source_partition": "training",
+        "status": "diagnostic_only",
+        "updates": 53,
+        "usable_store_j": 5000000.0
+      }
+    }
+  ],
+  "status": "diagnostic_only",
+  "total_ppo_updates": 8279
+}

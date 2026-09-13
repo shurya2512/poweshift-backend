@@ -1,0 +1,51 @@
+{
+  "best_diagnostic_attainable_lap_time_s": 71.98303815762773,
+  "best_observed_lap_time_s": 78.758,
+  "checkpoint_sha256": "f41c207b32d510bf5f21452fcf1de50d0e0cd856b37e49e5095f8479ddd56f3e",
+  "checkpoint_stage": "2026-07-05-british-entry-18",
+  "event_name": "Barcelona Grand Prix",
+  "final_stored_energy_j": 0.0,
+  "gross_deployment_j": 6219151.807874992,
+  "gross_harvest_j": 1523939.7598437313,
+  "lap_time_semantics": "idealized_additive_power_ratio_proxy_not_physical_prediction",
+  "laps": [
+    {
+      "diagnostic_attainable_lap_time_s": 72.07497925292137,
+      "diagnostic_time_gain_proxy_s": 7.921020747078629,
+      "gross_deployment_j": 3382462.9350204486,
+      "gross_harvest_j": 818095.7304306834,
+      "mean_delivered_deployment_fraction": 0.5494986491277813,
+      "mean_requested_deployment_fraction": 0.5494986491277813,
+      "mean_uncalibrated_action_probability": 1.0,
+      "observed_lap_time_s": 79.996,
+      "path": "hold",
+      "peak_motor_wheel_power_kw": 76.20473104295394,
+      "source_lap": 2.0,
+      "stored_energy_end_j": 2272013.6493241,
+      "stored_energy_start_j": 5000000.0
+    },
+    {
+      "diagnostic_attainable_lap_time_s": 71.98303815762773,
+      "diagnostic_time_gain_proxy_s": 6.774961842372264,
+      "gross_deployment_j": 2836688.872854543,
+      "gross_harvest_j": 705844.029413048,
+      "mean_delivered_deployment_fraction": 0.47059432442518795,
+      "mean_requested_deployment_fraction": 0.47225150124282594,
+      "mean_uncalibrated_action_probability": 1.0,
+      "observed_lap_time_s": 78.758,
+      "path": "hold",
+      "peak_motor_wheel_power_kw": 76.20423123056531,
+      "source_lap": 7.0,
+      "stored_energy_end_j": 0.0,
+      "stored_energy_start_j": 2272013.6493241
+    }
+  ],
+  "optimizer_updates": 0,
+  "partition": "training_replay",
+  "physics_admission": false,
+  "probability_semantics": "uncalibrated_action_selection_probability",
+  "profile_entry": "18",
+  "session": "Qualifying",
+  "source_manifest_sha256": "70177b7e15fd4b7321ac6f55004922dc05080324e5e7e5b5204d5554f2e1fed9",
+  "status": "diagnostic_only"
+}

@@ -1,0 +1,60 @@
+{
+  "circuit": "Madring",
+  "event": "2026 Spanish Grand Prix",
+  "frontend_inference_contract": {
+    "decision_hz": 5.0,
+    "held_input_flag": "held_source_frame",
+    "input": "ObservationFrame",
+    "input_hz": 4.0,
+    "output": "LiveRecommendationFrame",
+    "registration_state": "awaiting_physics_and_energy_admission",
+    "websocket": "/runs/{run_id}/live"
+  },
+  "limitations": [
+    "Madring qualifying is protected evaluation data and produced no optimizer updates.",
+    "Three promoted profile identities lack complete accurate qualifying laps in this source.",
+    "The race had not been acquired, so no race tactics or P23 result is claimed for Madring.",
+    "Frontend live registration remains blocked until the diagnostic policy receives admitted physics and energy identities."
+  ],
+  "median_gross_deployment_j": 9093097.6361131,
+  "median_gross_harvest_j": 5116372.045141369,
+  "optimizer_updates": 0,
+  "partition": "final_evaluation",
+  "physics_admission": false,
+  "profiles_requested": 22,
+  "profiles_with_accurate_laps": 19,
+  "profiles_without_accurate_laps": [
+    "6",
+    "18",
+    "87"
+  ],
+  "qualifying_laps": 112,
+  "race_source_state": "not_available_at_acquisition",
+  "reports": {
+    "1": "reports/entry-1.json",
+    "10": "reports/entry-10.json",
+    "11": "reports/entry-11.json",
+    "12": "reports/entry-12.json",
+    "14": "reports/entry-14.json",
+    "16": "reports/entry-16.json",
+    "18": "reports/entry-18.json",
+    "23": "reports/entry-23.json",
+    "27": "reports/entry-27.json",
+    "3": "reports/entry-3.json",
+    "30": "reports/entry-30.json",
+    "31": "reports/entry-31.json",
+    "41": "reports/entry-41.json",
+    "43": "reports/entry-43.json",
+    "44": "reports/entry-44.json",
+    "5": "reports/entry-5.json",
+    "55": "reports/entry-55.json",
+    "6": "reports/entry-6.json",
+    "63": "reports/entry-63.json",
+    "77": "reports/entry-77.json",
+    "81": "reports/entry-81.json",
+    "87": "reports/entry-87.json"
+  },
+  "session": "Qualifying",
+  "source_ticks_4hz": 45426,
+  "status": "diagnostic_only"
+}

@@ -1,0 +1,147 @@
+{
+  "event_name": "Chinese Grand Prix",
+  "median_best_diagnostic_attainable_lap_time_s": 74.98116976938402,
+  "optimizer_updates": 0,
+  "partition": "training_replay",
+  "physics_admission": false,
+  "profiles_with_laps": 22,
+  "profiles_without_laps": [],
+  "proxy_ranking": [
+    {
+      "diagnostic_attainable_lap_time_s": 73.93522698741492,
+      "profile_entry": "31",
+      "rank": 1
+    },
+    {
+      "diagnostic_attainable_lap_time_s": 73.9648055311126,
+      "profile_entry": "63",
+      "rank": 2
+    },
+    {
+      "diagnostic_attainable_lap_time_s": 74.29782599518184,
+      "profile_entry": "81",
+      "rank": 3
+    },
+    {
+      "diagnostic_attainable_lap_time_s": 74.36091742296689,
+      "profile_entry": "3",
+      "rank": 4
+    },
+    {
+      "diagnostic_attainable_lap_time_s": 74.61005579430817,
+      "profile_entry": "5",
+      "rank": 5
+    },
+    {
+      "diagnostic_attainable_lap_time_s": 74.63306740813809,
+      "profile_entry": "1",
+      "rank": 6
+    },
+    {
+      "diagnostic_attainable_lap_time_s": 74.64164512541215,
+      "profile_entry": "10",
+      "rank": 7
+    },
+    {
+      "diagnostic_attainable_lap_time_s": 74.72185728098624,
+      "profile_entry": "87",
+      "rank": 8
+    },
+    {
+      "diagnostic_attainable_lap_time_s": 74.73659444015803,
+      "profile_entry": "16",
+      "rank": 9
+    },
+    {
+      "diagnostic_attainable_lap_time_s": 74.74701106669151,
+      "profile_entry": "12",
+      "rank": 10
+    },
+    {
+      "diagnostic_attainable_lap_time_s": 74.90995970191186,
+      "profile_entry": "6",
+      "rank": 11
+    },
+    {
+      "diagnostic_attainable_lap_time_s": 75.05237983685619,
+      "profile_entry": "27",
+      "rank": 12
+    },
+    {
+      "diagnostic_attainable_lap_time_s": 75.23299206714677,
+      "profile_entry": "14",
+      "rank": 13
+    },
+    {
+      "diagnostic_attainable_lap_time_s": 76.02081079145563,
+      "profile_entry": "18",
+      "rank": 14
+    },
+    {
+      "diagnostic_attainable_lap_time_s": 76.20519181741818,
+      "profile_entry": "44",
+      "rank": 15
+    },
+    {
+      "diagnostic_attainable_lap_time_s": 76.70585709785196,
+      "profile_entry": "77",
+      "rank": 16
+    },
+    {
+      "diagnostic_attainable_lap_time_s": 76.80870909778884,
+      "profile_entry": "43",
+      "rank": 17
+    },
+    {
+      "diagnostic_attainable_lap_time_s": 77.28333253667404,
+      "profile_entry": "30",
+      "rank": 18
+    },
+    {
+      "diagnostic_attainable_lap_time_s": 77.62637529899388,
+      "profile_entry": "11",
+      "rank": 19
+    },
+    {
+      "diagnostic_attainable_lap_time_s": 83.69671136213498,
+      "profile_entry": "41",
+      "rank": 20
+    },
+    {
+      "diagnostic_attainable_lap_time_s": 84.4637432088547,
+      "profile_entry": "55",
+      "rank": 21
+    },
+    {
+      "diagnostic_attainable_lap_time_s": 85.02361777250646,
+      "profile_entry": "23",
+      "rank": 22
+    }
+  ],
+  "reports": {
+    "1": "reports/entry-1.json",
+    "10": "reports/entry-10.json",
+    "11": "reports/entry-11.json",
+    "12": "reports/entry-12.json",
+    "14": "reports/entry-14.json",
+    "16": "reports/entry-16.json",
+    "18": "reports/entry-18.json",
+    "23": "reports/entry-23.json",
+    "27": "reports/entry-27.json",
+    "3": "reports/entry-3.json",
+    "30": "reports/entry-30.json",
+    "31": "reports/entry-31.json",
+    "41": "reports/entry-41.json",
+    "43": "reports/entry-43.json",
+    "44": "reports/entry-44.json",
+    "5": "reports/entry-5.json",
+    "55": "reports/entry-55.json",
+    "6": "reports/entry-6.json",
+    "63": "reports/entry-63.json",
+    "77": "reports/entry-77.json",
+    "81": "reports/entry-81.json",
+    "87": "reports/entry-87.json"
+  },
+  "session": "Qualifying",
+  "status": "diagnostic_only"
+}

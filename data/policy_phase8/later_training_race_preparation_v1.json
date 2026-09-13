@@ -1,0 +1,76 @@
+{
+  "events": [
+    {
+      "event_date": "2026-05-03",
+      "event_name": "Miami Grand Prix",
+      "logical_batch_count": 185,
+      "observation_clock_hz": 4.0,
+      "partition": "training",
+      "race_artifact": "/Users/10doshi12/Desktop/trackshift/poweshift-backend/data/representation_phase4/race_full_weekend_miami_v1_diagnostic/race_batches.pt",
+      "route_entry": "1",
+      "route_lap": 2.0,
+      "route_manifest": "/Users/10doshi12/Desktop/trackshift/poweshift-backend/data/representation_phase4/static_route_miami_race_v1/static_route_manifest.json",
+      "source_binding": "/Users/10doshi12/Desktop/trackshift/poweshift-backend/data/representation_phase4/race_full_weekend_miami_v1_diagnostic/source_binding.json"
+    },
+    {
+      "event_date": "2026-05-24",
+      "event_name": "Canadian Grand Prix",
+      "logical_batch_count": 175,
+      "observation_clock_hz": 4.0,
+      "partition": "training",
+      "race_artifact": "/Users/10doshi12/Desktop/trackshift/poweshift-backend/data/representation_phase4/race_full_weekend_canadian_v1_diagnostic/race_batches.pt",
+      "route_entry": "1",
+      "route_lap": 5.0,
+      "route_manifest": "/Users/10doshi12/Desktop/trackshift/poweshift-backend/data/representation_phase4/static_route_canadian_race_v1/static_route_manifest.json",
+      "source_binding": "/Users/10doshi12/Desktop/trackshift/poweshift-backend/data/representation_phase4/race_full_weekend_canadian_v1_diagnostic/source_binding.json"
+    },
+    {
+      "event_date": "2026-06-07",
+      "event_name": "Monaco Grand Prix",
+      "logical_batch_count": 9,
+      "observation_clock_hz": 4.0,
+      "partition": "training",
+      "race_artifact": "/Users/10doshi12/Desktop/trackshift/poweshift-backend/data/representation_phase4/race_full_weekend_monaco_v1_diagnostic/race_batches.pt",
+      "route_entry": "1",
+      "route_lap": 4.0,
+      "route_manifest": "/Users/10doshi12/Desktop/trackshift/poweshift-backend/data/representation_phase4/static_route_monaco_race_v1/static_route_manifest.json",
+      "source_binding": "/Users/10doshi12/Desktop/trackshift/poweshift-backend/data/representation_phase4/race_full_weekend_monaco_v1_diagnostic/source_binding.json"
+    },
+    {
+      "event_date": "2026-06-14",
+      "event_name": "Barcelona Grand Prix",
+      "logical_batch_count": 184,
+      "observation_clock_hz": 4.0,
+      "partition": "training",
+      "race_artifact": "/Users/10doshi12/Desktop/trackshift/poweshift-backend/data/representation_phase4/race_full_weekend_barcelona_v1_diagnostic/race_batches.pt",
+      "route_entry": "1",
+      "route_lap": 2.0,
+      "route_manifest": "/Users/10doshi12/Desktop/trackshift/poweshift-backend/data/representation_phase4/static_route_barcelona_race_v1/static_route_manifest.json",
+      "source_binding": "/Users/10doshi12/Desktop/trackshift/poweshift-backend/data/representation_phase4/race_full_weekend_barcelona_v1_diagnostic/source_binding.json"
+    },
+    {
+      "event_date": "2026-06-28",
+      "event_name": "Austrian Grand Prix",
+      "logical_batch_count": 175,
+      "observation_clock_hz": 4.0,
+      "partition": "training",
+      "race_artifact": "/Users/10doshi12/Desktop/trackshift/poweshift-backend/data/representation_phase4/race_full_weekend_austrian_v1_diagnostic/race_batches.pt",
+      "route_entry": "1",
+      "route_lap": 2.0,
+      "route_manifest": "/Users/10doshi12/Desktop/trackshift/poweshift-backend/data/representation_phase4/static_route_austrian_race_v1/static_route_manifest.json",
+      "source_binding": "/Users/10doshi12/Desktop/trackshift/poweshift-backend/data/representation_phase4/race_full_weekend_austrian_v1_diagnostic/source_binding.json"
+    },
+    {
+      "event_date": "2026-07-05",
+      "event_name": "British Grand Prix",
+      "logical_batch_count": 170,
+      "observation_clock_hz": 4.0,
+      "partition": "training",
+      "race_artifact": "/Users/10doshi12/Desktop/trackshift/poweshift-backend/data/representation_phase4/race_full_weekend_british_v1_diagnostic/race_batches.pt",
+      "route_entry": "1",
+      "route_lap": 2.0,
+      "route_manifest": "/Users/10doshi12/Desktop/trackshift/poweshift-backend/data/representation_phase4/static_route_british_race_v1/static_route_manifest.json",
+      "source_binding": "/Users/10doshi12/Desktop/trackshift/poweshift-backend/data/representation_phase4/race_full_weekend_british_v1_diagnostic/source_binding.json"
+    }
+  ]
+}

@@ -1,0 +1,158 @@
+{
+  "limitations": [
+    "The fitted car profiles and source adapters are diagnostic and not admission eligible.",
+    "Traffic gaps are source-derived, but pass and defence labels use declared heuristic thresholds rather than a validated interaction world.",
+    "Incremental progress is a proxy from added longitudinal force, not a demonstrated lap-time or finishing-position gain."
+  ],
+  "profile_diagnosis": {
+    "electric_power_scale_w": {
+      "at_median_profile_and_p90_speed": 105973.0182614378,
+      "at_median_profile_and_speed": 78332.03786940116
+    },
+    "harvest_cap_basis": "5 MJ per lap fallback requested for circuits without an available cap.",
+    "maximum_drive_force_n": {
+      "maximum": 6372.861054637612,
+      "median": 6313.303695144094,
+      "minimum": 6186.982019048548
+    },
+    "observed_race_speed_ms": {
+      "median": 62.03728004535138,
+      "p90": 83.92833877368155
+    },
+    "profile_artifact_admission_eligible": false,
+    "profile_count": 20,
+    "selected_electric_boost_fraction": 0.2,
+    "selection_basis": "The fitted profiles identify aggregate effective drive force, not an ICE/electric split. Twenty percent is an explicit additive diagnostic prior, not a fitted result.",
+    "usable_store_basis": "5 MJ diagnostic fallback because no admitted usable-store value is available."
+  },
+  "qualifying": {
+    "evaluation_after": {
+      "attack_opportunity_steps": 0.0,
+      "defence_threat_steps": 0.0,
+      "gross_deployment_j": 86064584.86570564,
+      "gross_harvest_j": 20216853.001154903,
+      "incremental_progress_proxy_m": 92059.0389783982,
+      "mean_reward": 81.05678926351753,
+      "remaining_store_j": 0.0
+    },
+    "evaluation_before": {
+      "attack_opportunity_steps": 0.0,
+      "defence_threat_steps": 0.0,
+      "gross_deployment_j": 84031458.82710418,
+      "gross_harvest_j": 20305864.595679462,
+      "incremental_progress_proxy_m": 88599.15718207414,
+      "mean_reward": 79.21292064356084,
+      "remaining_store_j": 0.0
+    },
+    "evaluation_delta": {
+      "gross_deployment_j": 2033126.038601458,
+      "gross_harvest_j": -89011.59452455863,
+      "incremental_progress_proxy_m": 3459.881796324058,
+      "mean_reward": 1.8438686199566945
+    },
+    "traffic_intelligence_enabled": false,
+    "training": {
+      "attack_opportunity_steps": 0.0,
+      "defence_threat_steps": 0.0,
+      "deployment_step_rate": 1.0,
+      "electric_boost_fraction": 0.2,
+      "gross_deployment_j": 412336816.15831417,
+      "gross_harvest_j": 94926431.51295713,
+      "harvest_cap_j_per_lap": 5000000.0,
+      "harvest_curtailed_j": 3325807.83751766,
+      "incremental_progress_proxy_m": 457187.3056590633,
+      "mean_first_reward": 82.9005830740456,
+      "mean_last_reward": 74.13362461397257,
+      "mean_requested_deployment_fraction": 0.5639655314527477,
+      "mean_total_loss": 129.47368019104005,
+      "net_battery_change_j": -336395670.94794846,
+      "race_interaction_prior": {
+        "attack_gain_weight": 1.0,
+        "attack_gap_s": 1.0,
+        "defend_gain_weight": 0.5,
+        "defend_gap_s": 0.8,
+        "deployment_cost_per_mj": 0.08,
+        "enabled": false,
+        "free_air_gain_weight": 0.25,
+        "minimum_closing_ms": 0.5
+      },
+      "remaining_store_j": null,
+      "reward_change": -8.766958460073027,
+      "reward_findings": [],
+      "source_partition": "training",
+      "status": "diagnostic_only",
+      "updates": 100,
+      "usable_store_j": 5000000.0
+    },
+    "updates": 100
+  },
+  "race": {
+    "ego_entry": "1",
+    "evaluation_after": {
+      "attack_opportunity_steps": 308.0,
+      "defence_threat_steps": 78.0,
+      "gross_deployment_j": 6432265.110444253,
+      "gross_harvest_j": 1790331.3880553131,
+      "incremental_progress_proxy_m": 6502.983632149064,
+      "mean_reward": 6.878815753473692,
+      "remaining_store_j": 0.0
+    },
+    "evaluation_before": {
+      "attack_opportunity_steps": 308.0,
+      "defence_threat_steps": 78.0,
+      "gross_deployment_j": 6432265.110444259,
+      "gross_harvest_j": 1790331.3880553131,
+      "incremental_progress_proxy_m": 6507.260411902558,
+      "mean_reward": 6.783262622743602,
+      "remaining_store_j": 0.0
+    },
+    "evaluation_delta": {
+      "gross_deployment_j": -5.587935447692871e-09,
+      "gross_harvest_j": 0.0,
+      "incremental_progress_proxy_m": -4.276779753494338,
+      "mean_reward": 0.09555313073008964
+    },
+    "field_context_entries": 20,
+    "laps": 10,
+    "route_length_m": 5239.304427662223,
+    "traffic_intelligence_enabled": true,
+    "training": {
+      "attack_opportunity_steps": 308.0,
+      "defence_threat_steps": 78.0,
+      "deployment_step_rate": 0.9944598337950139,
+      "electric_boost_fraction": 0.2,
+      "gross_deployment_j": 6432265.110444262,
+      "gross_harvest_j": 1790331.3880553131,
+      "harvest_cap_j_per_lap": 5000000.0,
+      "harvest_curtailed_j": 1.2164491636212915e-11,
+      "incremental_progress_proxy_m": 6598.161950350092,
+      "mean_first_reward": 18.817944961500775,
+      "mean_last_reward": 1.791355422519466,
+      "mean_requested_deployment_fraction": 0.563351473959364,
+      "mean_total_loss": 0.18660386502742768,
+      "net_battery_change_j": -5000000.000000011,
+      "race_interaction_prior": {
+        "attack_gain_weight": 1.0,
+        "attack_gap_s": 1.0,
+        "defend_gain_weight": 0.5,
+        "defend_gap_s": 0.8,
+        "deployment_cost_per_mj": 0.08,
+        "enabled": true,
+        "free_air_gain_weight": 0.25,
+        "minimum_closing_ms": 0.5
+      },
+      "remaining_store_j": 0.0,
+      "reward_change": -17.02658953898131,
+      "reward_findings": [
+        "store was exhausted; race reward needs remaining-distance and future-opportunity state"
+      ],
+      "source_partition": "training",
+      "status": "diagnostic_only",
+      "updates": 10,
+      "usable_store_j": 5000000.0
+    },
+    "updates": 10
+  },
+  "source_partition": "training",
+  "status": "diagnostic_only"
+}
