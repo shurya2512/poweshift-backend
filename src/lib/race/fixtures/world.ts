@@ -18,19 +18,22 @@ interface Ranked {
   progress: Progress;
   /** Race time this entry took the flag, or undefined while still running. */
   finishTimeS?: number;
+  /** Race time at the end of lap one — the slower it is, the further back the car started. */
+  lapOneS: number;
 }
 
 /**
  * Running entries by distance covered, finished entries by when they took the flag,
  * retired entries at the back. Finished entries all sit at the same distance, so
- * without the finish-time tie-break they would order arbitrarily.
+ * without the finish-time tie-break they would order arbitrarily. Running entries at
+ * the same distance — everyone at the start — order by lap one, so the grid holds.
  */
 function order(rows: Ranked[]): Ranked[] {
   const finished = rows.filter((r) => r.progress.finished);
   const running = rows.filter((r) => !r.progress.finished && !r.progress.retired);
   const retired = rows.filter((r) => r.progress.retired);
   finished.sort((a, b) => (a.finishTimeS ?? 0) - (b.finishTimeS ?? 0));
-  running.sort((a, b) => b.progress.distance - a.progress.distance);
+  running.sort((a, b) => b.progress.distance - a.progress.distance || a.lapOneS - b.lapOneS);
   retired.sort((a, b) => b.progress.distance - a.progress.distance);
   return [...finished, ...running, ...retired];
 }
@@ -59,6 +62,7 @@ export function buildWorld(
       entry,
       progress: progressAt(plan, timing, entry.id, t),
       finishTimeS: ends[ends.length - 1],
+      lapOneS: ends[0] ?? Infinity,
     };
   });
   const ordered = order(rows);

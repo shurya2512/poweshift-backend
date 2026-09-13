@@ -5,7 +5,6 @@ import { valueOf } from '@/lib/race/valued';
 import { Eyebrow, Panel, formatGap } from '../primitives';
 import { StatusValue } from '../StatusValue';
 import { TyreValue } from '../TyreMarker';
-import { WORLD_ACCENT, WORLD_LABEL } from './WorldSwitch';
 
 const BADGE: Record<ParticipantState['participation'], string | null> = {
   running: null,
@@ -71,10 +70,9 @@ function Row({
 }
 
 /**
- * The order in one race: position, both gaps, and the tyre each car is on.
+ * The order: position, both gaps, and the tyre each car is on.
  *
- * Retired and lapped entries keep their classification rather than a running position,
- * and the panel names the race it is reading — the two orders are never interleaved.
+ * Retired and lapped entries keep their classification rather than a running position.
  */
 export function StandingsPanel({
   world,
@@ -92,7 +90,7 @@ export function StandingsPanel({
   return (
     <Panel className="flex h-full flex-col overflow-hidden">
       <div className="border-b border-white/[0.07] px-4 py-3.5">
-        <Eyebrow className={WORLD_ACCENT[world.side]}>Standings · {WORLD_LABEL[world.side]}</Eyebrow>
+        <Eyebrow>Standings</Eyebrow>
         <p className="mt-1 text-[11px] text-white/45">
           Lap {world.leaderLap}/{world.totalLaps} · {world.field.filter((p) => p.participation === 'running').length}{' '}
           running

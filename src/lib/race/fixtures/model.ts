@@ -93,6 +93,13 @@ export const compoundsFor = (plan: WorldPlan, id: string): string[] | undefined 
  */
 export type WorldTiming = Map<string, number[]>;
 
+/**
+ * Our car starts from the back: its first lap carries this much extra time, and it runs
+ * this much quicker per lap than its roster pace, so it climbs through the field all race.
+ */
+const SELECTED_START_DEFICIT_S = 30.0;
+const SELECTED_PACE_GAIN_S = 0.4;
+
 export function buildTiming(plan: WorldPlan): WorldTiming {
   const timing: WorldTiming = new Map();
 
@@ -109,6 +116,10 @@ export function buildTiming(plan: WorldPlan): WorldTiming {
       const tyreLoss = (entry.degPerLapS / 6) * stintAge * stintAge;
       const neutralised = neutralisationAt(plan, lap);
       let lapTime = BASE_LAP_S + entry.paceOffsetS + tyreLoss;
+      if (entry.id === SELECTED_ID) {
+        lapTime -= SELECTED_PACE_GAIN_S;
+        if (lap === 1) lapTime += SELECTED_START_DEFICIT_S;
+      }
       if (pitLaps.includes(lap)) {
         lapTime += neutralised ? NEUTRALISED_PIT_LOSS_S : PIT_LOSS_S;
         stintAge = 0;

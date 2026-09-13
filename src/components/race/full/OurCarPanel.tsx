@@ -1,28 +1,15 @@
 import React from 'react';
-import { Participant, ParticipantState, WorldSide } from '@/lib/race/types';
+import { Participant, ParticipantState } from '@/lib/race/types';
 import { Valued, isSupported } from '@/lib/race/valued';
 import { Eyebrow, Panel, formatGap } from '../primitives';
 import { StatusValue } from '../StatusValue';
 import { TyreValue } from '../TyreMarker';
-import { WORLD_ACCENT, WORLD_LABEL } from './WorldSwitch';
 
-/** Label, the shown race's value, and the other race's beside it for reference. */
-function Line({
-  label,
-  children,
-  reference,
-}: {
-  label: string;
-  children: React.ReactNode;
-  reference?: React.ReactNode;
-}) {
+function Line({ label, children }: { label: string; children: React.ReactNode }) {
   return (
     <div className="flex items-baseline justify-between gap-3 border-b border-white/[0.05] py-2">
       <span className="shrink-0 text-[10px] uppercase tracking-wider text-white/35">{label}</span>
-      <span className="flex flex-wrap items-baseline justify-end gap-x-2.5 text-right">
-        <span className="text-[12px] font-semibold text-white/85">{children}</span>
-        {reference !== undefined && <span className="text-[10px] tabular-nums text-white/30">{reference}</span>}
-      </span>
+      <span className="text-right text-[12px] font-semibold text-white/85">{children}</span>
     </div>
   );
 }
@@ -82,30 +69,16 @@ function Sector({ value }: { value: Valued<number> }) {
 
 const MAX_STORED_MJ = 4.0;
 
-/** The other race's value, printed small — or nothing when that race has no such entry. */
-const ref = (state: ParticipantState | undefined, pick: (s: ParticipantState) => React.ReactNode) =>
-  state ? pick(state) : undefined;
-
-/**
- * Our car in the race being shown: what it is running on, how fast, where on the lap,
- * and how much energy it is holding. Every line carries the other race's value beside
- * it, so the two are compared without being merged.
- */
+/** Our car: what it is running on, how fast, where on the lap, and how much energy it is holding. */
 export function OurCarPanel({
   driver,
   car,
-  side,
   state,
-  other,
 }: {
   driver: Participant | null;
   car?: string;
-  side: WorldSide;
   state: ParticipantState | undefined;
-  other: ParticipantState | undefined;
 }) {
-  const otherSide: WorldSide = side === 'baseline' ? 'alternative' : 'baseline';
-
   return (
     <Panel className="flex h-full flex-col overflow-hidden">
       <div className="border-b border-white/[0.07] px-4 py-3.5">
@@ -124,28 +97,17 @@ export function OurCarPanel({
             </p>
           </div>
         </div>
-        <div className="mt-2.5 flex items-center justify-between gap-2">
-          <Eyebrow className={WORLD_ACCENT[side]}>{WORLD_LABEL[side]}</Eyebrow>
-          <span className="text-[9px] uppercase tracking-widest text-white/25">
-            against the {otherSide === 'baseline' ? 'recorded race' : 'plan'}
-          </span>
-        </div>
       </div>
 
       {!state ? (
-        <p className="p-5 text-[11px] italic text-white/25">
-          This entry is not present in the race being shown.
-        </p>
+        <p className="p-5 text-[11px] italic text-white/25">This entry is not present in the race.</p>
       ) : (
         <div className="flex flex-col gap-4 px-4 py-3.5">
           <div>
-            <Line label="Position" reference={ref(other, (s) => `P${s.rank}`)}>
+            <Line label="Position">
               <span className="text-lg font-black tabular-nums text-white">P{state.rank}</span>
             </Line>
-            <Line
-              label="Gap to leader"
-              reference={ref(other, (s) => <StatusValue value={s.gapS} format={formatGap} hideMark />)}
-            >
+            <Line label="Gap to leader">
               <StatusValue value={state.gapS} format={formatGap} />
             </Line>
             <Line label="Lap">
@@ -203,24 +165,13 @@ export function OurCarPanel({
               </span>
             </div>
             <Meter value={state.tyre.conditionPct} max={100} tone="bg-gradient-to-r from-rose-500/70 to-amber-300/80" />
-            <div className="mt-1.5 flex items-baseline justify-between">
-              <span className="text-[11px] font-semibold tabular-nums text-white/80">
-                <StatusValue value={state.tyre.conditionPct} format={(v) => `${v.toFixed(0)}% left`} />
-              </span>
-              {other && (
-                <span className="text-[10px] tabular-nums text-white/30">
-                  <StatusValue value={other.tyre.conditionPct} format={(v) => `${v.toFixed(0)}%`} hideMark /> in the
-                  other race
-                </span>
-              )}
-            </div>
+            <p className="mt-1.5 text-[11px] font-semibold tabular-nums text-white/80">
+              <StatusValue value={state.tyre.conditionPct} format={(v) => `${v.toFixed(0)}% left`} />
+            </p>
           </div>
 
           <div>
-            <Line
-              label="Speed"
-              reference={ref(other, (s) => <StatusValue value={s.speedKmh} format={(v) => `${v}`} hideMark />)}
-            >
+            <Line label="Speed">
               <span className="text-lg font-black tabular-nums text-white">
                 <StatusValue value={state.speedKmh} format={(v) => `${v}`} hideMark />
               </span>
@@ -229,10 +180,7 @@ export function OurCarPanel({
             <Line label="Sector">
               <Sector value={state.sector} />
             </Line>
-            <Line
-              label="Fuel"
-              reference={ref(other, (s) => <StatusValue value={s.fuelKg} format={(v) => `${v}`} hideMark />)}
-            >
+            <Line label="Fuel">
               <StatusValue value={state.fuelKg} format={(v) => `${v} kg`} hideMark />
             </Line>
           </div>

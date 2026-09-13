@@ -1,8 +1,7 @@
 import React from 'react';
-import { FlagState, Participant, RaceWorld, TrackGeometry, WorldSide } from '@/lib/race/types';
-import { Eyebrow, Panel, formatClock } from '../primitives';
+import { FlagState, Participant, RaceWorld, TrackGeometry } from '@/lib/race/types';
+import { Panel, formatClock } from '../primitives';
 import { RaceWorldMap, energyRing } from '../RaceWorldMap';
-import { WORLD_ACCENT, WorldSwitch } from './WorldSwitch';
 
 const FLAG: Record<FlagState, { label: string; className: string }> = {
   green: { label: 'Green', className: 'border-emerald-400/40 bg-emerald-400/10 text-emerald-300' },
@@ -21,7 +20,7 @@ const Count = ({ label, value }: { label: string; value: number }) => (
 );
 
 /**
- * Where every car is, right now, in one race.
+ * Where every car is, right now.
  *
  * Cars in the pit lane are drawn on the pit lane and retired entries leave the map, so
  * a position on the racing line always means a car that is on it.
@@ -33,7 +32,6 @@ export function LiveFeed({
   selectedId,
   raceTimeS,
   onSelect,
-  onWorld,
 }: {
   world: RaceWorld;
   track: TrackGeometry;
@@ -41,7 +39,6 @@ export function LiveFeed({
   selectedId: string | null;
   raceTimeS: number;
   onSelect: (id: string) => void;
-  onWorld: (side: WorldSide) => void;
 }) {
   const flag = FLAG[world.flag];
   const count = (kind: string) => world.field.filter((p) => p.participation === kind).length;
@@ -51,27 +48,13 @@ export function LiveFeed({
 
   return (
     <Panel className="flex h-full flex-col overflow-hidden">
-      <div className="flex flex-wrap items-start justify-between gap-4 border-b border-white/[0.07] px-5 py-4">
-        <div>
-          <Eyebrow className={WORLD_ACCENT[world.side]}>Live feed · track positions</Eyebrow>
-          <p className="mt-1 text-sm font-semibold text-white">{world.scenario.name}</p>
-          <p className="mt-0.5 text-[11px] text-white/35">
-            {world.weather} · {world.trackCondition}
-          </p>
-        </div>
-        <div className="flex flex-col items-end gap-2">
-          <WorldSwitch value={world.side} onChange={onWorld} />
-          <div className="flex items-center gap-2">
-            <span
-              className={`rounded-full border px-2.5 py-0.5 text-[9px] font-bold uppercase tracking-widest ${flag.className}`}
-            >
-              {flag.label}
-            </span>
-            <span className="text-[11px] font-semibold tabular-nums text-white/70">
-              Lap {world.leaderLap}/{world.totalLaps}
-            </span>
-          </div>
-        </div>
+      <div className="flex items-center justify-end gap-2 border-b border-white/[0.07] px-5 py-3">
+        <span className={`rounded-full border px-2.5 py-0.5 text-[9px] font-bold uppercase tracking-widest ${flag.className}`}>
+          {flag.label}
+        </span>
+        <span className="text-[11px] font-semibold tabular-nums text-white/70">
+          Lap {world.leaderLap}/{world.totalLaps}
+        </span>
       </div>
 
       <div className="min-h-[280px] flex-1 px-2 pt-2">

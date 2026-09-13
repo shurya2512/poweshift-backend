@@ -133,12 +133,6 @@ export function RaceHeader({
           </p>
         )}
       </div>
-
-      <div className="border-t border-white/[0.06] px-7 py-3.5 sm:px-9">
-        <p className="font-mono text-[10px] uppercase tracking-widest text-white/25">
-          Rules {identity.rulesVersion} · branch lap {session.branchPoint.lap} — {session.branchPoint.description}
-        </p>
-      </div>
     </Panel>
   );
 }

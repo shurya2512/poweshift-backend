@@ -159,7 +159,7 @@ export function RaceWorldMap({ track, world, participants, selectedId, onSelect 
   };
 
   return (
-    <div className="relative w-full">
+    <div className="relative h-full w-full">
       <svg viewBox={view.box} className="h-full w-full" preserveAspectRatio="xMidYMid meet">
         <path d={view.path} fill="none" stroke="rgba(255,255,255,0.07)" strokeWidth={r * 3.4} strokeLinejoin="round" />
         <path d={view.path} fill="none" stroke="rgba(255,255,255,0.32)" strokeWidth={r * 0.5} strokeLinejoin="round" />
