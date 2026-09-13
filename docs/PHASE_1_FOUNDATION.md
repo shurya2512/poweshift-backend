@@ -85,7 +85,7 @@ Two implementations over the project's life. Phase 1 ships the first; Phase 3 ad
 
 A generated, internally coherent race. Not physics — a scripted sequence built once and replayed.
 
-- `buildFixtureRace(seed)` produces: 20 participants, ~30 laps, a baseline world, one alternative
+- `buildFixtureRace(seed)` produces: 23 participants, ~30 laps, a baseline world, one alternative
   world branching at a declared pit decision, an event list per world, and per-frame comparison
   deltas.
 - Deliberately includes, from the start, the cases the spec's review table names:

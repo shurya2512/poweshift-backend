@@ -29,14 +29,14 @@ export function SetupScreen({
       {/* Page content */}
       <div className="max-w-7xl mx-auto px-6 lg:px-10 pt-14 pb-10 lg:pt-20 lg:pb-14">
         {/* Top Header Row */}
-        <div className="relative flex items-center justify-center mb-6 w-full">
+        <div className="relative mb-8 flex w-full flex-col items-start gap-8 sm:items-center sm:justify-center">
           {/* Back Button */}
-          <div className="absolute left-0 top-1/2 -translate-y-1/2">
+          <div className="sm:absolute sm:left-0 sm:top-1/2 sm:-translate-y-1/2">
             <SpinningBorderButton href="/" text="Return to Home" size="sm" arrowMode="flip" fill="hollow" beam="once" />
           </div>
 
           {/* Page title */}
-          <div className="text-center">
+          <div className="w-full text-center">
             <p className="text-[10px] font-medium tracking-widest text-blue-400 uppercase mb-3">
               2026 F1 Regulations Prototype
             </p>

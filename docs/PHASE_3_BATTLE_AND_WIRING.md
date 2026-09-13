@@ -118,6 +118,15 @@ The open questions in `README.md` §7 are closed here, against the shipped backe
 - `WebSocketRaceSource` defaults to `ws://localhost:8000/api/stream/full-race`, which does not
   exist yet. The view still constructs `FixtureRaceSource`; swapping the one line in
   `FullRaceView.tsx` is the whole change once the endpoint ships.
+- The current backend integration deliberately leaves that fixture world in place. The full-race
+  page reads the immutable diagnostic report catalog, can show a registered-run recommendation and
+  exports a separate strict 4 Hz input/5 Hz decision client. A full-world stream is still required
+  before `WebSocketRaceSource` can replace the fixture.
+- Setup offers every promoted ego profile and the session-specific report tracks. Mode, track and
+  profile remain in the URL so the report and return path describe the same selection.
+- The report renders the P23 ego separately from the fixed 22-car reference field, with chronological
+  laps, tactical windows, policy actions and nearest-decision race-control alignment. Its clock is
+  the source clock and begins at the first complete field tick, not necessarily zero.
 - The two review cases Phase 2 could not demonstrate (forecast horizon expiring, a live update
   changing the car profile) still need a real source. The contract carries both; nothing
   exercises them.

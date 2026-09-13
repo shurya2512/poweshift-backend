@@ -7,6 +7,7 @@ import { SpinningBorderButton } from '@/components/ui/spinning-border-button';
 import { DropdownMenu } from '@/components/ui/dropdown-menu';
 import { BentoSection, BentoCard } from '@/components/MagicBento';
 import { TrailCard } from '@/components/ui/trail-card';
+import { EGO_PROFILES, egoProfile, sessionTracks } from '@/lib/backend/profiles';
 
 // ── Types ────────────────────────────────────────────────────────────────────
 
@@ -42,31 +43,26 @@ export const CONFIG_ITEMS: ConfigItem[] = [
     label: 'Circuit',
     icon: MapPin,
     accentColor: 'text-blue-400',
-    note: 'Only held-out circuits are selectable — zero rows in training data.',
-    options: [
-      { value: 'Monaco Grand Prix',   label: 'Monaco',    sublabel: 'Circuit de Monaco',                     badge: 'Held-out' },
-      { value: 'Canadian Grand Prix', label: 'Canada',    sublabel: 'Circuit Gilles Villeneuve',              badge: 'Held-out' },
-      { value: 'Miami Grand Prix',    label: 'Miami',     sublabel: 'Miami International Autodrome',          badge: 'Held-out' },
-      { value: 'Belgian Grand Prix',  label: 'Belgium',   sublabel: 'Circuit de Spa-Francorchamps',           badge: 'Held-out' },
-      { value: 'Australian Grand Prix', label: 'Australia', sublabel: 'Albert Park Circuit',                 badge: 'Held-out' },
-      { value: 'Austrian Grand Prix',   label: 'Austria',   sublabel: 'Red Bull Ring',                       badge: 'Held-out' },
-      { value: 'Spanish Grand Prix',    label: 'Barcelona', sublabel: 'Circuit de Barcelona-Catalunya',      badge: 'Held-out' },
-      { value: 'Chinese Grand Prix',    label: 'China',     sublabel: 'Shanghai International Circuit',      badge: 'Held-out' },
-      { value: 'British Grand Prix',    label: 'Britain',   sublabel: 'Silverstone Circuit',                 badge: 'Held-out' },
-      { value: 'Japanese Grand Prix',   label: 'Japan',     sublabel: 'Suzuka International Racing Course',  badge: 'Held-out' },
-    ],
+    note: 'Only events present in the selected diagnostic report set are shown.',
+    options: sessionTracks('qualifying').map((track) => ({
+      value: track.event,
+      label: track.label,
+      sublabel: track.circuit,
+      badge: 'Report',
+    })),
   },
   {
     id: 'driver',
-    label: 'Reference Driver',
+    label: 'Ego Driver',
     icon: User,
     accentColor: 'text-blue-300',
-    note: 'Driver selection changes which lap is replayed — not the car physics.',
-    options: [
-      { value: 'VER', label: 'Max Verstappen',  sublabel: 'Red Bull Racing', badge: 'VER' },
-      { value: 'HAM', label: 'Lewis Hamilton',  sublabel: 'Ferrari',         badge: 'HAM' },
-      { value: 'LEC', label: 'Charles Leclerc', sublabel: 'Ferrari',         badge: 'LEC' },
-    ],
+    note: 'Each choice runs the promoted neural vehicle profile for that entry.',
+    options: EGO_PROFILES.map((profile) => ({
+      value: profile.entry,
+      label: profile.name,
+      sublabel: profile.team,
+      badge: `${profile.code} · #${profile.entry}`,
+    })),
   },
   {
     id: 'policy',
@@ -75,7 +71,7 @@ export const CONFIG_ITEMS: ConfigItem[] = [
     accentColor: 'text-red-400',
     note: 'The learned policy is the AI model — others are reference baselines.',
     options: [
-      { value: 'learned', label: 'Learned Policy',      sublabel: 'AI Model (HistGBM)',     badge: 'AI' },
+      { value: 'learned', label: 'Learned Policy',      sublabel: 'Recurrent actor-critic', badge: 'RL' },
       { value: 'ecms',    label: 'ECMS',                sublabel: 'Equivalent Consumption', badge: 'EC' },
       { value: 'greedy',  label: 'Greedy',              sublabel: 'Threshold-based',        badge: 'GR' },
     ],
@@ -87,9 +83,7 @@ export const CONFIG_ITEMS: ConfigItem[] = [
 const SETUP_ITEMS: ConfigItem[] = CONFIG_ITEMS.filter(c => c.id !== 'policy');
 
 /**
- * Everything the two sessions word differently. The circuit and the ego car are the
- * same choice in both, so neither appears here — only the driver, who is a lap to
- * replay in qualifying and the driver of our own car over a race.
+ * Copy that changes with the selected session.
  */
 const MODE_COPY: Record<SetupMode, {
   intro: string;
@@ -98,64 +92,28 @@ const MODE_COPY: Record<SetupMode, {
   driverCaption: (circuit: string) => string;
 }> = {
   qualifying: {
-    intro: 'Pick the circuit and the reference driver lap, then start the simulation.',
-    driverLabel: 'Reference Driver',
-    driverNote: 'Driver selection changes which lap is replayed — not the car physics.',
-    driverCaption: circuit => `${circuit} reference lap`,
+    intro: 'Pick the circuit and ego profile for the qualifying diagnostic.',
+    driverLabel: 'Ego Driver / Profile',
+    driverNote: 'The selected promoted profile is evaluated on that qualifying set.',
+    driverCaption: circuit => `${circuit} qualifying profile`,
   },
   'full-race': {
     intro: 'Pick the circuit and the ego driver, then start the race.',
     driverLabel: 'Ego Driver',
-    driverNote: 'The driver in our car. Selection changes whose race we run — not the car physics.',
+    driverNote: 'The selected profile is added at P23 with learned energy and overtake intelligence.',
     driverCaption: circuit => `${circuit} full race`,
   },
 };
 
-export const CIRCUIT_META: Record<string, { laps: number; length: string; turns: number; lapRecord: string; country: string; mapUrl: string }> = {
-  'Monaco Grand Prix':     { laps: 78, length: '3.337 km', turns: 19, lapRecord: '1:12.909', country: 'MC', mapUrl: '/monaco.jpg' },
-  'Canadian Grand Prix':   { laps: 70, length: '4.361 km', turns: 14, lapRecord: '1:13.078', country: 'CA', mapUrl: '/canada.jpg' },
-  'Miami Grand Prix':      { laps: 57, length: '5.412 km', turns: 19, lapRecord: '1:29.708', country: 'US', mapUrl: '/miami.jpg' },
-  'Belgian Grand Prix':    { laps: 44, length: '7.004 km', turns: 20, lapRecord: '1:46.286', country: 'BE', mapUrl: '/belgium.jpg' },
-  'Australian Grand Prix': { laps: 58, length: '5.278 km', turns: 14, lapRecord: '1:19.813', country: 'AU', mapUrl: '/australia.jpg' },
-  'Austrian Grand Prix':   { laps: 71, length: '4.318 km', turns: 10, lapRecord: '1:05.619', country: 'AT', mapUrl: '/austria.jpg' },
-  'Spanish Grand Prix':    { laps: 66, length: '4.657 km', turns: 14, lapRecord: '1:16.330', country: 'ES', mapUrl: '/barcelona.jpg' },
-  'Chinese Grand Prix':    { laps: 56, length: '5.451 km', turns: 16, lapRecord: '1:32.238', country: 'CN', mapUrl: '/china.jpg' },
-  'British Grand Prix':    { laps: 52, length: '5.891 km', turns: 18, lapRecord: '1:27.097', country: 'GB', mapUrl: '/britain.jpg' },
-  'Japanese Grand Prix':   { laps: 53, length: '5.807 km', turns: 18, lapRecord: '1:30.983', country: 'JP', mapUrl: '/japan.jpg' },
-};
-
-export const DRIVER_META: Record<string, { number: number; team: string; wdc: number; color: string; nationality: string; bio: string }> = {
-  VER: {
-    number: 1,
-    team: 'Red Bull Racing',
-    wdc: 4,
-    color: '#3671C6',
-    nationality: 'NL',
-    bio: "Max Verstappen has redefined modern Formula 1 dominance with relentless consistency and aggressive race craft. His reference telemetry is characterised by ultra-late braking and perfect rotation on corner entry, demanding a highly sophisticated AI deployment policy to match his lap times."
-  },
-  HAM: {
-    number: 44,
-    team: 'Ferrari',
-    wdc: 7,
-    color: '#E8002D',
-    nationality: 'GB',
-    bio: "A seven-time World Champion, Lewis Hamilton brings decades of experience and a famously smooth, momentum-carrying driving style to his new chapter at Ferrari. His telemetry provides an excellent benchmark for battery regeneration and tyre management over a full race stint."
-  },
-  LEC: {
-    number: 16,
-    team: 'Ferrari',
-    wdc: 0,
-    color: '#E8002D',
-    nationality: 'MC',
-    bio: "Charles Leclerc is renowned for his blistering one-lap pace and spectacular car control on the limit. His aggressive traction phase and willingness to dance the car on the edge of grip makes his telemetry a punishing benchmark for any AI attempting to optimise energy deployment."
-  },
-};
+export const CIRCUIT_META = Object.fromEntries(
+  sessionTracks('qualifying').map((track) => [track.event, track]),
+);
 
 export const POLICY_META: Record<string, { type: string; speed: string; compute: string; desc: string }> = {
   greedy:  { type: 'Heuristic', speed: 'Ultra-fast', compute: 'O(1)', desc: 'Rule-based logic: spends available power whenever traction and regulations allow, with zero lookahead. Acts as the cheap baseline floor that every other policy must beat.' },
   dp:      { type: 'Oracle',    speed: 'Offline',    compute: 'O(N²)', desc: 'Dynamic programming over a discretised speed × energy grid, backward-solved for the globally optimal lap. Acts as the oracle generating training labels — far too slow to run at inference.' },
   ecms:    { type: 'Online',    speed: 'Fast',       compute: 'O(K)', desc: 'Equivalent Consumption Minimisation Strategy: prices stored energy with an equivalence factor and picks the locally cheapest deployment via a one-segment lookahead. Near-optimal without requiring a global solve.' },
-  learned: { type: 'Model',     speed: 'Real-time',  compute: 'O(1)', desc: "Supervised ML model trained on the DP oracle's labels to imitate optimal deployment at inference speed. Bounded above by DP performance and exposed to distribution shift off the label set." },
+  learned: { type: 'Model',     speed: 'Real-time',  compute: 'O(1)', desc: 'Recurrent actor-critic policy trained chronologically to select hold, attack or defend with a continuous deployment fraction.' },
 };
 
 // ── Sub-components ───────────────────────────────────────────────────────────
@@ -178,6 +136,9 @@ const GradientBlur = () => (
 
 const CircuitMap = ({ circuit }: { circuit: string }) => {
   const url = CIRCUIT_META[circuit].mapUrl;
+  if (!url) {
+    return <div className="flex h-full items-center justify-center text-xs uppercase tracking-widest text-white/30">No race map yet</div>;
+  }
   return (
     <div className="w-full h-full relative">
       <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
@@ -188,7 +149,7 @@ const CircuitMap = ({ circuit }: { circuit: string }) => {
           className="w-full h-full object-contain opacity-90"
           onError={(e) => { e.currentTarget.style.opacity = '0'; }}
         />
-        <div className="absolute inset-0 flex flex-col items-center justify-center -z-10 bg-neutral-900/40">
+        <div aria-hidden className="absolute inset-0 flex flex-col items-center justify-center -z-10 bg-neutral-900/40">
           <p className="text-[10px] font-medium uppercase tracking-widest text-white/20">Missing ({url})</p>
         </div>
       </div>
@@ -207,22 +168,27 @@ const StatChip = ({ label, value }: { label: string; value: string }) => (
 // ── Main Component ───────────────────────────────────────────────────────────
 
 export default function SetupPanel({ mode, onStart }: SetupPanelProps) {
+  const availableTracks = sessionTracks(mode);
   const [selections, setSelections] = useState<Record<string, string>>({
-    track: 'Monaco Grand Prix', driver: 'VER', policy: 'learned',
+    track: availableTracks[0].event, driver: EGO_PROFILES[0].entry, policy: 'learned',
   });
   const [isLoading, setIsLoading] = useState(false);
   const [showDriverModal, setShowDriverModal] = useState(false);
 
   const timerRef   = useRef<ReturnType<typeof setTimeout> | null>(null);
   const circuit    = CIRCUIT_META[selections.track];
-  const driverMeta = DRIVER_META[selections.driver];
+  const driverMeta = egoProfile(selections.driver);
   const copy       = MODE_COPY[mode];
 
   // The driver means a different thing in each session, so it is relabelled rather
   // than duplicated — the options, and every other setting, are identical.
-  const setupItems = SETUP_ITEMS.map(item =>
-    item.id === 'driver' ? { ...item, label: copy.driverLabel, note: copy.driverNote } : item,
-  );
+  const setupItems = SETUP_ITEMS.map((item) => {
+    if (item.id === 'track') return {
+      ...item,
+      options: availableTracks.map((track) => ({ value: track.event, label: track.label, sublabel: track.circuit, badge: 'Report' })),
+    };
+    return item.id === 'driver' ? { ...item, label: copy.driverLabel, note: copy.driverNote } : item;
+  });
 
   const triggerLoading = useCallback(() => {
     setIsLoading(true);
@@ -298,7 +264,9 @@ export default function SetupPanel({ mode, onStart }: SetupPanelProps) {
             <EyebrowLabel className="text-red-400 mb-2">Simulated Vehicle</EyebrowLabel>
             <h2 className="text-2xl font-black tracking-tight text-white mb-2 drop-shadow-md">Ego Car</h2>
             <p className="text-xs font-medium leading-relaxed text-white/35">
-              The car the AI drives. Only energy deployment is controlled — the physics follow the 2026 spec.
+              {mode === 'qualifying'
+                ? 'The diagnostic ego uses learned energy deployment; overtake intelligence is masked.'
+                : 'The diagnostic ego uses learned energy and overtake policy. It is not a physically admitted car.'}
             </p>
           </div>
 
@@ -308,10 +276,10 @@ export default function SetupPanel({ mode, onStart }: SetupPanelProps) {
           </div>
 
           <div className="grid grid-cols-2 gap-3 p-5">
-            <StatChip label="Mass"    value="798 kg" />
-            <StatChip label="Max ERS" value="350 kW" />
-            <StatChip label="Battery" value="4 MJ / lap" />
-            <StatChip label="Policy"  value="Learned (AI)" />
+            <StatChip label="Mass prior" value="800 kg" />
+            <StatChip label="Electric prior" value="20% additive" />
+            <StatChip label="Usable store" value="5 MJ" />
+            <StatChip label="Policy" value="Recurrent RL" />
           </div>
         </div>
       </BentoCard>
@@ -349,7 +317,7 @@ export default function SetupPanel({ mode, onStart }: SetupPanelProps) {
                 <span className="text-[10px] font-medium text-white/25 tracking-widest uppercase">{circuit.country}</span>
                 <div className="w-px h-3 bg-white/10" />
                 <Flag size={11} className="text-white/25" />
-                <span className="text-[10px] font-medium text-white/25">{circuit.laps} laps</span>
+                <span className="text-[10px] font-medium text-white/25">{circuit.laps === 'Qualifying only' ? circuit.laps : `${circuit.laps} laps`}</span>
               </div>
             </div>
           </div>
@@ -382,16 +350,16 @@ export default function SetupPanel({ mode, onStart }: SetupPanelProps) {
         {/* Driver Info Card — photo, bio and stats; "Profile" opens the full profile */}
         <TrailCard
           className="h-full max-w-none rounded-3xl border border-white/[0.08] shadow-[0_12px_40px_rgba(0,0,0,0.5)]"
-          imageUrl={`/${selections.driver}.png`}
+          imageUrl={['3', '16', '44'].includes(selections.driver) ? `/${driverMeta.code}.png` : '/haas_car2.png'}
           imageClassName="object-top"
-          eyebrow={`Car #${driverMeta.number}`}
+          eyebrow={`Car #${driverMeta.entry}`}
           title={CONFIG_ITEMS[1].options.find(o => o.value === selections.driver)?.label ?? selections.driver}
           subtitle={driverMeta.team}
-          description={driverMeta.bio}
+          description={`Promoted neural vehicle profile fitted to ${driverMeta.name}'s source controls for ${driverMeta.team}.`}
           caption={copy.driverCaption(selections.track.replace(' Grand Prix', ''))}
           stats={[
-            { label: 'WDC Titles', value: `${driverMeta.wdc}` },
-            { label: 'Code', value: selections.driver },
+            { label: 'Profile', value: `#${driverMeta.entry}` },
+            { label: 'Code', value: driverMeta.code },
             { label: 'Nationality', value: driverMeta.nationality },
           ]}
           actionLabel="Profile"
@@ -409,7 +377,7 @@ export default function SetupPanel({ mode, onStart }: SetupPanelProps) {
           </p>
         </div>
         <SpinningBorderButton
-          text="Start Race"
+          text={mode === 'qualifying' ? 'Open Qualifying Report' : 'Start Race'}
           onClick={() => onStart(selections.track, selections.driver, selections.policy)}
         />
       </BentoCard>
@@ -418,10 +386,9 @@ export default function SetupPanel({ mode, onStart }: SetupPanelProps) {
       <p className="px-6 text-center text-xs text-blue-300/40 leading-relaxed">
         <span className="text-blue-300/80 font-semibold">2026 F1 Regulations</span>
         {' · '}
-        Maximum <span className="text-blue-300/70 font-semibold">350 kW</span> electrical output from a{' '}
-        <span className="text-blue-300/70 font-semibold">4 MJ</span> battery cap per lap.
-        Car mass: <span className="text-blue-300/70 font-semibold">798 kg</span>.
-        The AI learns optimal deployment timing to minimise lap time.
+        Diagnostic prior: <span className="text-blue-300/70 font-semibold">20% additive electric wheel power</span>,{' '}
+        <span className="text-blue-300/70 font-semibold">5 MJ</span> usable storage and a 5 MJ per-lap harvest cap.
+        These are declared assumptions, not physical admission.
       </p>
 
       {/* ── DRIVER INFO MODAL ─────────────────────────────────────────────── */}
@@ -464,7 +431,7 @@ export default function SetupPanel({ mode, onStart }: SetupPanelProps) {
                 <div className="relative w-full h-64 bg-neutral-950 border-b border-white/[0.05] z-10">
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
-                    src={`/${selections.driver}.png`}
+                    src={['3', '16', '44'].includes(selections.driver) ? `/${driverMeta.code}.png` : '/haas_car2.png'}
                     alt={selections.driver}
                     className="absolute inset-0 w-full h-full object-contain object-bottom opacity-90 z-10"
                     onError={(e) => { e.currentTarget.style.opacity = '0'; }}
@@ -483,7 +450,7 @@ export default function SetupPanel({ mode, onStart }: SetupPanelProps) {
                     className="absolute bottom-4 right-6 text-[80px] leading-none font-black italic tracking-tighter z-20"
                     style={{ color: driverMeta.color, textShadow: '0 4px 24px rgba(0,0,0,0.8)' }}
                   >
-                    {driverMeta.number}
+                    {driverMeta.entry}
                   </div>
                 </div>
 
@@ -495,8 +462,8 @@ export default function SetupPanel({ mode, onStart }: SetupPanelProps) {
                       <p className="text-sm font-semibold text-white">{driverMeta.team}</p>
                     </div>
                     <div>
-                      <EyebrowLabel className="mb-1">WDC Titles</EyebrowLabel>
-                      <p className="text-sm font-semibold text-white">{driverMeta.wdc}</p>
+                      <EyebrowLabel className="mb-1">Driver code</EyebrowLabel>
+                      <p className="text-sm font-semibold text-white">{driverMeta.code}</p>
                     </div>
                     <div>
                       <EyebrowLabel className="mb-1">Nationality</EyebrowLabel>
@@ -506,7 +473,8 @@ export default function SetupPanel({ mode, onStart }: SetupPanelProps) {
 
                   <EyebrowLabel className="mb-2">Telemetry Profile</EyebrowLabel>
                   <p className="text-sm text-white/60 leading-relaxed font-medium">
-                    {driverMeta.bio}
+                    Promoted neural vehicle profile fitted to this driver&apos;s source controls. The report keeps its
+                    diagnostic result separate from the policy-free 22-car reference field.
                   </p>
                 </div>
 

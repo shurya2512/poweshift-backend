@@ -7,9 +7,10 @@ import { SetupScreen } from '@/components/SetupScreen';
 export default function SetupFullRacePage() {
   const router = useRouter();
 
-  // The full race still runs on its fixture, so the choices made here are not carried
-  // into the URL — a query string the page ignores would claim they were.
-  const handleStart = () => router.push('/full-race');
+  const handleStart = (track: string, profile: string) => {
+    const params = new URLSearchParams({ track, profile });
+    router.push(`/full-race?${params.toString()}`);
+  };
 
   return <SetupScreen mode="full-race" onStart={handleStart} />;
 }

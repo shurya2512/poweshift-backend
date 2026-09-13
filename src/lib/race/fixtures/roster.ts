@@ -20,7 +20,9 @@ const RAW: [string, string, string, number, string, number, number][] = [
   ['GAS', 'Pierre Gasly', 'Alpine', 10, '#0093CC', 1.29, 0.052],
   ['HAD', 'Isack Hadjar', 'Racing Bulls', 6, '#6692FF', 1.41, 0.050],
   ['SAI', 'Carlos Sainz', 'Williams', 55, '#64C4FF', 1.58, 0.053],
+  ['PER', 'Sergio Perez', 'Cadillac', 11, '#B6BABD', 1.66, 0.054],
   ['ALB', 'Alexander Albon', 'Williams', 23, '#64C4FF', 1.73, 0.051],
+  ['BOT', 'Valtteri Bottas', 'Cadillac', 77, '#B6BABD', 1.86, 0.055],
   ['HUL', 'Nico Hulkenberg', 'Kick Sauber', 27, '#52E252', 1.94, 0.055],
   ['OCO', 'Esteban Ocon', 'Haas', 31, '#B6BABD', 2.11, 0.054],
   ['LAW', 'Liam Lawson', 'Racing Bulls', 30, '#6692FF', 2.28, 0.052],
@@ -28,9 +30,10 @@ const RAW: [string, string, string, number, string, number, number][] = [
   ['BEA', 'Oliver Bearman', 'Haas', 87, '#B6BABD', 2.69, 0.055],
   ['BOR', 'Gabriel Bortoleto', 'Kick Sauber', 5, '#52E252', 2.94, 0.058],
   ['COL', 'Franco Colapinto', 'Alpine', 43, '#0093CC', 4.35, 0.061],
+  ['LIN', 'Arvid Lindblad', 'Racing Bulls', 41, '#6692FF', 4.85, 0.060],
 ];
 
-/** Twenty entries. The last is deliberately slow enough to be lapped. */
+/** Twenty-three entries, with the final two deliberately slow enough to be lapped. */
 export const ROSTER: FixtureEntry[] = RAW.map(
   ([code, name, team, raceNumber, teamColor, paceOffsetS, degPerLapS]) => ({
     id: code,

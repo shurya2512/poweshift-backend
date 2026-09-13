@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useMemo, useState } from 'react';
+import { useSearchParams } from 'next/navigation';
 import { SpinningBorderButton } from '@/components/ui/spinning-border-button';
 import { FixtureRaceSource } from '@/lib/race/fixtures/source';
 import { useRaceSession } from '@/lib/race/useRaceSession';
@@ -14,6 +15,7 @@ import { RaceHeader } from '@/components/race/full/RaceHeader';
 import { StandingsPanel } from '@/components/race/full/StandingsPanel';
 import { OvertakeCarousel } from '@/components/race/overtake/OvertakeCarousel';
 import { Panel } from '@/components/race/primitives';
+import { BackendRuntimePanel } from '@/components/race/BackendRuntimePanel';
 
 const REQUEST = {
   season: 2026,
@@ -40,6 +42,10 @@ function Preparing() {
 }
 
 export function FullRaceView() {
+  const search = useSearchParams();
+  const diagnosticTrack = search.get('track') ?? 'Miami Grand Prix';
+  const profileEntry = search.get('profile') ?? '1';
+  const reportParams = new URLSearchParams({ mode: 'race', track: diagnosticTrack, profile: profileEntry });
   const source = useMemo(() => new FixtureRaceSource(), []);
   const { state, controls } = useRaceSession(source, REQUEST);
   const { session, frame } = state;
@@ -75,8 +81,15 @@ export function FullRaceView() {
       {/* Same pill as the setup page's Return to Home: back flips its arrow, forward slides. */}
       <div className="flex items-center justify-between gap-4">
         <SpinningBorderButton href="/setup-full-race" text="Setup" size="sm" arrowMode="flip" fill="hollow" beam="once" />
-        <SpinningBorderButton href="/report" text="Report" size="sm" fill="hollow" beam="once" />
+        <SpinningBorderButton href={`/report?${reportParams.toString()}`} text="Report" size="sm" fill="hollow" beam="once" />
       </div>
+
+      <BackendRuntimePanel track={diagnosticTrack} profileEntry={profileEntry} />
+
+      <Panel className="border-sky-400/20 px-5 py-4 text-xs leading-relaxed text-white/55">
+        The animated race below is the labelled 23-car fixture stream. The selected {diagnosticTrack} profile is shown
+        in the backend report, where its P23 start, decisions, energy and final proxy position remain source-bound.
+      </Panel>
 
       <RaceHeader
         session={session}

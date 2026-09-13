@@ -1,9 +1,9 @@
-import React from 'react';
+import React, { Suspense } from 'react';
 import { ReportView } from './ReportView';
 
 export const metadata = {
-  title: 'Race report | Power-Shift',
-  description: 'The finished race: classification, events, decisions and the assumptions behind them.',
+  title: 'Diagnostic report | Power-Shift',
+  description: 'Source-bound qualifying and P23 race diagnostics, decisions and assumptions.',
 };
 
 export default function ReportPage() {
@@ -13,7 +13,9 @@ export default function ReportPage() {
           behind body copy and compete with the tables. */}
       <div className="pointer-events-none fixed inset-0 z-0 bg-black" />
       <div className="relative z-10">
-        <ReportView />
+        <Suspense fallback={<div className="p-10 text-white/50">Loading diagnostic report…</div>}>
+          <ReportView />
+        </Suspense>
       </div>
     </div>
   );

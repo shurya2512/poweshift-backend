@@ -17,8 +17,8 @@ The WebSocket source is written and validated but not yet pointed at a live back
 | `src/components/BatteryMeter.tsx` | Single SoC bar, 0–4 MJ, one ghost tick |
 | Routes | `/` landing, `/setup` picker, `/race` dashboard |
 
-The current experience is **one qualifying lap, two cars, one clock**. It is a working demo and
-stays that way — see §4.
+The current review experience is a 23-car fixture race plus source-bound qualifying and P23
+diagnostic reports. Historical limitations below describe the original foundation, not the report UI.
 
 ## 2. What the spec asks for that does not exist
 
@@ -27,8 +27,8 @@ Ordered by how much new structure each one forces.
 1. **Two independent race worlds.** Not two cars — two complete fields with *separate* lap counts,
    order, events, and finish states, sharing only a comparison clock. Nothing in the current state
    model can express "these two orderings are not the same race".
-2. **A full field.** ~20 participants per world, each with position, gap, interval, sector, pit
-   state, tyre stint, energy flows, traffic state. Today: two cars, six scalars each.
+2. **A full field.** 23 participants per world, each with position, gap, interval, sector, pit
+   state, tyre stint, energy flows, traffic state. The fixture now renders the full 23-car field.
 3. **Information status on every value.** Observed / inferred / predicted / simulated /
    unsupported, carried all the way down from a race result to a lap or telemetry detail.
    Currently no value carries provenance at all, and missing values fall back to defaults
