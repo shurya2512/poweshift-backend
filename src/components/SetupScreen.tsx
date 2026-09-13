@@ -30,8 +30,13 @@ export function SetupScreen({
       <div className="max-w-7xl mx-auto px-6 lg:px-10 pt-14 pb-10 lg:pt-20 lg:pb-14">
         {/* Top Header Row */}
         <div className="relative mb-8 flex w-full flex-col items-start gap-8 sm:items-center sm:justify-center">
-          {/* Back Button */}
-          <div className="sm:absolute sm:left-0 sm:top-1/2 sm:-translate-y-1/2">
+          {/*
+           * Back button. The title's drop-shadow is a filter, which gives the heading
+           * its own stacking context — so its full-width box paints over this button
+           * and swallows the click. An explicit z-index puts the button back on top,
+           * and it stays positioned at every width so that z-index always applies.
+           */}
+          <div className="relative z-10 sm:absolute sm:left-0 sm:top-1/2 sm:-translate-y-1/2">
             <SpinningBorderButton href="/" text="Return to Home" size="sm" arrowMode="flip" fill="hollow" beam="once" />
           </div>
 

@@ -350,7 +350,7 @@ export default function SetupPanel({ mode, onStart }: SetupPanelProps) {
         {/* Driver Info Card — photo, bio and stats; "Profile" opens the full profile */}
         <TrailCard
           className="h-full max-w-none rounded-3xl border border-white/[0.08] shadow-[0_12px_40px_rgba(0,0,0,0.5)]"
-          imageUrl={['3', '16', '44'].includes(selections.driver) ? `/${driverMeta.code}.png` : '/haas_car2.png'}
+          imageUrl={`/${driverMeta.code}.png`}
           imageClassName="object-top"
           eyebrow={`Car #${driverMeta.entry}`}
           title={CONFIG_ITEMS[1].options.find(o => o.value === selections.driver)?.label ?? selections.driver}
@@ -431,15 +431,15 @@ export default function SetupPanel({ mode, onStart }: SetupPanelProps) {
                 <div className="relative w-full h-64 bg-neutral-950 border-b border-white/[0.05] z-10">
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
-                    src={['3', '16', '44'].includes(selections.driver) ? `/${driverMeta.code}.png` : '/haas_car2.png'}
-                    alt={selections.driver}
+                    src={`/${driverMeta.code}.png`}
+                    alt={driverMeta.name}
                     className="absolute inset-0 w-full h-full object-contain object-bottom opacity-90 z-10"
                     onError={(e) => { e.currentTarget.style.opacity = '0'; }}
                   />
                   {/* Fallback if no image */}
                   <div className="absolute inset-0 flex flex-col items-center justify-center z-0 bg-neutral-900/50">
                     <User size={48} className="text-white/10 mb-4" />
-                    <p className="text-[10px] font-medium uppercase tracking-widest text-white/20">Photo missing (/{selections.driver}.png)</p>
+                    <p className="text-[10px] font-medium uppercase tracking-widest text-white/20">Photo missing (/{driverMeta.code}.png)</p>
                   </div>
 
                   {/* Gradient Overlay at bottom of photo */}
