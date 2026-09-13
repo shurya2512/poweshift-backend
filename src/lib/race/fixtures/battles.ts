@@ -1,5 +1,7 @@
 import { Action, Battle, Feasibility, WorldSide } from '../types';
-import { inferred, observed, simulated } from '../valued';
+import { SELECTED_ID } from './model';
+import { inferred, observed, simulated, unsupported } from '../valued';
+import { RaceSpec } from './report';
 
 const SCENARIO = 'alt-one-stop';
 
@@ -31,22 +33,22 @@ export function buildBattles(at: LapTime, baselineSide: WorldSide = 'baseline'):
     // ── The out-lap fight. Our car rejoins behind a car that stopped earlier and is
     //    already on worn tyres, so the tyre delta does most of the work.
     {
-      id: 'battle-ver-lec-l13',
+      id: 'battle-ego-lec-l13',
       baselineSide,
       lap: 13,
-      ...window('VER', 13),
+      ...window(SELECTED_ID, 13),
       location: 'Back straight into Turn 12, DRS available',
-      attackerId: 'VER',
+      attackerId: SELECTED_ID,
       defenderId: 'LEC',
-      startingGapS: observed(0.94, 'timing feed', at('VER', 12)),
+      startingGapS: observed(0.94, 'timing feed', at(SELECTED_ID, 12)),
       affectedIds: [],
       informationSets: [
-        { participantId: 'VER', knows: ['Own tyre age — three laps', 'LEC tyre age', 'Gap to LEC'] },
-        { participantId: 'LEC', knows: ['Own tyre state', 'Gap behind', 'Not VER’s deployment plan'] },
+        { participantId: SELECTED_ID, knows: ['Own tyre age — three laps', 'LEC tyre age', 'Gap to LEC'] },
+        { participantId: 'LEC', knows: ['Own tyre state', 'Gap behind', 'Not our deployment plan'] },
       ],
       actions: [
-        action('ver-l13-drs', 'VER', 'attack', 'Take DRS and commit on the straight', feasible(0.55, 0.1)),
-        action('ver-l13-settle', 'VER', 'wait', 'Settle in, build the tyre delta for a lap', feasible(0.1, 0.04)),
+        action('ver-l13-drs', SELECTED_ID, 'attack', 'Take DRS and commit on the straight', feasible(0.55, 0.1)),
+        action('ver-l13-settle', SELECTED_ID, 'wait', 'Settle in, build the tyre delta for a lap', feasible(0.1, 0.04)),
         action('lec-l13-cover', 'LEC', 'defend', 'Move to the inside before the braking board', feasible(0.18, 0.22, ['One change of direction permitted'])),
       ],
       moveStructure: 'sequential',
@@ -68,7 +70,7 @@ export function buildBattles(at: LapTime, baselineSide: WorldSide = 'baseline'):
           },
           outcome: {
             passChance: simulated(0.79, SCENARIO, ['Opportunity window: back straight and Turn 12 only']),
-            resultingOrder: ['VER', 'LEC'],
+            resultingOrder: [SELECTED_ID, 'LEC'],
             resultingGapS: simulated(0.71, SCENARIO, []),
             energyCostMj: inferred(0.55, [0.44, 0.69]),
             riskLabel: 'Low — twelve laps of tyre advantage into a braking zone',
@@ -98,23 +100,23 @@ export function buildBattles(at: LapTime, baselineSide: WorldSide = 'baseline'):
     // ── A mixed equilibrium: neither car has a pure best line, and the recommendation
     //    is a distribution over two of them rather than one choice.
     {
-      id: 'battle-ver-pia-l19',
+      id: 'battle-ego-pia-l19',
       baselineSide: 'alternative',
       lap: 19,
-      ...window('VER', 19),
+      ...window(SELECTED_ID, 19),
       location: 'Turn 6 hairpin, two laps after the restart',
-      attackerId: 'VER',
+      attackerId: SELECTED_ID,
       defenderId: 'PIA',
       startingGapS: simulated(0.48, SCENARIO, ['Restart order under the safety car']),
       affectedIds: ['ANT'],
       informationSets: [
-        { participantId: 'VER', knows: ['Own energy after the restart', 'Gap to PIA', 'PIA stint age'] },
-        { participantId: 'PIA', knows: ['Own energy', 'Gap behind', 'Not whether VER is on a one-stop'] },
+        { participantId: SELECTED_ID, knows: ['Own energy after the restart', 'Gap to PIA', 'PIA stint age'] },
+        { participantId: 'PIA', knows: ['Own energy', 'Gap behind', 'Not whether we are on a one-stop'] },
       ],
       actions: [
-        action('ver-l19-lunge', 'VER', 'attack', 'Lunge down the inside at the hairpin', feasible(0.72, 0.45)),
-        action('ver-l19-exit', 'VER', 'attack', 'Sacrifice entry, take the exit and the run to Turn 7', feasible(0.44, 0.18)),
-        action('ver-l19-hold', 'VER', 'wait', 'Hold the gap, save energy for the next lap', feasible(0.08, 0.03)),
+        action('ver-l19-lunge', SELECTED_ID, 'attack', 'Lunge down the inside at the hairpin', feasible(0.72, 0.45)),
+        action('ver-l19-exit', SELECTED_ID, 'attack', 'Sacrifice entry, take the exit and the run to Turn 7', feasible(0.44, 0.18)),
+        action('ver-l19-hold', SELECTED_ID, 'wait', 'Hold the gap, save energy for the next lap', feasible(0.08, 0.03)),
         action('pia-l19-shut', 'PIA', 'defend', 'Shut the door at the apex', feasible(0.22, 0.38)),
         action('pia-l19-exit', 'PIA', 'defend', 'Give up the apex, protect the exit', feasible(0.14, 0.12)),
       ],
@@ -137,7 +139,7 @@ export function buildBattles(at: LapTime, baselineSide: WorldSide = 'baseline'):
           },
           outcome: {
             passChance: simulated(0.57, SCENARIO, ['Opportunity window: hairpin exit to Turn 7 only']),
-            resultingOrder: ['VER', 'PIA', 'ANT'],
+            resultingOrder: [SELECTED_ID, 'PIA', 'ANT'],
             resultingGapS: simulated(0.22, SCENARIO, []),
             energyCostMj: inferred(0.44, [0.35, 0.55]),
             riskLabel: 'Moderate — no contact exposure at the apex, but the exit is tight',
@@ -175,23 +177,23 @@ export function buildBattles(at: LapTime, baselineSide: WorldSide = 'baseline'):
     // ── A clean sequential battle with one pure solution, but a recommendation
     //    that is sensitive to which opponent model is believed.
     {
-      id: 'battle-ver-nor-l23',
+      id: 'battle-ego-nor-l23',
       baselineSide,
       lap: 23,
-      ...window('VER', 23),
+      ...window(SELECTED_ID, 23),
       location: 'Turn 1 braking zone, DRS from the back straight',
-      attackerId: 'VER',
+      attackerId: SELECTED_ID,
       defenderId: 'NOR',
-      startingGapS: observed(0.62, 'timing feed', at('VER', 22)),
+      startingGapS: observed(0.62, 'timing feed', at(SELECTED_ID, 22)),
       affectedIds: ['RUS'],
       informationSets: [
-        { participantId: 'VER', knows: ['Own energy and tyre state', 'Gap to NOR', 'NOR pit history'] },
-        { participantId: 'NOR', knows: ['Own energy and tyre state', 'Gap behind', 'Not VER’s remaining deployment'] },
+        { participantId: SELECTED_ID, knows: ['Own energy and tyre state', 'Gap to NOR', 'NOR pit history'] },
+        { participantId: 'NOR', knows: ['Own energy and tyre state', 'Gap behind', 'Not our remaining deployment'] },
       ],
       actions: [
-        action('ver-attack-inside', 'VER', 'attack', 'Full deployment, inside line into Turn 1', feasible(0.9, 0.4)),
-        action('ver-attack-switch', 'VER', 'attack', 'Hold back, switchback out of Turn 2', feasible(0.5, 0.2)),
-        action('ver-wait', 'VER', 'wait', 'Stay within a second, attack next lap', feasible(0.15, 0.05)),
+        action('ver-attack-inside', SELECTED_ID, 'attack', 'Full deployment, inside line into Turn 1', feasible(0.9, 0.4)),
+        action('ver-attack-switch', SELECTED_ID, 'attack', 'Hold back, switchback out of Turn 2', feasible(0.5, 0.2)),
+        action('ver-wait', SELECTED_ID, 'wait', 'Stay within a second, attack next lap', feasible(0.15, 0.05)),
         action('nor-defend-inside', 'NOR', 'defend', 'Cover the inside, compromise exit', feasible(0.3, 0.5, ['One change of direction permitted'])),
         action('nor-hold-line', 'NOR', 'defend', 'Hold the racing line, protect exit speed', feasible(0.2, 0.15)),
       ],
@@ -214,7 +216,7 @@ export function buildBattles(at: LapTime, baselineSide: WorldSide = 'baseline'):
           },
           outcome: {
             passChance: simulated(0.44, SCENARIO, ['Opportunity window: Turn 1 braking zone only']),
-            resultingOrder: ['VER', 'NOR', 'RUS'],
+            resultingOrder: [SELECTED_ID, 'NOR', 'RUS'],
             resultingGapS: simulated(0.35, SCENARIO, []),
             energyCostMj: inferred(0.9, [0.72, 1.13]),
             riskLabel: 'Elevated — late braking with a covered inside',
@@ -259,18 +261,18 @@ export function buildBattles(at: LapTime, baselineSide: WorldSide = 'baseline'):
       ...window('RUS', 21),
       location: 'Turn 3, on the exit of the long left',
       attackerId: 'RUS',
-      defenderId: 'VER',
+      defenderId: SELECTED_ID,
       startingGapS: observed(0.55, 'timing feed', at('RUS', 20)),
       affectedIds: ['NOR'],
       informationSets: [
-        { participantId: 'RUS', knows: ['Own tyre age — seven laps', 'Gap to VER', 'VER stint age'] },
-        { participantId: 'VER', knows: ['Own tyre state', 'Gap behind', 'Own remaining energy'] },
+        { participantId: 'RUS', knows: ['Own tyre age — seven laps', 'Gap to our car', 'Our stint age'] },
+        { participantId: SELECTED_ID, knows: ['Own tyre state', 'Gap behind', 'Own remaining energy'] },
       ],
       actions: [
         action('rus-l21-outside', 'RUS', 'attack', 'Go around the outside on the exit', feasible(0.65, 0.3)),
         action('rus-l21-wait', 'RUS', 'wait', 'Sit in the gap and wait for the second stop', feasible(0.09, 0.03)),
-        action('ver-l21-defend', 'VER', 'defend', 'Take the defensive line, give up exit speed', feasible(0.24, 0.42, ['One change of direction permitted'])),
-        action('ver-l21-hold', 'VER', 'defend', 'Hold the racing line and keep the tyre alive', feasible(0.12, 0.09)),
+        action('ver-l21-defend', SELECTED_ID, 'defend', 'Take the defensive line, give up exit speed', feasible(0.24, 0.42, ['One change of direction permitted'])),
+        action('ver-l21-hold', SELECTED_ID, 'defend', 'Hold the racing line and keep the tyre alive', feasible(0.12, 0.09)),
       ],
       moveStructure: 'sequential',
       objectives: {
@@ -286,12 +288,12 @@ export function buildBattles(at: LapTime, baselineSide: WorldSide = 'baseline'):
           response: {
             kind: 'best',
             actionId: 'ver-l21-hold',
-            label: 'VER holds the racing line',
+            label: 'Our car holds the racing line',
             probability: simulated(0.68, SCENARIO, ['Best-response opponent']),
           },
           outcome: {
             passChance: simulated(0.63, SCENARIO, ['Opportunity window: Turn 3 exit to Turn 4 only']),
-            resultingOrder: ['RUS', 'VER', 'NOR'],
+            resultingOrder: ['RUS', SELECTED_ID, 'NOR'],
             resultingGapS: simulated(0.41, SCENARIO, []),
             energyCostMj: inferred(0.65, [0.52, 0.81]),
             riskLabel: 'Low for the attacker — the defence gives up the place rather than the tyre',
@@ -411,4 +413,46 @@ export function buildBattles(at: LapTime, baselineSide: WorldSide = 'baseline'):
       sensitivity: [],
     },
   ];
+}
+
+
+/**
+ * The passes the policy actually committed energy to. The report times and prices each
+ * one but never names the car ahead, and it solves no alternative lines.
+ */
+export function battlesFromReport(spec: RaceSpec, baselineSide: WorldSide = 'baseline'): Battle[] {
+  return spec.attacks.map((attack, index) => {
+    const actionId = `attack-l${attack.lap}`;
+    const energyMj = attack.deploymentJ / 1_000_000;
+    return {
+      id: `battle-report-${index}`,
+      baselineSide,
+      lap: attack.lap,
+      windowStartS: attack.startTimeS,
+      windowEndS: attack.endTimeS,
+      location: 'Traffic window from the source field — the car ahead is not identified',
+      attackerId: SELECTED_ID,
+      defenderId: 'car ahead',
+      startingGapS: unsupported('The report records a gap in seconds, not the car it belongs to'),
+      affectedIds: [],
+      informationSets: [
+        {
+          participantId: SELECTED_ID,
+          knows: ['Gap ahead and closing rate', 'Own stored energy', 'Laps remaining'],
+        },
+      ],
+      actions: [
+        action(actionId, SELECTED_ID, 'attack', `Deploy ${energyMj.toFixed(2)} MJ into the window`, feasible(energyMj, 0)),
+      ],
+      moveStructure: 'learned' as const,
+      objectives: {
+        terms: ['Track position', 'Stored energy'],
+        combinedUtility: 'The trained policy reward, not a declared weighting',
+      },
+      solutionStatus: 'none' as const,
+      solutions: [],
+      solverNote: `The policy selected attack across ${attack.ticks} decision ${attack.ticks === 1 ? 'tick' : 'ticks'} at an uncalibrated probability of ${attack.probability.toFixed(2)}, peaking at ${Math.round(attack.peakKw)} kW. No alternative line was solved.`,
+      sensitivity: [],
+    };
+  });
 }

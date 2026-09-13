@@ -1,6 +1,7 @@
 import {
   Battle,
   ComparisonResult,
+  EventKind,
   PlannedStint,
   RaceEvent,
   RaceFrame,
@@ -11,8 +12,9 @@ import {
   WorldSide,
 } from '../types';
 import { inferred, observed, predicted, simulated } from '../valued';
-import { buildBattles } from './battles';
+import { battlesFromReport, buildBattles } from './battles';
 import { positionChangeEvents } from './positions';
+import { RaceSpec } from './report';
 import { ROSTER, byId } from './roster';
 import { buildTrack } from './track';
 import { buildWorld } from './world';
@@ -20,6 +22,7 @@ import {
   ALTERNATIVE_PLAN,
   BASELINE_PLAN,
   BRANCH_LAP,
+  applyRaceSpec,
   Neutralisation,
   RETIREMENT_ID,
   RETIREMENT_LAP,
@@ -179,12 +182,13 @@ function sharedEvents(timing: WorldTiming): RaceEvent[] {
   ];
 }
 
-function outcomeFor(plan: WorldPlan, timing: WorldTiming, rank: number): RaceOutcome {
+function outcomeFor(plan: WorldPlan, timing: WorldTiming, rank: number, spec: RaceSpec | null): RaceOutcome {
   const total = lapEnd(timing, SELECTED_ID, TOTAL_LAPS);
+  const finish = spec ? spec.finalPosition : rank;
   const mark = <T,>(v: T) =>
     plan.side === 'baseline' ? observed(v, 'official classification', total) : simulated(v, ALTERNATIVE_SCENARIO.id, ['fixed-opponent replay']);
   return {
-    finishPosition: mark(rank),
+    finishPosition: mark(finish),
     classifiedStatus: 'Classified',
     totalTimeS: mark(Number(total.toFixed(2))),
     points: mark(rank === 1 ? 25 : rank === 2 ? 18 : 15),
@@ -203,6 +207,30 @@ function stintsOf(pitLaps: number[], compounds: string[]): PlannedStint[] {
   }));
 }
 
+const SOURCE_EVENT: Record<string, { label: string; kind?: EventKind }> = {
+  yellow: { label: 'Yellow flag' },
+  safety_car_deployed: { label: 'Safety car', kind: 'safety_car' },
+  vsc_deployed: { label: 'Virtual safety car', kind: 'virtual_safety_car' },
+  vsc_ending: { label: 'Virtual safety car ending', kind: 'virtual_safety_car' },
+  red: { label: 'Red flag', kind: 'red_flag' },
+};
+
+/** Track-status events the source race actually recorded. */
+function sourceEvents(spec: RaceSpec): RaceEvent[] {
+  return spec.events.map((event, index) => {
+    const known = SOURCE_EVENT[event.label];
+    return {
+      id: `source-event-${index}`,
+      world: 'shared' as const,
+      group: 'session_control' as const,
+      kind: known?.kind,
+      raceTimeS: event.timeS,
+      lap: event.lap,
+      label: event.detail ?? known?.label ?? event.label,
+    };
+  });
+}
+
 export interface FixtureRace {
   session: SessionInfo;
   events: RaceEvent[];
@@ -212,8 +240,9 @@ export interface FixtureRace {
   durationS: number;
 }
 
-export function buildFixtureRace(): FixtureRace {
-  const track = buildTrack('Autodromo Fixture');
+export function buildFixtureRace(spec: RaceSpec | null = null): FixtureRace {
+  applyRaceSpec(spec);
+  const track = buildTrack(spec ? spec.eventName : 'Autodromo Fixture', spec?.geometry ?? null);
   const baselineTiming = buildTiming(BASELINE_PLAN);
   const alternativeTiming = buildTiming(ALTERNATIVE_PLAN);
   const durationS = Math.max(worldDuration(baselineTiming), worldDuration(alternativeTiming));
@@ -227,8 +256,8 @@ export function buildFixtureRace(): FixtureRace {
     );
   };
 
-  const baselineOutcome = outcomeFor(BASELINE_PLAN, baselineTiming, rankOf(baselineTiming));
-  const alternativeOutcome = outcomeFor(ALTERNATIVE_PLAN, alternativeTiming, rankOf(alternativeTiming));
+  const baselineOutcome = outcomeFor(BASELINE_PLAN, baselineTiming, rankOf(baselineTiming), null);
+  const alternativeOutcome = outcomeFor(ALTERNATIVE_PLAN, alternativeTiming, rankOf(alternativeTiming), spec);
   const relativeTime =
     lapEnd(alternativeTiming, SELECTED_ID, TOTAL_LAPS) - lapEnd(baselineTiming, SELECTED_ID, TOTAL_LAPS);
 
@@ -241,19 +270,22 @@ export function buildFixtureRace(): FixtureRace {
    */
   const brief: StrategyBrief = {
     author: 'Team principal',
-    car: 'RB22',
-    stints: stintsOf(BASELINE_PLAN.selectedPitLaps, BASELINE_PLAN.selectedCompounds),
-    pitLaps: BASELINE_PLAN.selectedPitLaps,
-    expectedFinishPosition: predicted(2, 0, durationS, [1, 4]),
-    note:
-      'Two stops, both inside the primary window. Stay out past lap 12 only if the race is neutralised.',
+    car: byId(SELECTED_ID).team,
+    stints: spec && spec.stints.length > 0
+      ? spec.stints.map((stint) => ({ compound: stint.compound, fromLap: stint.fromLap, toLap: stint.toLap }))
+      : stintsOf(BASELINE_PLAN.selectedPitLaps, BASELINE_PLAN.selectedCompounds),
+    pitLaps: spec ? spec.pitLaps : BASELINE_PLAN.selectedPitLaps,
+    expectedFinishPosition: predicted(spec ? spec.finalPosition : 2, 0, durationS, [1, 4]),
+    note: spec
+      ? `Recorded strategy for car #${byId(SELECTED_ID).raceNumber}: ${spec.stints.length} ${spec.stints.length === 1 ? 'stint' : 'stints'} on ${spec.compounds.join(' → ').toLowerCase()}, stopping on ${spec.pitLaps.length > 0 ? `lap ${spec.pitLaps.join(' and ')}` : 'no lap'}.`
+      : 'Two stops, both inside the primary window. Stay out past lap 12 only if the race is neutralised.',
   };
 
   const session: SessionInfo = {
     identity: {
       season: 2026,
-      event: 'Fixture Grand Prix',
-      circuit: 'Autodromo Fixture',
+      event: spec ? spec.eventName : 'Fixture Grand Prix',
+      circuit: spec ? spec.eventName : 'Autodromo Fixture',
       session: 'Race',
       rulesVersion: '2026',
     },
@@ -273,19 +305,25 @@ export function buildFixtureRace(): FixtureRace {
     brief,
     assumptions: {
       weather: 'Dry throughout, no forecast change',
-      interruptions:
-        'Virtual safety car on laps 5–6 in both races; safety car on laps 15–17 in the alternative world only',
+      interruptions: spec
+        ? `${spec.events.length} recorded track-status events, taken from the source race`
+        : 'Virtual safety car on laps 5–6 in both races; safety car on laps 15–17 in the alternative world only',
       pitLossS: inferred(22.0, [20.4, 23.8]),
-      tyreSets: 'Two new mediums and one new hard available at the branch',
-      startingStates: 'Both worlds identical up to lap 12',
+      tyreSets: spec ? `Recorded stints: ${spec.compounds.join(' → ').toLowerCase()}` : 'Two new mediums and one new hard available at the branch',
+      startingStates: spec ? `Our car is added at P${spec.startingPosition} behind the recorded field` : 'Both worlds identical up to lap 12',
       opponentBeliefs: 'Recorded opponents — they do not react to the changed call',
     },
     validity: {
       supportedHorizonS: durationS,
-      warnings: [
-        'Opponents are recorded and do not respond to the alternative pit call',
-        'One entry has no energy telemetry coverage',
-      ],
+      warnings: spec
+        ? [
+            `Measured from the ${spec.eventName} diagnostic report for car ${spec.selectedId}`,
+            'Only our car is measured; the rest of the field is an illustrative running order',
+          ]
+        : [
+            'Opponents are recorded and do not respond to the alternative pit call',
+            'One entry has no energy telemetry coverage',
+          ],
       fallbacks: [],
     },
     coverage: {
@@ -309,7 +347,9 @@ export function buildFixtureRace(): FixtureRace {
 
   // Battles are declared against the recorded baseline, and surface on the timeline
   // as competition events so they can be opened from it.
-  const battles = buildBattles((id, lap) => lapEnd(baselineTiming, id, lap));
+  const battles = spec && spec.attacks.length > 0
+    ? battlesFromReport(spec)
+    : buildBattles((id, lap) => lapEnd(baselineTiming, id, lap));
   const battleEvents: RaceEvent[] = battles.map((b) => ({
     id: `battle-event-${b.id}`,
     world: b.lap <= BRANCH_LAP ? 'shared' : b.baselineSide,
@@ -349,8 +389,12 @@ export function buildFixtureRace(): FixtureRace {
     ...battleEvents,
     ...positionEvents,
     ...sharedEvents(baselineTiming),
-    ...neutralisationEvents('baseline', BASELINE_PLAN, ALTERNATIVE_PLAN, baselineTiming),
-    ...neutralisationEvents('alternative', ALTERNATIVE_PLAN, BASELINE_PLAN, alternativeTiming),
+    ...(spec
+      ? sourceEvents(spec)
+      : [
+          ...neutralisationEvents('baseline', BASELINE_PLAN, ALTERNATIVE_PLAN, baselineTiming),
+          ...neutralisationEvents('alternative', ALTERNATIVE_PLAN, BASELINE_PLAN, alternativeTiming),
+        ]),
     ...eventsFor('baseline', BASELINE_PLAN, baselineTiming),
     ...eventsFor('alternative', ALTERNATIVE_PLAN, alternativeTiming),
   ].sort((a, b) => a.raceTimeS - b.raceTimeS);

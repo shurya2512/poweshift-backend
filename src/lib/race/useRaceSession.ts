@@ -54,7 +54,7 @@ function onMessage(state: RaceSessionState, message: RaceMessage): RaceSessionSt
         ...state,
         session: message.session,
         supportState: message.session.supportState,
-        selectedParticipantId: state.selectedParticipantId ?? message.session.selectedParticipantId,
+        selectedParticipantId: message.session.selectedParticipantId ?? state.selectedParticipantId,
         playback: 'streaming',
         stale: false,
       };
@@ -109,16 +109,17 @@ export function useRaceSession(source: RaceSource, request: SessionRequest) {
   const sourceRef = useRef(source);
   const key = `${request.season}:${request.event}:${request.scenarioId}`;
 
+  // A new source replaces the running one, so a late-loading report restarts the race.
   useEffect(() => {
-    const active = sourceRef.current;
-    const unsubscribe = active.subscribe((message) => dispatch({ type: 'message', message }));
-    active.start(request);
+    sourceRef.current = source;
+    const unsubscribe = source.subscribe((message) => dispatch({ type: 'message', message }));
+    source.start(request);
     return () => {
       unsubscribe();
-      active.stop();
+      source.stop();
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [key]);
+  }, [key, source]);
 
   const controls = useMemo(
     () => ({

@@ -1,8 +1,14 @@
 import { WorldSide } from '../types';
+import { RaceSpec, setMeasuredEnergy } from './report';
 import { ROSTER } from './roster';
 
-export const TOTAL_LAPS = 30;
-export const BASE_LAP_S = 88.0;
+const DEFAULT_TOTAL_LAPS = 30;
+const DEFAULT_BASE_LAP_S = 88.0;
+const DEFAULT_SELECTED_ID = 'VER';
+
+// Live bindings so a loaded report can retune the race without rewiring every reader.
+export let TOTAL_LAPS = DEFAULT_TOTAL_LAPS;
+export let BASE_LAP_S = DEFAULT_BASE_LAP_S;
 export const PIT_LOSS_S = 22.0;
 
 export type NeutralisationKind = 'safety_car' | 'virtual_safety_car';
@@ -32,8 +38,18 @@ export const RETIREMENT_LAP = 8;
 const FIELD_TWO_STOP = [10, 22];
 const FIELD_ONE_STOP = [14];
 
-export const SELECTED_ID = 'VER';
+export let SELECTED_ID = DEFAULT_SELECTED_ID;
+let activeSpec: RaceSpec | null = null;
 export const BRANCH_LAP = 12;
+
+/** Retunes the race to a report's measured lap count, lap time and ego. */
+export function applyRaceSpec(spec: RaceSpec | null): void {
+  activeSpec = spec;
+  setMeasuredEnergy(spec);
+  TOTAL_LAPS = spec ? spec.totalLaps : DEFAULT_TOTAL_LAPS;
+  BASE_LAP_S = spec ? spec.baseLapS : DEFAULT_BASE_LAP_S;
+  SELECTED_ID = spec ? spec.selectedId : DEFAULT_SELECTED_ID;
+}
 
 export interface WorldPlan {
   side: WorldSide;
@@ -79,13 +95,15 @@ export const neutralisationAt = (plan: WorldPlan, lap: number): Neutralisation |
   plan.neutralisations.find((n) => lap >= n.fromLap && lap <= n.toLap);
 
 export const pitLapsFor = (plan: WorldPlan, id: string): number[] => {
-  if (id === SELECTED_ID) return plan.selectedPitLaps;
+  if (id === SELECTED_ID) return activeSpec ? activeSpec.pitLaps : plan.selectedPitLaps;
   return ROSTER.findIndex((e) => e.id === id) % 2 === 0 ? FIELD_TWO_STOP : FIELD_ONE_STOP;
 };
 
 /** Only the selected entry's compounds are planned; the field falls back to the cycle. */
-export const compoundsFor = (plan: WorldPlan, id: string): string[] | undefined =>
-  id === SELECTED_ID ? plan.selectedCompounds : undefined;
+export const compoundsFor = (plan: WorldPlan, id: string): string[] | undefined => {
+  if (id !== SELECTED_ID) return undefined;
+  return activeSpec && activeSpec.compounds.length > 0 ? activeSpec.compounds : plan.selectedCompounds;
+};
 
 /**
  * Cumulative time at the end of each lap, per entry.
@@ -108,7 +126,7 @@ export function buildTiming(plan: WorldPlan): WorldTiming {
     const ends: number[] = [];
     let elapsed = 0;
     let stintAge = 0;
-    const lastLap = entry.id === RETIREMENT_ID ? RETIREMENT_LAP : TOTAL_LAPS;
+    const lastLap = entry.id === RETIREMENT_ID ? Math.min(RETIREMENT_LAP, TOTAL_LAPS) : TOTAL_LAPS;
 
     for (let lap = 1; lap <= lastLap; lap++) {
       // Tyre loss is mildly non-linear in stint age, not runaway quadratic:

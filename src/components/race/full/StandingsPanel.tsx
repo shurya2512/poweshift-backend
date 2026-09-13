@@ -95,6 +95,9 @@ export function StandingsPanel({
           Lap {world.leaderLap}/{world.totalLaps} · {world.field.filter((p) => p.participation === 'running').length}{' '}
           running
         </p>
+        <p className="mt-1 text-[10px] leading-snug text-amber-300/60">
+          Our car&apos;s position and energy are measured from its report; the rest of the order is illustrative.
+        </p>
       </div>
 
       <div className="grid grid-cols-[18px_3px_34px_minmax(0,1fr)_minmax(0,1fr)_44px] gap-x-2 border-b border-white/[0.06] px-3 py-1.5 text-[9px] uppercase tracking-widest text-white/25">

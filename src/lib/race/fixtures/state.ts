@@ -2,7 +2,8 @@ import { EnergyState, ParticipantState, ParticipationState, TyreState, WorldSide
 import { Valued, inferred, observed, simulated, unsupported } from '../valued';
 import { FixtureTrack } from './track';
 import { FixtureEntry } from './roster';
-import { NO_ENERGY_TELEMETRY_ID, Progress } from './model';
+import { NO_ENERGY_TELEMETRY_ID, Progress, SELECTED_ID } from './model';
+import { measuredLapEnergy } from './report';
 
 const COMPOUNDS = ['SOFT', 'MEDIUM', 'HARD'];
 
@@ -50,6 +51,17 @@ function tyre(
  * One entry has no coverage at all and stays unsupported throughout.
  */
 function energy(side: WorldSide, entry: FixtureEntry, p: Progress, t: number): EnergyState {
+  const measured = entry.id === SELECTED_ID ? measuredLapEnergy(p.lap) : null;
+  if (measured) {
+    const deploying = p.frac < 0.65;
+    return {
+      storedMj: mark(side, Number((measured.storedEndJ / 1_000_000).toFixed(2)), t, 'measured'),
+      requestedKw: mark(side, Math.round(deploying ? measured.peakKw : 0), t, 'measured'),
+      deliveredKw: mark(side, Math.round(deploying ? measured.peakKw : 0), t, 'measured'),
+      recoveredKw: mark(side, Math.round(deploying ? 0 : measured.harvestJ / 1_000), t, 'measured'),
+      curtailedKw: mark(side, 0, t, 'measured'),
+    };
+  }
   if (entry.id === NO_ENERGY_TELEMETRY_ID) {
     const reason = 'No energy telemetry coverage for this entry';
     return {

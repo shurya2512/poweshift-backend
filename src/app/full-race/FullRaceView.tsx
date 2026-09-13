@@ -1,7 +1,10 @@
 'use client';
 
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
+import { DiagnosticSummary, RaceProfileReport, diagnosticReportPath } from '@/lib/backend/report';
+import { fetchDiagnosticCatalog, fetchDiagnosticReport } from '@/lib/backend/runtime';
+import { RaceSpec, raceSpecFromReport } from '@/lib/race/fixtures/report';
 import { SpinningBorderButton } from '@/components/ui/spinning-border-button';
 import { FixtureRaceSource } from '@/lib/race/fixtures/source';
 import { useRaceSession } from '@/lib/race/useRaceSession';
@@ -46,7 +49,29 @@ export function FullRaceView() {
   const diagnosticTrack = search.get('track') ?? 'Miami Grand Prix';
   const profileEntry = search.get('profile') ?? '1';
   const reportParams = new URLSearchParams({ mode: 'race', track: diagnosticTrack, profile: profileEntry });
-  const source = useMemo(() => new FixtureRaceSource(), []);
+  const [spec, setSpec] = useState<RaceSpec | null>(null);
+
+  // The race view replays the selected profile's report; without the backend it falls
+  // back to the generated fixture rather than failing.
+  useEffect(() => {
+    let active = true;
+    fetchDiagnosticCatalog()
+      .then((catalog) => {
+        const entry = catalog.race.find((row) => row.event_name === diagnosticTrack && row.status !== 'unavailable');
+        if (!entry) throw new Error('no diagnostic race report for this event');
+        return fetchDiagnosticReport<DiagnosticSummary>(`race/${entry.summary}`).then((summary) => {
+          const relative = summary.reports?.[profileEntry];
+          if (!relative) throw new Error('this profile carries no report for this event');
+          return fetchDiagnosticReport<RaceProfileReport>(diagnosticReportPath('race', entry.summary, relative))
+            .then((report) => ({ report, geometry: summary.route_geometry ?? null }));
+        });
+      })
+      .then((loaded) => active && setSpec(raceSpecFromReport(loaded.report, loaded.geometry)))
+      .catch(() => active && setSpec(null));
+    return () => { active = false; };
+  }, [diagnosticTrack, profileEntry]);
+
+  const source = useMemo(() => new FixtureRaceSource(spec), [spec]);
   const { state, controls } = useRaceSession(source, REQUEST);
   const { session, frame } = state;
   const [selectedEventId, setSelectedEventId] = useState<string | null>(null);
@@ -84,11 +109,17 @@ export function FullRaceView() {
         <SpinningBorderButton href={`/report?${reportParams.toString()}`} text="Report" size="sm" fill="hollow" beam="once" />
       </div>
 
-      <BackendRuntimePanel track={diagnosticTrack} profileEntry={profileEntry} />
+      <BackendRuntimePanel
+        track={diagnosticTrack}
+        profileEntry={profileEntry}
+        participant={ours}
+        raceTimeS={frame?.raceTimeS}
+      />
 
       <Panel className="border-sky-400/20 px-5 py-4 text-xs leading-relaxed text-white/55">
-        The animated race below is the labelled 23-car fixture stream. The selected {diagnosticTrack} profile is shown
-        in the backend report, where its P23 start, decisions, energy and final proxy position remain source-bound.
+        {spec
+          ? `Our car's lap count, position, energy and the track-status events below are read from the ${diagnosticTrack} report for car #${profileEntry}. The other 21 cars keep an illustrative running order, and the replay is animated rather than streamed live.`
+          : 'The backend report is unavailable, so the animated race below is the generated fixture stream rather than measured data.'}
       </Panel>
 
       <RaceHeader

@@ -64,9 +64,26 @@ export interface MajorEventDecision {
   decision_time_delta_s: number;
 }
 
+export interface SourceStint {
+  stint: number;
+  compound: string;
+  from_lap: number;
+  to_lap: number;
+  end_tyre_life_laps: number | null;
+}
+
+export interface SourceStrategy {
+  entry: string;
+  status: 'source_bound' | 'unavailable';
+  stints: SourceStint[];
+  pit_laps: { lap: number; pit_in_time_s: number | null }[];
+  total_source_laps?: number;
+}
+
 export interface RaceProfileReport {
   event_name: string;
   profile_entry: string;
+  source_strategy?: SourceStrategy;
   p23: {
     ego_identity: string;
     profile_entry: string;
@@ -79,6 +96,11 @@ export interface RaceProfileReport {
     decision_hz: number;
     final_proxy_position: number;
     signed_gap_to_leader_s: number;
+    signed_gap_to_leader_m: number;
+    evidence_status: string;
+    ego_covered_span_fraction: number;
+    retired_reference_entries: number;
+    maximum_additive_speed_ms: number;
     gross_deployment_j: number;
     gross_harvest_j: number;
     final_stored_energy_j: number;
@@ -121,12 +143,34 @@ export interface QualifyingProfileReport {
   laps: QualifyingLapDiagnostic[];
 }
 
+export interface RelievedProfile {
+  profile_entry: string;
+  last_sample_s: number;
+  covered_span_fraction: number;
+  sample_density?: number;
+  reason: string;
+}
+
+export interface RouteGeometry {
+  status: 'source_bound';
+  closed: boolean;
+  loop_closure_m: number;
+  lap_length_m: number;
+  point_count: number;
+  x_m: number[];
+  y_m: number[];
+  progress_m: number[];
+}
+
 export interface DiagnosticSummary {
   event_name: string;
   status: 'diagnostic_only' | 'unavailable';
   reports?: Record<string, string>;
   reason?: string;
   profiles_without_laps?: string[];
+  profiles_with_full_span?: string[];
+  profiles_relieved?: RelievedProfile[];
+  route_geometry?: RouteGeometry;
 }
 
 const mj = (joules: number): string => `${(joules / 1_000_000).toFixed(2)} MJ`;

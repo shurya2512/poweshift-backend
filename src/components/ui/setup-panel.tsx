@@ -7,7 +7,8 @@ import { SpinningBorderButton } from '@/components/ui/spinning-border-button';
 import { DropdownMenu } from '@/components/ui/dropdown-menu';
 import { BentoSection, BentoCard } from '@/components/MagicBento';
 import { TrailCard } from '@/components/ui/trail-card';
-import { EGO_PROFILES, egoProfile, sessionTracks } from '@/lib/backend/profiles';
+import { EGO_PROFILES, admittedProfiles, egoProfile, sessionTracks } from '@/lib/backend/profiles';
+import { fetchDiagnosticCatalog } from '@/lib/backend/runtime';
 
 // ── Types ────────────────────────────────────────────────────────────────────
 
@@ -100,7 +101,7 @@ const MODE_COPY: Record<SetupMode, {
   'full-race': {
     intro: 'Pick the circuit and the ego driver, then start the race.',
     driverLabel: 'Ego Driver',
-    driverNote: 'The selected profile is added at P23 with learned energy and overtake intelligence.',
+    driverNote: 'The selected profile is added at P23 with learned energy and overtake intelligence. Only profiles whose telemetry covers the whole race are offered.',
     driverCaption: circuit => `${circuit} full race`,
   },
 };
@@ -174,11 +175,32 @@ export default function SetupPanel({ mode, onStart }: SetupPanelProps) {
   });
   const [isLoading, setIsLoading] = useState(false);
   const [showDriverModal, setShowDriverModal] = useState(false);
+  const [trackProfiles, setTrackProfiles] = useState<Record<string, string[]>>({});
 
   const timerRef   = useRef<ReturnType<typeof setTimeout> | null>(null);
   const circuit    = CIRCUIT_META[selections.track];
-  const driverMeta = egoProfile(selections.driver);
   const copy       = MODE_COPY[mode];
+
+  // A race only runs profiles whose own telemetry covers it, so the roster is per circuit.
+  const driverOptions = admittedProfiles(
+    mode === 'full-race' ? trackProfiles[selections.track] : undefined,
+  );
+  const driver = driverOptions.some((item) => item.entry === selections.driver)
+    ? selections.driver
+    : driverOptions[0]?.entry ?? selections.driver;
+  const driverMeta = egoProfile(driver);
+
+  useEffect(() => {
+    if (mode !== 'full-race') return;
+    let active = true;
+    fetchDiagnosticCatalog()
+      .then((catalog) => {
+        if (!active) return;
+        setTrackProfiles(Object.fromEntries(catalog.race.map((row) => [row.event_name, row.profiles])));
+      })
+      .catch(() => undefined);
+    return () => { active = false; };
+  }, [mode]);
 
   // The driver means a different thing in each session, so it is relabelled rather
   // than duplicated — the options, and every other setting, are identical.
@@ -187,7 +209,18 @@ export default function SetupPanel({ mode, onStart }: SetupPanelProps) {
       ...item,
       options: availableTracks.map((track) => ({ value: track.event, label: track.label, sublabel: track.circuit, badge: 'Report' })),
     };
-    return item.id === 'driver' ? { ...item, label: copy.driverLabel, note: copy.driverNote } : item;
+    if (item.id === 'driver') return {
+      ...item,
+      label: copy.driverLabel,
+      note: copy.driverNote,
+      options: driverOptions.map((profile) => ({
+        value: profile.entry,
+        label: profile.name,
+        sublabel: profile.team,
+        badge: `${profile.code} · #${profile.entry}`,
+      })),
+    };
+    return item;
   });
 
   const triggerLoading = useCallback(() => {
@@ -220,7 +253,7 @@ export default function SetupPanel({ mode, onStart }: SetupPanelProps) {
 
           {/* Selectors — animated DropdownMenu per setting */}
           {setupItems.map((item, i) => {
-            const chosen = item.options.find(o => o.value === selections[item.id]);
+            const chosen = item.options.find(o => o.value === (item.id === 'driver' ? driver : selections[item.id]));
             const Icon = item.icon;
             return (
               <div
@@ -234,7 +267,7 @@ export default function SetupPanel({ mode, onStart }: SetupPanelProps) {
                   options={item.options.map(opt => ({
                     label: opt.label,
                     onClick: () => select(item.id, opt.value),
-                    Icon: opt.value === selections[item.id]
+                    Icon: opt.value === (item.id === 'driver' ? driver : selections[item.id])
                       ? <Check className="h-4 w-4 text-blue-400" />
                       : <span className="h-4 w-4" />,
                   }))}
@@ -353,7 +386,7 @@ export default function SetupPanel({ mode, onStart }: SetupPanelProps) {
           imageUrl={`/${driverMeta.code}.png`}
           imageClassName="object-top"
           eyebrow={`Car #${driverMeta.entry}`}
-          title={CONFIG_ITEMS[1].options.find(o => o.value === selections.driver)?.label ?? selections.driver}
+          title={driverMeta.name}
           subtitle={driverMeta.team}
           description={`Promoted neural vehicle profile fitted to ${driverMeta.name}'s source controls for ${driverMeta.team}.`}
           caption={copy.driverCaption(selections.track.replace(' Grand Prix', ''))}
@@ -373,12 +406,12 @@ export default function SetupPanel({ mode, onStart }: SetupPanelProps) {
           <p className="text-xl font-semibold text-white truncate">
             {selections.track.replace(' Grand Prix', '')}
             <span className="text-white/25 font-normal"> · </span>
-            {CONFIG_ITEMS[1].options.find(o => o.value === selections.driver)?.label}
+            {driverMeta.name}
           </p>
         </div>
         <SpinningBorderButton
           text={mode === 'qualifying' ? 'Open Qualifying Report' : 'Start Race'}
-          onClick={() => onStart(selections.track, selections.driver, selections.policy)}
+          onClick={() => onStart(selections.track, driver, selections.policy)}
         />
       </BentoCard>
 
@@ -419,7 +452,7 @@ export default function SetupPanel({ mode, onStart }: SetupPanelProps) {
                     </div>
                     <div>
                       <EyebrowLabel className="mb-0.5">Driver Profile</EyebrowLabel>
-                      <p className="text-sm font-semibold text-white">{CONFIG_ITEMS[1].options.find(o => o.value === selections.driver)?.label}</p>
+                      <p className="text-sm font-semibold text-white">{driverMeta.name}</p>
                     </div>
                   </div>
                   <button onClick={() => setShowDriverModal(false)} className="p-2 rounded-full bg-white/[0.07] hover:bg-white/[0.14] border border-white/[0.08] transition-colors text-white/40 hover:text-white">

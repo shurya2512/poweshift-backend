@@ -1,3 +1,4 @@
+import { EGO_PROFILES } from '@/lib/backend/profiles';
 import { Participant } from '../types';
 
 export interface FixtureEntry extends Participant {
@@ -7,45 +8,30 @@ export interface FixtureEntry extends Participant {
   degPerLapS: number;
 }
 
-const RAW: [string, string, string, number, string, number, number][] = [
-  ['VER', 'Max Verstappen', 'Red Bull Racing', 1, '#1E5BC6', 0.0, 0.045],
-  ['NOR', 'Lando Norris', 'McLaren', 4, '#FF8000', 0.18, 0.042],
-  ['LEC', 'Charles Leclerc', 'Ferrari', 16, '#E8002D', 0.31, 0.048],
-  ['RUS', 'George Russell', 'Mercedes', 63, '#27F4D2', 0.44, 0.044],
-  ['PIA', 'Oscar Piastri', 'McLaren', 81, '#FF8000', 0.52, 0.043],
-  ['HAM', 'Lewis Hamilton', 'Ferrari', 44, '#E8002D', 0.67, 0.049],
-  ['ANT', 'Andrea Antonelli', 'Mercedes', 12, '#27F4D2', 0.81, 0.046],
-  ['ALO', 'Fernando Alonso', 'Aston Martin', 14, '#229971', 0.98, 0.051],
-  ['TSU', 'Yuki Tsunoda', 'Red Bull Racing', 22, '#1E5BC6', 1.12, 0.047],
-  ['GAS', 'Pierre Gasly', 'Alpine', 10, '#0093CC', 1.29, 0.052],
-  ['HAD', 'Isack Hadjar', 'Racing Bulls', 6, '#6692FF', 1.41, 0.050],
-  ['SAI', 'Carlos Sainz', 'Williams', 55, '#64C4FF', 1.58, 0.053],
-  ['PER', 'Sergio Perez', 'Cadillac', 11, '#B6BABD', 1.66, 0.054],
-  ['ALB', 'Alexander Albon', 'Williams', 23, '#64C4FF', 1.73, 0.051],
-  ['BOT', 'Valtteri Bottas', 'Cadillac', 77, '#B6BABD', 1.86, 0.055],
-  ['HUL', 'Nico Hulkenberg', 'Kick Sauber', 27, '#52E252', 1.94, 0.055],
-  ['OCO', 'Esteban Ocon', 'Haas', 31, '#B6BABD', 2.11, 0.054],
-  ['LAW', 'Liam Lawson', 'Racing Bulls', 30, '#6692FF', 2.28, 0.052],
-  ['STR', 'Lance Stroll', 'Aston Martin', 18, '#229971', 2.47, 0.056],
-  ['BEA', 'Oliver Bearman', 'Haas', 87, '#B6BABD', 2.69, 0.055],
-  ['BOR', 'Gabriel Bortoleto', 'Kick Sauber', 5, '#52E252', 2.94, 0.058],
-  ['COL', 'Franco Colapinto', 'Alpine', 43, '#0093CC', 4.35, 0.061],
-  ['LIN', 'Arvid Lindblad', 'Racing Bulls', 41, '#6692FF', 4.85, 0.060],
+/** Pace spread across the field, fastest first. The order is illustrative, the identities are not. */
+const PACE_OFFSET_S = [
+  0.0, 0.18, 0.31, 0.44, 0.52, 0.67, 0.81, 0.98, 1.12, 1.29, 1.41,
+  1.58, 1.66, 1.73, 1.86, 1.94, 2.11, 2.28, 2.47, 2.69, 2.94, 4.35,
+];
+const DEG_PER_LAP_S = [
+  0.045, 0.042, 0.048, 0.044, 0.043, 0.049, 0.046, 0.051, 0.047, 0.052, 0.050,
+  0.053, 0.054, 0.051, 0.055, 0.055, 0.054, 0.052, 0.056, 0.055, 0.058, 0.061,
 ];
 
-/** Twenty-three entries, with the final two deliberately slow enough to be lapped. */
-export const ROSTER: FixtureEntry[] = RAW.map(
-  ([code, name, team, raceNumber, teamColor, paceOffsetS, degPerLapS]) => ({
-    id: code,
-    code,
-    name,
-    team,
-    raceNumber,
-    teamColor,
-    paceOffsetS,
-    degPerLapS,
-  }),
-);
+/** The real promoted entries the reports are built from, keyed by code. */
+export const ROSTER: FixtureEntry[] = EGO_PROFILES.map((profile, index) => ({
+  id: profile.code,
+  code: profile.code,
+  name: profile.name,
+  team: profile.team,
+  raceNumber: Number(profile.entry),
+  teamColor: profile.color,
+  paceOffsetS: PACE_OFFSET_S[index] ?? 3.0,
+  degPerLapS: DEG_PER_LAP_S[index] ?? 0.055,
+}));
 
 export const byId = (id: string): FixtureEntry =>
   ROSTER.find((e) => e.id === id) ?? ROSTER[0];
+
+export const codeForEntry = (entry: string): string =>
+  EGO_PROFILES.find((profile) => profile.entry === entry)?.code ?? ROSTER[0].id;

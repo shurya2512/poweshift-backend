@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useEffect, useMemo, useState } from 'react';
 import { ArrowLeft } from 'lucide-react';
-import { EGO_PROFILES, egoProfile } from '@/lib/backend/profiles';
+import { EGO_PROFILES, admittedProfiles, egoProfile } from '@/lib/backend/profiles';
 import {
   DiagnosticSummary,
   QualifyingProfileReport,
@@ -254,7 +254,11 @@ export function ReportView() {
     [requestedTrack, tracks],
   );
   const track = selectedTrack?.event_name ?? '';
-  const profile = search.get('profile') ?? '1';
+  const trackProfiles = useMemo(() => admittedProfiles(selectedTrack?.profiles), [selectedTrack]);
+  const requestedProfile = search.get('profile') ?? '1';
+  const profile = trackProfiles.some((item) => item.entry === requestedProfile)
+    ? requestedProfile
+    : trackProfiles[0]?.entry ?? requestedProfile;
   const loadKey = `${mode}:${track}:${profile}`;
 
   useEffect(() => {
@@ -296,10 +300,15 @@ export function ReportView() {
         <div className="flex flex-col gap-4 rounded-2xl border border-white/10 bg-white/[0.03] p-5 sm:flex-row">
           <Select label="Report set" value={mode} onChange={(value) => router.replace(`/report?mode=${value}&profile=${profile}`)}><option value="race">Race P23</option><option value="qualifying">Qualifying</option></Select>
           <Select label="Circuit" value={track} onChange={(value) => replaceSelection(value, profile)}>{tracks.map((item: DiagnosticTrack) => <option key={item.event_name} value={item.event_name} disabled={item.status === 'unavailable'}>{item.event_name}{item.status === 'unavailable' ? ' · unavailable' : ''}</option>)}</Select>
-          <Select label="Ego driver / profile" value={profile} onChange={(value) => replaceSelection(track, value)}>{EGO_PROFILES.map((item) => <option key={item.entry} value={item.entry}>{item.code} · #{item.entry} · {item.name}</option>)}</Select>
+          <Select label="Ego driver / profile" value={profile} onChange={(value) => replaceSelection(track, value)}>{trackProfiles.map((item) => <option key={item.entry} value={item.entry}>{item.code} · #{item.entry} · {item.name}</option>)}</Select>
         </div>
 
         {loaded.key === loadKey && loaded.summary?.profiles_without_laps?.includes(profile) && <div className="mt-8"><Aside>The selected source contains no qualifying laps for profile #{profile}; the empty report is shown without substitution.</Aside></div>}
+        {loaded.key === loadKey && loaded.summary?.profiles_relieved && loaded.summary.profiles_relieved.length > 0 && (
+          <div className="mt-8"><Aside>
+            {loaded.summary.profiles_relieved.length} of {EGO_PROFILES.length} profiles are relieved at this event because their own source telemetry cannot carry a full race: {loaded.summary.profiles_relieved.map((item) => `#${item.profile_entry} (${item.reason.includes('sparse') ? `${Math.round((item.sample_density ?? 0) * 100)}% sampled` : `ends at ${Math.round(item.covered_span_fraction * 100)}% of the race`})`).join(', ')}. They stay in the reference field and carry no report.
+          </Aside></div>
+        )}
         {catalogError ? <div className="mt-12"><Aside>{catalogError}</Aside></div> : loaded.key !== loadKey ? <P className="mt-12">Loading the selected diagnostic report…</P> : loaded.error ? <div className="mt-12"><Aside>{loaded.error}</Aside></div> : mode === 'race' ? <RaceReport report={loaded.report as RaceProfileReport} /> : <QualifyingReport report={loaded.report as QualifyingProfileReport} />}
       </Column>
     </div>

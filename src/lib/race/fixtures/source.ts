@@ -1,5 +1,6 @@
 import { RaceMessage, RaceSource, SessionRequest } from '../source';
 import { FixtureRace, buildFixtureRace } from './build';
+import { RaceSpec } from './report';
 
 const TICK_HZ = 4;
 
@@ -8,6 +9,8 @@ const TICK_HZ = 4;
  * same interface; no view knows which one is talking.
  */
 export class FixtureRaceSource implements RaceSource {
+  constructor(private spec: RaceSpec | null = null) {}
+
   private race: FixtureRace | null = null;
   private handlers = new Set<(msg: RaceMessage) => void>();
   private timer: ReturnType<typeof setInterval> | null = null;
@@ -25,7 +28,7 @@ export class FixtureRaceSource implements RaceSource {
 
   start(_request: SessionRequest): void {
     this.stopTimer();
-    this.race = buildFixtureRace();
+    this.race = buildFixtureRace(this.spec);
     this.raceTimeS = 0;
     this.emit({ type: 'session', session: this.race.session });
     this.emit({ type: 'events', events: this.race.events });

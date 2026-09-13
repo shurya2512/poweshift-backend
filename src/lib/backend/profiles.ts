@@ -64,6 +64,12 @@ export function sessionTracks(mode: 'qualifying' | 'full-race'): DiagnosticTrack
   return (mode === 'qualifying' ? QUALIFYING_EVENTS : RACE_EVENTS).map((event) => TRACKS[event]);
 }
 
+export function admittedProfiles(entries: string[] | undefined): EgoProfile[] {
+  if (!entries || entries.length === 0) return EGO_PROFILES;
+  const admitted = new Set(entries);
+  return EGO_PROFILES.filter((profile) => admitted.has(profile.entry));
+}
+
 export function egoProfile(entry: string): EgoProfile {
   return EGO_PROFILES.find((profile) => profile.entry === entry) ?? EGO_PROFILES[0];
 }
