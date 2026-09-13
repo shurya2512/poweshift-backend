@@ -1,0 +1,16 @@
+{
+  "manifests": [
+    "/Users/10doshi12/Desktop/trackshift/poweshift-backend/data/representation_phase4/practice_miami_fp1_v1/practice_export.json",
+    "/Users/10doshi12/Desktop/trackshift/poweshift-backend/data/representation_phase4/practice_canadian_fp1_v1/practice_export.json",
+    "/Users/10doshi12/Desktop/trackshift/poweshift-backend/data/representation_phase4/practice_monaco_fp1_v1/practice_export.json",
+    "/Users/10doshi12/Desktop/trackshift/poweshift-backend/data/representation_phase4/practice_monaco_fp2_v1/practice_export.json",
+    "/Users/10doshi12/Desktop/trackshift/poweshift-backend/data/representation_phase4/practice_monaco_fp3_v1/practice_export.json",
+    "/Users/10doshi12/Desktop/trackshift/poweshift-backend/data/representation_phase4/practice_barcelona_fp1_v1/practice_export.json",
+    "/Users/10doshi12/Desktop/trackshift/poweshift-backend/data/representation_phase4/practice_barcelona_fp2_v1/practice_export.json",
+    "/Users/10doshi12/Desktop/trackshift/poweshift-backend/data/representation_phase4/practice_barcelona_fp3_v1/practice_export.json",
+    "/Users/10doshi12/Desktop/trackshift/poweshift-backend/data/representation_phase4/practice_austrian_fp1_v1/practice_export.json",
+    "/Users/10doshi12/Desktop/trackshift/poweshift-backend/data/representation_phase4/practice_austrian_fp2_v1/practice_export.json",
+    "/Users/10doshi12/Desktop/trackshift/poweshift-backend/data/representation_phase4/practice_austrian_fp3_v1/practice_export.json",
+    "/Users/10doshi12/Desktop/trackshift/poweshift-backend/data/representation_phase4/practice_british_fp1_v1/practice_export.json"
+  ]
+}

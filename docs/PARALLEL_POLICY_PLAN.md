@@ -204,3 +204,10 @@ API readiness or news integration.
 Future code work must consult Context7 for every framework or library API before edits. If it is
 unavailable, use official documentation or established project usage and record the uncertainty.
 Comments and docstrings stay short and contain no planning identifiers.
+
+Phase 9 now has a chronological, source-bound news and training-only update scaffold. Phase 10 now
+has registered retrospective weekend inference, resident recurrent memory, finite fallback,
+incremental recommendation persistence, a spawned local supervisor, API/WebSocket access and a
+separate protected-target scorer. These additions do not complete the physical closed-loop runtime:
+world advancement, realised delivery, restorable simulation state, real weekend artifacts and
+sustained target-Mac timing evidence remain gated after the Phase 8 checkpoint is ready.

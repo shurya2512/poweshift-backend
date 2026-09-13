@@ -1,0 +1,13 @@
+{
+  "manifests": [
+    "/Users/10doshi12/Desktop/trackshift/poweshift-backend/data/representation_phase4/qualifying_australian_v1/qualifying_export.json",
+    "/Users/10doshi12/Desktop/trackshift/poweshift-backend/data/representation_phase4/qualifying_chinese_v1/qualifying_export.json",
+    "/Users/10doshi12/Desktop/trackshift/poweshift-backend/data/representation_phase4/qualifying_japanese_v1/qualifying_export.json",
+    "/Users/10doshi12/Desktop/trackshift/poweshift-backend/data/representation_phase4/qualifying_miami_v1/qualifying_export.json",
+    "/Users/10doshi12/Desktop/trackshift/poweshift-backend/data/representation_phase4/qualifying_canadian_v1/qualifying_export.json",
+    "/Users/10doshi12/Desktop/trackshift/poweshift-backend/data/representation_phase4/qualifying_monaco_v1/qualifying_export.json",
+    "/Users/10doshi12/Desktop/trackshift/poweshift-backend/data/representation_phase4/qualifying_barcelona_v1/qualifying_export.json",
+    "/Users/10doshi12/Desktop/trackshift/poweshift-backend/data/representation_phase4/qualifying_austrian_v1/qualifying_export.json",
+    "/Users/10doshi12/Desktop/trackshift/poweshift-backend/data/representation_phase4/qualifying_british_v1/qualifying_export.json"
+  ]
+}

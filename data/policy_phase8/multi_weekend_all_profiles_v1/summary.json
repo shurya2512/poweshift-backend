@@ -1,0 +1,321 @@
+{
+  "additional_ego_start": "grid_position_23",
+  "consolidated": {
+    "lap_medians": {
+      "p23_deployment_j": 1494.6239749640226,
+      "p23_harvest_j": 1811.7426378271796,
+      "withheld_deployment_j": 138170.82630649023,
+      "withheld_harvest_j": 172713.53288311278
+    },
+    "medians": {
+      "p23_gross_deployment_j": 5264247.311896394,
+      "p23_gross_harvest_j": 330309.1398704924,
+      "p23_signed_gap_to_leader_m": -42191.131312804704,
+      "p23_signed_gap_to_leader_s": -927.744853550064,
+      "withheld_profile_gross_deployment_j": 1418772.2534799017,
+      "withheld_profile_gross_harvest_j": 1782057.4149439079
+    },
+    "physics_admission": false,
+    "profile_23_first_attack": {
+      "ahead_closing_ms": 0.0,
+      "ahead_gap_s": 2.2456367214152437,
+      "attack_opportunity": false,
+      "behind_closing_ms": 0.0,
+      "behind_gap_s": 190.75006315946547,
+      "defence_threat": false,
+      "delivered_deployment_fraction": 0.46990105509757996,
+      "deployment_j": 6221.9360618368,
+      "harvest_j": 0.0,
+      "lap": 1,
+      "motor_wheel_power_kw": 29.554196293724797,
+      "path": "attack",
+      "requested_deployment_fraction": 0.46990105509757996,
+      "stored_energy_after_j": 4993778.063938163,
+      "stored_energy_before_j": 5000000.0,
+      "time_s": 360.0,
+      "uncalibrated_action_probability": 0.7884808778762817
+    },
+    "profile_23_first_attack_absence_reason": null,
+    "profile_count": 22,
+    "profile_scenario_ranking": [
+      {
+        "final_progress_m": 280195.9777627922,
+        "final_proxy_position": 20,
+        "gross_deployment_j": 5321939.872995917,
+        "gross_harvest_j": 402424.84124489874,
+        "profile_entry": "87",
+        "signed_gap_to_leader_m": -41056.37954307237,
+        "signed_gap_to_leader_s": -902.7926874983683
+      },
+      {
+        "final_progress_m": 279582.4875206055,
+        "final_proxy_position": 20,
+        "gross_deployment_j": 5287861.958559347,
+        "gross_harvest_j": 359827.44819917466,
+        "profile_entry": "41",
+        "signed_gap_to_leader_m": -41669.86978525907,
+        "signed_gap_to_leader_s": -916.2827835726387
+      },
+      {
+        "final_progress_m": 279209.41712855286,
+        "final_proxy_position": 20,
+        "gross_deployment_j": 5270268.91694413,
+        "gross_harvest_j": 337836.1461801567,
+        "profile_entry": "81",
+        "signed_gap_to_leader_m": -42042.94017731171,
+        "signed_gap_to_leader_s": -924.4862643864774
+      },
+      {
+        "final_progress_m": 279153.9003456759,
+        "final_proxy_position": 20,
+        "gross_deployment_j": 5268426.828177111,
+        "gross_harvest_j": 335533.535221399,
+        "profile_entry": "30",
+        "signed_gap_to_leader_m": -42098.45696018869,
+        "signed_gap_to_leader_s": -925.7070282768294
+      },
+      {
+        "final_progress_m": 279108.8939589487,
+        "final_proxy_position": 20,
+        "gross_deployment_j": 5266583.509411274,
+        "gross_harvest_j": 333229.38676411164,
+        "profile_entry": "12",
+        "signed_gap_to_leader_m": -42143.46334691584,
+        "signed_gap_to_leader_s": -926.6966780530687
+      },
+      {
+        "final_progress_m": 279108.62877526175,
+        "final_proxy_position": 20,
+        "gross_deployment_j": 5265952.5824088305,
+        "gross_harvest_j": 332440.7280110357,
+        "profile_entry": "55",
+        "signed_gap_to_leader_m": -42143.72853060282,
+        "signed_gap_to_leader_s": -926.7025092027247
+      },
+      {
+        "final_progress_m": 279089.0819807094,
+        "final_proxy_position": 20,
+        "gross_deployment_j": 5266088.051576158,
+        "gross_harvest_j": 332610.064470195,
+        "profile_entry": "10",
+        "signed_gap_to_leader_m": -42163.27532515518,
+        "signed_gap_to_leader_s": -927.1323255523954
+      },
+      {
+        "final_progress_m": 279084.694148701,
+        "final_proxy_position": 20,
+        "gross_deployment_j": 5264791.839969307,
+        "gross_harvest_j": 330989.7999616208,
+        "profile_entry": "23",
+        "signed_gap_to_leader_m": -42167.663157163595,
+        "signed_gap_to_leader_s": -927.2288100134039
+      },
+      {
+        "final_progress_m": 279080.9925879391,
+        "final_proxy_position": 20,
+        "gross_deployment_j": 5265025.971053709,
+        "gross_harvest_j": 331282.46381712676,
+        "profile_entry": "63",
+        "signed_gap_to_leader_m": -42171.36471792549,
+        "signed_gap_to_leader_s": -927.3102039898179
+      },
+      {
+        "final_progress_m": 279068.54026727076,
+        "final_proxy_position": 20,
+        "gross_deployment_j": 5264687.420648877,
+        "gross_harvest_j": 330859.27581110166,
+        "profile_entry": "5",
+        "signed_gap_to_leader_m": -42183.817038593814,
+        "signed_gap_to_leader_s": -927.5840192693641
+      },
+      {
+        "final_progress_m": 279065.6281150097,
+        "final_proxy_position": 20,
+        "gross_deployment_j": 5264327.262287349,
+        "gross_harvest_j": 330409.0778591873,
+        "profile_entry": "3",
+        "signed_gap_to_leader_m": -42186.72919085488,
+        "signed_gap_to_leader_s": -927.6480548661565
+      },
+      {
+        "final_progress_m": 279056.82387111004,
+        "final_proxy_position": 20,
+        "gross_deployment_j": 5264167.361505439,
+        "gross_harvest_j": 330209.2018817974,
+        "profile_entry": "31",
+        "signed_gap_to_leader_m": -42195.53343475453,
+        "signed_gap_to_leader_s": -927.8416522339716
+      },
+      {
+        "final_progress_m": 279003.7103957728,
+        "final_proxy_position": 20,
+        "gross_deployment_j": 5261782.999418268,
+        "gross_harvest_j": 327228.74927283986,
+        "profile_entry": "27",
+        "signed_gap_to_leader_m": -42248.646910091746,
+        "signed_gap_to_leader_s": -929.0095695631593
+      },
+      {
+        "final_progress_m": 279001.2076113381,
+        "final_proxy_position": 20,
+        "gross_deployment_j": 5260946.227176493,
+        "gross_harvest_j": 326182.7839706245,
+        "profile_entry": "43",
+        "signed_gap_to_leader_m": -42251.14969452645,
+        "signed_gap_to_leader_s": -929.0646035313558
+      },
+      {
+        "final_progress_m": 278996.29090077436,
+        "final_proxy_position": 20,
+        "gross_deployment_j": 5261036.414470594,
+        "gross_harvest_j": 326295.5180882467,
+        "profile_entry": "1",
+        "signed_gap_to_leader_m": -42256.06640509021,
+        "signed_gap_to_leader_s": -929.1727175539002
+      },
+      {
+        "final_progress_m": 278989.7063724096,
+        "final_proxy_position": 20,
+        "gross_deployment_j": 5260854.773278294,
+        "gross_harvest_j": 326068.4665978658,
+        "profile_entry": "11",
+        "signed_gap_to_leader_m": -42262.65093345498,
+        "signed_gap_to_leader_s": -929.3175053828439
+      },
+      {
+        "final_progress_m": 278967.807293215,
+        "final_proxy_position": 20,
+        "gross_deployment_j": 5260609.827317864,
+        "gross_harvest_j": 325762.28414731426,
+        "profile_entry": "16",
+        "signed_gap_to_leader_m": -42284.55001264956,
+        "signed_gap_to_leader_s": -929.7990463462667
+      },
+      {
+        "final_progress_m": 278960.99710801156,
+        "final_proxy_position": 20,
+        "gross_deployment_j": 5260320.836332518,
+        "gross_harvest_j": 325401.04541564005,
+        "profile_entry": "44",
+        "signed_gap_to_leader_m": -42291.360197853006,
+        "signed_gap_to_leader_s": -929.9487961651889
+      },
+      {
+        "final_progress_m": 278960.1973235509,
+        "final_proxy_position": 20,
+        "gross_deployment_j": 5259804.039212879,
+        "gross_harvest_j": 324755.04901610507,
+        "profile_entry": "18",
+        "signed_gap_to_leader_m": -42292.15998231369,
+        "signed_gap_to_leader_s": -929.9663827027921
+      },
+      {
+        "final_progress_m": 278944.24646971986,
+        "final_proxy_position": 20,
+        "gross_deployment_j": 5259183.106985019,
+        "gross_harvest_j": 323978.88373127964,
+        "profile_entry": "77",
+        "signed_gap_to_leader_m": -42308.11083614471,
+        "signed_gap_to_leader_s": -930.3171275653023
+      },
+      {
+        "final_progress_m": 278908.5255389641,
+        "final_proxy_position": 20,
+        "gross_deployment_j": 5256506.490727146,
+        "gross_harvest_j": 320633.1134089339,
+        "profile_entry": "6",
+        "signed_gap_to_leader_m": -42343.83176690049,
+        "signed_gap_to_leader_s": -931.1025985550937
+      },
+      {
+        "final_progress_m": 278901.6723357319,
+        "final_proxy_position": 20,
+        "gross_deployment_j": 5257552.533710113,
+        "gross_harvest_j": 321940.6671376392,
+        "profile_entry": "14",
+        "signed_gap_to_leader_m": -42350.68497013266,
+        "signed_gap_to_leader_s": -931.2532943015964
+      }
+    ],
+    "ranking_semantics": "independent_same-field_scenario_comparison_by_final_proxy_progress",
+    "status": "diagnostic_only"
+  },
+  "curriculum_manifest_sha256": "3dab05c40b73ea3de97ed668043bf92a2d2f8f6a1c1b4850728c709d34cf5b40",
+  "energy_prior": {
+    "additive_electric_wheel_power_fraction": 0.2,
+    "harvest_cap_j_per_lap": 5000000.0,
+    "harvest_efficiency": 0.8,
+    "motor_efficiency": 0.95,
+    "usable_store_j": 5000000.0
+  },
+  "events": [
+    "Miami Grand Prix",
+    "Canadian Grand Prix",
+    "Monaco Grand Prix",
+    "Barcelona Grand Prix",
+    "Austrian Grand Prix",
+    "British Grand Prix"
+  ],
+  "limitations": [
+    "All results are diagnostic proxies from provisional profiles without physical admission.",
+    "Practice supplies energy controls only and never tactical or rank labels.",
+    "Each race withholds its final chronological 20 percent of complete laps from updates.",
+    "P23 is additional; all 22 references remain policy-free and electric-free.",
+    "Action probabilities are uncalibrated selection probabilities."
+  ],
+  "native_observation_hz": 4.0,
+  "physics_admission": false,
+  "policy_decision_hz": 5.0,
+  "profiles": 22,
+  "protected_partitions_opened": [],
+  "reference_field_mode": "22_fitted_ice_profiles_with_source_controls_no_policy_or_electric",
+  "reports": {
+    "1": "p23/entry-1.json",
+    "10": "p23/entry-10.json",
+    "11": "p23/entry-11.json",
+    "12": "p23/entry-12.json",
+    "14": "p23/entry-14.json",
+    "16": "p23/entry-16.json",
+    "18": "p23/entry-18.json",
+    "23": "p23/entry-23.json",
+    "27": "p23/entry-27.json",
+    "3": "p23/entry-3.json",
+    "30": "p23/entry-30.json",
+    "31": "p23/entry-31.json",
+    "41": "p23/entry-41.json",
+    "43": "p23/entry-43.json",
+    "44": "p23/entry-44.json",
+    "5": "p23/entry-5.json",
+    "55": "p23/entry-55.json",
+    "6": "p23/entry-6.json",
+    "63": "p23/entry-63.json",
+    "77": "p23/entry-77.json",
+    "81": "p23/entry-81.json",
+    "87": "p23/entry-87.json"
+  },
+  "status": "diagnostic_only",
+  "total_completed_updates": {
+    "1": 377,
+    "10": 413,
+    "11": 341,
+    "12": 432,
+    "14": 384,
+    "16": 466,
+    "18": 331,
+    "23": 393,
+    "27": 380,
+    "3": 468,
+    "30": 394,
+    "31": 450,
+    "41": 432,
+    "43": 442,
+    "44": 467,
+    "5": 435,
+    "55": 425,
+    "6": 384,
+    "63": 450,
+    "77": 330,
+    "81": 447,
+    "87": 413
+  }
+}

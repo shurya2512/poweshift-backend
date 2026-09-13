@@ -19,7 +19,17 @@ _SMOKE_SESSIONS = {
     "2026-03-15_Chinese_Grand_Prix": ("Chinese Grand Prix", "2026-03-14_Qualifying"),
     "2026-03-29_Japanese_Grand_Prix": ("Japanese Grand Prix", "2026-03-28_Qualifying"),
     "2026-05-03_Miami_Grand_Prix": ("Miami Grand Prix", "2026-05-02_Qualifying"),
+    "2026-05-24_Canadian_Grand_Prix": ("Canadian Grand Prix", "2026-05-23_Qualifying"),
+    "2026-06-07_Monaco_Grand_Prix": ("Monaco Grand Prix", "2026-06-06_Qualifying"),
+    "2026-06-14_Barcelona_Grand_Prix": ("Barcelona Grand Prix", "2026-06-13_Qualifying"),
+    "2026-06-28_Austrian_Grand_Prix": ("Austrian Grand Prix", "2026-06-27_Qualifying"),
+    "2026-07-05_British_Grand_Prix": ("British Grand Prix", "2026-07-04_Qualifying"),
 }
+
+
+def qualifying_session_name(session_names: tuple[str, ...] | list[str]) -> str | None:
+    """Return standard qualifying without matching sprint qualifying."""
+    return next((name for name in session_names if name[11:] == "Qualifying"), None)
 
 
 def export_qualifying(

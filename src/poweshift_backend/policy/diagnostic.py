@@ -34,11 +34,14 @@ class DiagnosticTrace:
     behind_closing_ms: tuple[float, ...] = ()
     lap_index: int = 1
     total_laps: int = 1
+    sample_time_s: tuple[float, ...] = ()
+    progress_m: tuple[float, ...] = ()
+    observed_position: tuple[int, ...] = ()
 
     def __post_init__(self) -> None:
         rows = len(self.speed_ms)
-        if self.source_partition != "training" or not self.trace_id or rows < 2:
-            raise ValueError("diagnostic traces require training data and at least two rows")
+        if self.source_partition not in {"training", "selection", "final_evaluation"} or not self.trace_id or rows < 2:
+            raise ValueError("diagnostic traces require a known partition and at least two rows")
         if len(self.throttle) != rows or len(self.brake) != rows or not isfinite(self.step_s) or self.step_s <= 0.0:
             raise ValueError("diagnostic trace columns must be aligned")
         if not all(isfinite(value) for values in (self.speed_ms, self.throttle, self.brake) for value in values):
@@ -46,6 +49,9 @@ class DiagnosticTrace:
         traffic = (self.ahead_gap_s, self.ahead_closing_ms, self.behind_gap_s, self.behind_closing_ms)
         if self.race_context and any(len(values) != rows for values in traffic):
             raise ValueError("race traffic columns must align with the trace")
+        context = (self.sample_time_s, self.progress_m, self.observed_position)
+        if any(values and len(values) != rows for values in context):
+            raise ValueError("diagnostic context columns must align with the trace")
         if self.race_context and not 1 <= self.lap_index <= self.total_laps:
             raise ValueError("race lap position is invalid")
 
@@ -76,9 +82,49 @@ class RaceInteractionPrior:
     free_air_gain_weight: float = 0.1
     attack_gain_weight: float = 1.0
     defend_gain_weight: float = 0.5
+    missed_attack_weight: float = 0.05
+    missed_defend_weight: float = 0.05
+    unsupported_path_weight: float = 0.25
     deployment_cost_per_mj: float = 1.0
     late_race_cost_floor: float = 0.25
     reserve_shortfall_weight: float = 2.0
+
+
+@dataclass(frozen=True)
+class DiagnosticDecision:
+    """One deterministic policy decision with physical delivery evidence."""
+
+    time_s: float
+    lap_index: int
+    step_index: int
+    observed_progress_m: float
+    observed_position: int
+    manoeuvre: Manoeuvre
+    action_probability: float
+    requested_deployment_fraction: float
+    delivered_deployment_fraction: float
+    motor_wheel_power_w: float
+    deployment_j: float
+    harvest_j: float
+    stored_energy_before_j: float
+    stored_energy_after_j: float
+    ahead_gap_s: float
+    ahead_closing_ms: float
+    behind_gap_s: float
+    behind_closing_ms: float
+    attack_opportunity: bool
+    defence_threat: bool
+    reward: float
+
+
+@dataclass(frozen=True)
+class DiagnosticTraceEvaluation:
+    """Deterministic decisions and continuation state for one trace."""
+
+    final_state: LapEnergyState
+    final_hidden: torch.Tensor
+    reward: float
+    decisions: tuple[DiagnosticDecision, ...]
 
 
 def classify_race_interaction(
@@ -105,15 +151,24 @@ def race_step_reward(
     step_weight: float,
     opportunity: bool,
     threat: bool,
+    manoeuvre: Manoeuvre,
 ) -> float:
     """Value normalized traffic gain against time-varying energy cost."""
-    gain_weight = prior.free_air_gain_weight
-    if opportunity:
-        gain_weight += prior.attack_gain_weight
-    if threat:
-        gain_weight += prior.defend_gain_weight
+    gain = prior.free_air_gain_weight * delivered_fraction * step_weight
+    if opportunity and manoeuvre is Manoeuvre.ATTACK:
+        gain += prior.attack_gain_weight * delivered_fraction * step_weight
+    elif opportunity:
+        gain -= prior.missed_attack_weight * step_weight
+    if threat and manoeuvre is Manoeuvre.DEFEND:
+        gain += prior.defend_gain_weight * delivered_fraction * step_weight
+    elif threat:
+        gain -= prior.missed_defend_weight * step_weight
+    if manoeuvre is Manoeuvre.ATTACK and not opportunity:
+        gain -= prior.unsupported_path_weight * step_weight
+    if manoeuvre is Manoeuvre.DEFEND and not threat:
+        gain -= prior.unsupported_path_weight * step_weight
     cost_scale = prior.late_race_cost_floor + (1.0 - prior.late_race_cost_floor) * remaining_laps_fraction
-    return gain_weight * delivered_fraction * step_weight - prior.deployment_cost_per_mj * cost_scale * deployment_j / 1_000_000.0
+    return gain - prior.deployment_cost_per_mj * cost_scale * deployment_j / 1_000_000.0
 
 
 def race_reserve_penalty(
@@ -153,10 +208,14 @@ def _rollout(
     prior: DeploymentPrior,
     initial_state: LapEnergyState,
     interaction_prior: RaceInteractionPrior,
-) -> tuple[RecurrentFragment, LapEnergyState, dict[str, float]]:
-    hidden = torch.zeros(1, 1, _SCHEMA.recurrent_width)
+    initial_hidden: torch.Tensor | None = None,
+    deterministic: bool = False,
+    capture_decisions: bool = False,
+) -> tuple[RecurrentFragment, LapEnergyState, dict[str, float], torch.Tensor, tuple[DiagnosticDecision, ...]]:
+    hidden = initial_hidden if initial_hidden is not None else torch.zeros(1, 1, _SCHEMA.recurrent_width)
     state = initial_state
     steps: list[RolloutStep] = []
+    decisions: list[DiagnosticDecision] = []
     reward_total = 0.0
     deployed_steps = 0
     eligible_steps = 0
@@ -194,23 +253,31 @@ def _rollout(
         features = torch.tensor(observation, dtype=torch.float32).reshape(1, 1, -1)
         feature_mask = torch.tensor((True, True, True, True) + (trace.race_context,) * 5, dtype=torch.bool).reshape(1, 1, -1)
         deployment_available = brake == 0.0 and throttle > 0.0 and state.stored_energy_j > 0.0
-        action_mask_values = (True, deployment_available, deployment_available and trace.race_context and threat)
+        tactical_available = deployment_available and trace.race_context
+        action_mask_values = (True, tactical_available, tactical_available and threat)
         action_mask = torch.tensor(action_mask_values, dtype=torch.bool).reshape(1, -1)
         with torch.no_grad():
             logits, alpha, beta, value, next_hidden = model(features, feature_mask, action_mask, hidden)
             manoeuvre_distribution = Categorical(logits=logits)
-            manoeuvre_index = manoeuvre_distribution.sample()
+            manoeuvre_index = manoeuvre_distribution.probs.argmax(dim=-1) if deterministic else manoeuvre_distribution.sample()
             joint_log_probability = manoeuvre_distribution.log_prob(manoeuvre_index)
+            action_index = int(manoeuvre_index.item())
+            action_probability = float(manoeuvre_distribution.probs[0, action_index])
             if deployment_available:
                 deployment_distribution = Beta(alpha, beta)
-                deployment = deployment_distribution.sample().clamp(1e-6, 1.0 - 1e-6)
+                deployment = (
+                    deployment_distribution.mean if deterministic else deployment_distribution.sample()
+                ).clamp(1e-6, 1.0 - 1e-6)
                 joint_log_probability = joint_log_probability + deployment_distribution.log_prob(deployment)
                 deployment_fraction = float(deployment)
                 eligible_steps += 1
                 requested_fraction_sum += deployment_fraction
             else:
                 deployment_fraction = 0.0
+        manoeuvre = _SCHEMA.manoeuvres[action_index]
+        before_state = state
         before_deployment_j = state.gross_deployment_j
+        before_harvest_j = state.gross_harvest_j
         allocation = allocate_additive_power(
             prior, state, speed, throttle, brake, deployment_fraction,
             profile.maximum_drive_force_n, trace.step_s,
@@ -228,7 +295,7 @@ def _rollout(
         if trace.race_context:
             reward = race_step_reward(
                 interaction_prior, delivered_fraction, deployment_j,
-                remaining_laps_fraction, 1.0 / len(trace.speed_ms), opportunity, threat,
+                remaining_laps_fraction, 1.0 / len(trace.speed_ms), opportunity, threat, manoeuvre,
             )
             if index == len(trace.speed_ms) - 1:
                 reserve_target = (trace.total_laps - trace.lap_index) / trace.total_laps
@@ -238,7 +305,6 @@ def _rollout(
         else:
             reward = local_gain - 0.02 * deployment_j / 1_000_000.0
         reward_total += reward
-        manoeuvre = _SCHEMA.manoeuvres[int(manoeuvre_index)]
         sampled = ActionRequest(manoeuvre, deployment_fraction)
         delivered = ActionRequest(manoeuvre, min(max(delivered_fraction, 0.0), 1.0))
         reasons = ("storage_limited",) if delivered.deployment_fraction + 1e-9 < deployment_fraction else ()
@@ -255,6 +321,30 @@ def _rollout(
             action_mask_values,
             deployment_available,
         ))
+        if capture_decisions:
+            decisions.append(DiagnosticDecision(
+                trace.sample_time_s[index] if trace.sample_time_s else index * trace.step_s,
+                trace.lap_index,
+                index,
+                trace.progress_m[index] if trace.progress_m else 0.0,
+                trace.observed_position[index] if trace.observed_position else 0,
+                manoeuvre,
+                action_probability,
+                deployment_fraction,
+                min(max(delivered_fraction, 0.0), 1.0),
+                allocation.motor_wheel_power_w,
+                state.gross_deployment_j - before_deployment_j,
+                state.gross_harvest_j - before_harvest_j,
+                before_state.stored_energy_j,
+                state.stored_energy_j,
+                ahead_gap_s,
+                ahead_closing_ms,
+                behind_gap_s,
+                behind_closing_ms,
+                opportunity,
+                threat,
+                reward,
+            ))
         hidden = next_hidden
     metrics = {
         "reward": reward_total,
@@ -265,7 +355,7 @@ def _rollout(
         "defence_threats": float(defence_threats),
         "requested_fraction_sum": requested_fraction_sum,
     }
-    return RecurrentFragment(tuple(steps), 0), state, metrics
+    return RecurrentFragment(tuple(steps), 0), state, metrics, hidden, tuple(decisions)
 
 
 def run_diagnostic_updates(
@@ -278,10 +368,13 @@ def run_diagnostic_updates(
     carry_energy_across_updates: bool = False,
     interaction_prior: RaceInteractionPrior | None = None,
     optimizer: torch.optim.Optimizer | None = None,
+    carry_hidden_across_updates: bool = False,
 ) -> dict[str, object]:
     """Run bounded PPO updates and return physical and optimizer evidence."""
     if not traces or updates < 1:
         raise ValueError("diagnostic updates require traces and a positive update count")
+    if any(trace.source_partition != "training" for trace in traces):
+        raise ValueError("diagnostic updates require the training partition")
     torch.manual_seed(seed)
     model = model or create_diagnostic_model(seed)
     optimizer = optimizer or torch.optim.Adam(model.parameters(), lr=_CONFIG.learning_rate)
@@ -297,6 +390,7 @@ def run_diagnostic_updates(
     defence_threats = 0.0
     requested_fraction_sum = 0.0
     persistent_state = LapEnergyState.full(prior)
+    persistent_hidden: torch.Tensor | None = None
     interaction_prior = interaction_prior or RaceInteractionPrior()
     for update in range(updates):
         trace = traces[update % len(traces)]
@@ -305,7 +399,9 @@ def run_diagnostic_updates(
             raise ValueError(f"no fitted profile for entry {trace.entry}")
         initial_state = persistent_state.next_lap() if carry_energy_across_updates else LapEnergyState.full(prior)
         before = initial_state
-        fragment, final_state, metrics = _rollout(model, trace, profile, prior, initial_state, interaction_prior)
+        fragment, final_state, metrics, final_hidden, _ = _rollout(
+            model, trace, profile, prior, initial_state, interaction_prior, persistent_hidden,
+        )
         record = ppo_update(model, optimizer, fragment, _CONFIG)
         losses.append(record.total_loss)
         episode_rewards.append(metrics["reward"])
@@ -320,6 +416,8 @@ def run_diagnostic_updates(
         aggregate_curtailment_j += final_state.curtailed_energy_j - before.curtailed_energy_j
         if carry_energy_across_updates:
             persistent_state = final_state
+        if carry_hidden_across_updates:
+            persistent_hidden = final_hidden.detach()
     window = min(10, max(1, updates // 3))
     first_reward = mean(episode_rewards[:window])
     last_reward = mean(episode_rewards[-window:])
@@ -332,7 +430,9 @@ def run_diagnostic_updates(
     if mean_requested_fraction < 0.1 and (not carry_energy_across_updates or remaining_store_j > prior.usable_store_j * 0.5):
         reward_findings.append("deployment was hoarded; increase local time-gain reward or reduce energy penalty")
     if carry_energy_across_updates and remaining_store_j == 0.0:
-        reward_findings.append("store was exhausted; ten race updates did not yet adapt deployment to the shaped objective")
+        reward_findings.append(
+            f"store was exhausted; {updates} race updates did not yet adapt deployment to the shaped objective"
+        )
     return {
         "status": "diagnostic_only",
         "updates": updates,
@@ -355,6 +455,7 @@ def run_diagnostic_updates(
         "reward_change": last_reward - first_reward,
         "mean_total_loss": mean(losses),
         "reward_findings": reward_findings,
+        "recurrent_state_carried": carry_hidden_across_updates,
         "race_interaction_prior": {
             "enabled": any(trace.race_context for trace in traces),
             "attack_gap_s": interaction_prior.attack_gap_s,
@@ -363,6 +464,9 @@ def run_diagnostic_updates(
             "free_air_gain_weight": interaction_prior.free_air_gain_weight,
             "attack_gain_weight": interaction_prior.attack_gain_weight,
             "defend_gain_weight": interaction_prior.defend_gain_weight,
+            "missed_attack_weight": interaction_prior.missed_attack_weight,
+            "missed_defend_weight": interaction_prior.missed_defend_weight,
+            "unsupported_path_weight": interaction_prior.unsupported_path_weight,
             "deployment_cost_per_mj": interaction_prior.deployment_cost_per_mj,
             "late_race_cost_floor": interaction_prior.late_race_cost_floor,
             "reserve_shortfall_weight": interaction_prior.reserve_shortfall_weight,
@@ -397,7 +501,7 @@ def evaluate_diagnostic_policy(
         if profile is None:
             raise ValueError(f"no fitted profile for entry {trace.entry}")
         initial_state = persistent_state.next_lap() if carry_energy_across_traces else LapEnergyState.full(prior)
-        _, final_state, metrics = _rollout(model, trace, profile, prior, initial_state, interaction_prior)
+        _, final_state, metrics, _, _ = _rollout(model, trace, profile, prior, initial_state, interaction_prior)
         rewards.append(metrics["reward"])
         deployment_j += final_state.gross_deployment_j - initial_state.gross_deployment_j
         harvest_j += final_state.gross_harvest_j - initial_state.gross_harvest_j
@@ -418,3 +522,29 @@ def evaluate_diagnostic_policy(
         "defence_threat_steps": defence_steps,
         "mean_requested_deployment_fraction": requested_fraction_sum / eligible_steps if eligible_steps else 0.0,
     }
+
+
+def evaluate_diagnostic_trace(
+    model: RecurrentActorCritic,
+    trace: DiagnosticTrace,
+    profile: FittedProfile,
+    prior: DeploymentPrior,
+    initial_state: LapEnergyState | None = None,
+    interaction_prior: RaceInteractionPrior | None = None,
+    initial_hidden: torch.Tensor | None = None,
+) -> DiagnosticTraceEvaluation:
+    """Evaluate one trace deterministically and retain every decision."""
+    state = initial_state or LapEnergyState.full(prior)
+    interaction = interaction_prior or RaceInteractionPrior()
+    _, final_state, metrics, final_hidden, decisions = _rollout(
+        model,
+        trace,
+        profile,
+        prior,
+        state,
+        interaction,
+        initial_hidden,
+        deterministic=True,
+        capture_decisions=True,
+    )
+    return DiagnosticTraceEvaluation(final_state, final_hidden.detach(), metrics["reward"], decisions)

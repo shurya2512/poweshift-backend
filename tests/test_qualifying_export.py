@@ -136,3 +136,10 @@ def test_export_refuses_non_training_session_before_copy(tmp_path: Path) -> None
             isolated_cache_root=tmp_path / "isolated",
             output_dir=tmp_path / "export",
         )
+
+
+def test_qualifying_selector_excludes_sprint_qualifying() -> None:
+    assert qualifying_export.qualifying_session_name((
+        "2026-03-13_Sprint_Qualifying",
+        "2026-03-14_Qualifying",
+    )) == "2026-03-14_Qualifying"

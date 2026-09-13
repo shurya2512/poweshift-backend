@@ -1,0 +1,20 @@
+{
+  "best_diagnostic_attainable_lap_time_s": null,
+  "best_observed_lap_time_s": null,
+  "checkpoint_sha256": "f41c207b32d510bf5f21452fcf1de50d0e0cd856b37e49e5095f8479ddd56f3e",
+  "checkpoint_stage": "2026-07-05-british-entry-18",
+  "event_name": "Australian Grand Prix",
+  "final_stored_energy_j": null,
+  "gross_deployment_j": 0.0,
+  "gross_harvest_j": 0.0,
+  "lap_time_semantics": "idealized_additive_power_ratio_proxy_not_physical_prediction",
+  "laps": [],
+  "optimizer_updates": 0,
+  "partition": "training_replay",
+  "physics_admission": false,
+  "probability_semantics": "uncalibrated_action_selection_probability",
+  "profile_entry": "18",
+  "session": "Qualifying",
+  "source_manifest_sha256": "025a73256fb3e08db4cdab858b0ddb36ac844d9943b50b43bd32752ea8179bde",
+  "status": "diagnostic_only"
+}

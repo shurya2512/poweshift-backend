@@ -1,0 +1,51 @@
+{
+  "best_diagnostic_attainable_lap_time_s": 71.56369814015171,
+  "best_observed_lap_time_s": 78.815,
+  "checkpoint_sha256": "dd828d34010b0cd75b55d56961542f37719c65f82f8e987511d71782b580b0a1",
+  "checkpoint_stage": "2026-07-05-british-entry-14",
+  "event_name": "Barcelona Grand Prix",
+  "final_stored_energy_j": 0.0,
+  "gross_deployment_j": 6188870.630573235,
+  "gross_harvest_j": 1486088.2882165427,
+  "lap_time_semantics": "idealized_additive_power_ratio_proxy_not_physical_prediction",
+  "laps": [
+    {
+      "diagnostic_attainable_lap_time_s": 71.56369814015171,
+      "diagnostic_time_gain_proxy_s": 7.722301859848287,
+      "gross_deployment_j": 3353973.762835931,
+      "gross_harvest_j": 793374.1553260931,
+      "mean_delivered_deployment_fraction": 0.5395404416303905,
+      "mean_requested_deployment_fraction": 0.5395404416303905,
+      "mean_uncalibrated_action_probability": 1.0,
+      "observed_lap_time_s": 79.286,
+      "path": "hold",
+      "peak_motor_wheel_power_kw": 76.1629195723702,
+      "source_lap": 2.0,
+      "stored_energy_end_j": 2280725.5614249455,
+      "stored_energy_start_j": 5000000.0
+    },
+    {
+      "diagnostic_attainable_lap_time_s": 72.07771515201068,
+      "diagnostic_time_gain_proxy_s": 6.737284847989315,
+      "gross_deployment_j": 2834896.8677373044,
+      "gross_harvest_j": 692714.1328904496,
+      "mean_delivered_deployment_fraction": 0.46736254290112356,
+      "mean_requested_deployment_fraction": 0.46858022704957025,
+      "mean_uncalibrated_action_probability": 1.0,
+      "observed_lap_time_s": 78.815,
+      "path": "hold",
+      "peak_motor_wheel_power_kw": 76.62320441486229,
+      "source_lap": 7.0,
+      "stored_energy_end_j": 0.0,
+      "stored_energy_start_j": 2280725.5614249455
+    }
+  ],
+  "optimizer_updates": 0,
+  "partition": "training_replay",
+  "physics_admission": false,
+  "probability_semantics": "uncalibrated_action_selection_probability",
+  "profile_entry": "14",
+  "session": "Qualifying",
+  "source_manifest_sha256": "70177b7e15fd4b7321ac6f55004922dc05080324e5e7e5b5204d5554f2e1fed9",
+  "status": "diagnostic_only"
+}

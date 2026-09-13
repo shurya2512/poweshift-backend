@@ -5,6 +5,8 @@
 **Date:** 12 September 2026 | **Backend:** Python | **Target machine:** MacBook Air M4, 16 GB  
 **Recommendation cadence:** 5 Hz | **End-to-end cycle target:** 200 ms
 
+The diagram-led training and inference handoff is in `docs/TRAINING_AND_INFERENCE_SUMMARY.md`.
+
 > **Product purpose:** Recommend how much finite electrical energy to deploy and whether to prepare, attack, defend, hold or abort. Prioritise opportunities over the next two connected corners, expandable to four, while retaining the consequences for the remaining race and enforcing supported physical and rule constraints.
 
 **Status:** A consolidated build specification, not an implementation or validation report. User-approved choices are identified as requirements. Detailed schemas, model sizes, module names and runtime defaults are implementation proposals unless already fixed. Physical maps, risk settings and acceptance thresholds remain evidence-dependent. No application code is included; fenced blocks contain Mermaid only.
@@ -1331,6 +1333,45 @@ evaluation refuse until a continuous profile, admitted
 energy bundle, supported route and continuation, fixed-pit manifest, interaction evidence and frozen
 held-out criteria are available. No current result is policy-quality or strategy evidence.
 
+A separate diagnostic runner now supports profile-specific race learning at the source-native 4 Hz
+clock. Every promoted profile starts from the same post-qualifying checkpoint, trains on its own
+chronological 80% lap split, and retains recurrent and energy state across laps. The first completed
+Japan run used 810 lap-level PPO updates containing 325,326 4 Hz source ticks; 209 laps and 79,076
+ticks remained withheld from optimization. Deterministic reports retain lap energy, power, action,
+traffic condition and uncalibrated categorical action-selection probability.
+
+The N+1 diagnostic starts one extra ego at grid P23. The original 22 cars use their own fitted ICE
+profiles and past-only 4 Hz source throttle/brake controls, with tactical actions and electrical
+deployment disabled. The ego uses one selected fitted profile, a declared current-field speed-demand
+controller for ICE input, and its learned tactical/electric policy at 5 Hz while holding the latest
+4 Hz field state. Reference cars do not react, and the reduced simulation omits admitted interaction,
+pit and absolute vehicle fidelity, so positions and gaps are proxy outcomes only.
+
+The completed 22-scenario run made 574,222 ego decisions. Every scenario ended at proxy P19, while
+final progress differed by 1,152.59 m. Median ego deployment was 5.432 MJ, median harvested energy
+was 0.540 MJ and the median leader gap was -1,254.21 seconds. Profile 23 took 25 of 61 attack episodes
+and 5 of 86 defence episodes, exhausted its store, and first selected ATTACK outside a classified
+opportunity. The action-aware reward improved its mean early-to-late training reward, but those
+failures show that tactical calibration, energy-horizon control and a physically admitted world are
+still required before any overtake, defence or race-rank claim.
+
+The later diagnostic curriculum continues every profile through Miami, Canada, Monaco, Barcelona,
+Austria and Britain in chronological practice-before-race order. Practice supplies only energy
+learning and masks tactics to `HOLD`; race learning uses the final chronological 20% of complete
+profile laps as untouched validation. The completed checkpoints contain 9,054 cumulative profile
+updates under a 20% additive-electric prior, 5 MJ store and 5 MJ/lap fallback harvest cap. These are
+assumption-conditioned optimizer results and do not replace the Phase 5 physical admission gate.
+
+Runtime reports evaluate nine training qualifying replays and the protected Madring qualifying
+source. Madring provides 112 accurate laps and 45,426 4 Hz ticks for 19 of the 22 promoted profile
+identities and causes zero optimizer updates. Full-race P23 reports exist for Miami, Barcelona,
+Austria and Britain; Canada and Monaco have no source tick with all 22 fixed reference identities and
+remain unavailable. The complete reports bind source yellow, safety-car, red and VSC events to the
+nearest 5 Hz policy decision and retain lap energy, action episodes, opportunity taken/missed counts,
+uncalibrated action-selection probabilities, final proxy positions and gaps. All four complete race
+sets finish at median proxy P20 with empty stores, so the current reward and reduced controller have
+not demonstrated credible race intelligence.
+
 ### Phase 8 | Fixed pit manifest and execution
 
 ```mermaid
@@ -1382,6 +1423,12 @@ flowchart TB
 
 One operational profile does not mean one unchanging profile forever. Adaptation and shared retraining remain distinct experiments. A negative news result is recorded, not converted into an assumed gain.
 
+The implemented Phase 9 boundary captures bounded HTTPS article bytes and visible text, requires
+source, availability, fitment and review chronology, and creates training-only profile-update and
+matched promotion records. News starts with zero numerical influence. The actual encoder update,
+candidate latent rebuild and later matched real-weekend ablation still require authorised completed
+training evidence; validation and final-evaluation weekends remain read-only.
+
 ### Phase 10 | Recommendation API and integrated run
 
 ```mermaid
@@ -1414,6 +1461,23 @@ sequenceDiagram
 | Python requirements | FastAPI/Uvicorn, spawned world/actor processes, bounded IPC and read-only stream. |
 | At inference | No fitting, downloading or shared-weight update; physics remains single-owned. |
 | Exit evidence | End-to-end runtime, state isolation, fallback and all required predictive/physical/tactical gates demonstrated. |
+
+The implemented Phase 10 scaffold loads a compatible Phase 8 checkpoint once, runs deterministic
+recurrent inference over registered sealed observation rows, flushes expiring recommendations to a
+sequenced audit file and keeps protected targets closed until separate descriptive scoring. A local
+FastAPI/Uvicorn control plane starts one spawned worker per run and exposes status, control, latest
+recommendation, report and read-only WebSocket replay; terminal worker failure is persisted. A
+separate duplex `/runs/{run_id}/live` path accepts strict 4 Hz observation frames and emits 5 Hz
+recommendations while identifying decisions that reused the latest input. It validates a registered
+selection or final-evaluation manifest without opening its protected target. Diagnostic curriculum
+checkpoints remain unregistrable until compatible physical and energy identities are admitted. The
+local API also serves the immutable v2 diagnostic report tree to explicit localhost frontend origins.
+The frontend displays report availability and an optional registered-run recommendation without
+replacing its fixture race world or presenting a diagnostic proxy as an admitted result. This is
+retrospective inference assembly, not the final closed-loop world: physical advancement, separately
+spawned world and actor owners,
+restorable SimulationSnapshot, realised DeliveryRecord/event audit, sustained 200 ms measurement
+and real validation/final-test artifacts remain required before the complete Phase 10 exit gate.
 
 ---
 

@@ -1,0 +1,51 @@
+{
+  "best_diagnostic_attainable_lap_time_s": 86.82323506098493,
+  "best_observed_lap_time_s": 93.025,
+  "checkpoint_sha256": "dd828d34010b0cd75b55d56961542f37719c65f82f8e987511d71782b580b0a1",
+  "checkpoint_stage": "2026-07-05-british-entry-14",
+  "event_name": "British Grand Prix",
+  "final_stored_energy_j": 0.0,
+  "gross_deployment_j": 6271929.719391924,
+  "gross_harvest_j": 1589912.1492399063,
+  "lap_time_semantics": "idealized_additive_power_ratio_proxy_not_physical_prediction",
+  "laps": [
+    {
+      "diagnostic_attainable_lap_time_s": 113.18176013164681,
+      "diagnostic_time_gain_proxy_s": 10.533239868353192,
+      "gross_deployment_j": 3583439.7215729184,
+      "gross_harvest_j": 954813.1822100569,
+      "mean_delivered_deployment_fraction": 0.46532408826746924,
+      "mean_requested_deployment_fraction": 0.46532408826746924,
+      "mean_uncalibrated_action_probability": 1.0,
+      "observed_lap_time_s": 123.715,
+      "path": "hold",
+      "peak_motor_wheel_power_kw": 68.78644789931296,
+      "source_lap": 4.0,
+      "stored_energy_end_j": 2180410.824195127,
+      "stored_energy_start_j": 5000000.0
+    },
+    {
+      "diagnostic_attainable_lap_time_s": 86.82323506098493,
+      "diagnostic_time_gain_proxy_s": 6.201764939015078,
+      "gross_deployment_j": 2688489.997819006,
+      "gross_harvest_j": 635098.9670298494,
+      "mean_delivered_deployment_fraction": 0.35714892071569004,
+      "mean_requested_deployment_fraction": 0.3615689114216835,
+      "mean_uncalibrated_action_probability": 1.0,
+      "observed_lap_time_s": 93.025,
+      "path": "hold",
+      "peak_motor_wheel_power_kw": 69.24734064263106,
+      "source_lap": 5.0,
+      "stored_energy_end_j": 0.0,
+      "stored_energy_start_j": 2180410.824195127
+    }
+  ],
+  "optimizer_updates": 0,
+  "partition": "training_replay",
+  "physics_admission": false,
+  "probability_semantics": "uncalibrated_action_selection_probability",
+  "profile_entry": "14",
+  "session": "Qualifying",
+  "source_manifest_sha256": "d41af287bd9d6e880f3378791fea310cc1a15f6c4ee44323650aa7a6098bb395",
+  "status": "diagnostic_only"
+}

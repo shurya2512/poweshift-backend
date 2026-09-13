@@ -1,0 +1,11 @@
+{
+  "frontend_inference": {
+    "decision_hz": 5.0,
+    "input_hz": 4.0,
+    "websocket": "/runs/{run_id}/live"
+  },
+  "physics_admission": false,
+  "qualifying_index": "qualifying/index.json",
+  "race_index": "race/index.json",
+  "status": "diagnostic_only"
+}

@@ -1,0 +1,51 @@
+{
+  "best_diagnostic_attainable_lap_time_s": 63.52466562516601,
+  "best_observed_lap_time_s": 70.363,
+  "checkpoint_sha256": "f41c207b32d510bf5f21452fcf1de50d0e0cd856b37e49e5095f8479ddd56f3e",
+  "checkpoint_stage": "2026-07-05-british-entry-18",
+  "event_name": "Austrian Grand Prix",
+  "final_stored_energy_j": 0.0,
+  "gross_deployment_j": 6092416.554046012,
+  "gross_harvest_j": 1365520.69255752,
+  "lap_time_semantics": "idealized_additive_power_ratio_proxy_not_physical_prediction",
+  "laps": [
+    {
+      "diagnostic_attainable_lap_time_s": 64.10287994338502,
+      "diagnostic_time_gain_proxy_s": 6.967120056614974,
+      "gross_deployment_j": 3104214.3934732894,
+      "gross_harvest_j": 699510.6001054451,
+      "mean_delivered_deployment_fraction": 0.5434326868596431,
+      "mean_requested_deployment_fraction": 0.5434326868596431,
+      "mean_uncalibrated_action_probability": 1.0,
+      "observed_lap_time_s": 71.07,
+      "path": "hold",
+      "peak_motor_wheel_power_kw": 71.36384287705538,
+      "source_lap": 2.0,
+      "stored_energy_end_j": 2455394.086611061,
+      "stored_energy_start_j": 5000000.0
+    },
+    {
+      "diagnostic_attainable_lap_time_s": 63.52466562516601,
+      "diagnostic_time_gain_proxy_s": 6.838334374833991,
+      "gross_deployment_j": 2988202.160572723,
+      "gross_harvest_j": 666010.0924520749,
+      "mean_delivered_deployment_fraction": 0.538242453347516,
+      "mean_requested_deployment_fraction": 0.5395078748464585,
+      "mean_uncalibrated_action_probability": 1.0,
+      "observed_lap_time_s": 70.363,
+      "path": "hold",
+      "peak_motor_wheel_power_kw": 71.59358538868426,
+      "source_lap": 5.0,
+      "stored_energy_end_j": 0.0,
+      "stored_energy_start_j": 2455394.086611061
+    }
+  ],
+  "optimizer_updates": 0,
+  "partition": "training_replay",
+  "physics_admission": false,
+  "probability_semantics": "uncalibrated_action_selection_probability",
+  "profile_entry": "18",
+  "session": "Qualifying",
+  "source_manifest_sha256": "757e7fd7ed0da0e19fd8e9313a021e07311978eee5bed91144c5a58aaccca653",
+  "status": "diagnostic_only"
+}

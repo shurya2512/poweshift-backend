@@ -10,6 +10,8 @@
 
 **Spec:** `docs/TRACKSHIFT_FULL_REVISED_ARCHITECTURE_v05.md` and `docs/PARALLEL_POLICY_PLAN.md`.
 
+**Summary:** `docs/TRAINING_AND_INFERENCE_SUMMARY.md`.
+
 ## Global constraints
 
 - Keep Phase 7 as policy learning and Phase 8 as fixed-pit execution; do not renumber either phase.
@@ -35,6 +37,21 @@
 - Implementation tasks 1–5 pass the complete backend suite. The real preflight remains blocked until a compatible Phase 5 bundle is admitted.
 - A separate non-admission diagnostic ran 100 qualifying updates and ten race laps with a 20% additive electric prior and 5 MJ fallback harvest cap. Its report remains diagnostic evidence only.
 - The race reward now normalises traffic value per lap, prices early energy more heavily and penalises reserve shortfall. Ten updates reduced requested deployment slightly but did not prevent store exhaustion, so convergence remains unvalidated.
+- A resumable diagnostic curriculum then carried one policy and optimizer through all 8,069 admitted Test 1 preseason packages, 157 Australia qualifying traces and 53 complete Australia race laps. Selection and final partitions remained unopened.
+- The 53-lap race stage reduced evaluated requested deployment from 65.35% to 57.06% and improved late training reward, but the store still finished empty. This is reward-direction evidence, not race-energy convergence or physical admission.
+- Sixty-eight admitted zero-duration singleton packages were retained by repeating their measured row once at the diagnosed 0.24 s training cadence; the immutable report records this approximation.
+- A later Japan diagnostic restored the same post-qualifying checkpoint for each of 22 promoted profiles, then ran 810 chronological lap-level PPO updates containing 325,326 native 4 Hz source ticks. Its withheld 20% contains 209 laps and 79,076 untouched source ticks.
+- Race reward is now action-aware: ATTACK and DEFEND gain their traffic weight only under the matching causal condition, while missed conditions and unsupported tactical paths carry separate declared costs.
+- Each grid-P23 scenario advances the original 22 fitted ICE profiles from past-only source controls with no tactical policy or electrical deployment. Only the additional ego uses its learned profile policy at 5 Hz while holding the latest 4 Hz field state.
+- Across 574,222 P23 decisions, every ego scenario ended at proxy P19 and final progress differed by 1,152.59 m. Profile 23 took 25 of 61 attack episodes and 5 of 86 defence episodes, exhausted its store, and first selected ATTACK outside a classified opportunity. These are reward and controller diagnostics, not overtake or full-race validation.
+- The continued curriculum restored all 22 Japan checkpoints and processed Miami, Canada, Monaco, Barcelona, Austria and Britain in chronological practice-before-race order. It completed 9,054 cumulative profile updates; each race held out its final chronological 20% of complete profile laps and protected sources produced zero updates.
+- Practice permits deployment and harvesting but masks tactics to `HOLD`. The declared energy prior is 20% additive electric wheel power, a 5 MJ usable store and a 5 MJ/lap fallback harvest cap with 0.95 motor and 0.8 harvest efficiency.
+- Runtime qualifying reports cover nine training replays plus the protected Madring test. Madring contains 112 accurate laps and 45,426 4 Hz ticks for 19 profiles; entries 6, 18 and 87 lack complete accurate laps, and the race was unavailable when acquired. The v2 attainable-time field is bounded by the delivered additive-power ratio and remains an idealised diagnostic proxy, not a lap-time prediction.
+- Full-race P23 reports were generated for Miami, Barcelona, Austria and Britain. Canada and Monaco are explicitly unavailable because no source tick contains all 22 required fixed references; no missing controls were invented.
+- The four complete race reports bind source yellow, safety-car, red and VSC events to the nearest 5 Hz decision and retain every attack/defence opportunity, selected path, uncalibrated action probability, power, deployment, harvest, battery, final proxy position and gap.
+- All four complete race sets finished with median proxy P20 and empty stores. Attack selection varied sharply by circuit and defence was usually missed. This is direct evidence that the current diagnostic reward/controller has not converged to credible race intelligence.
+- The local duplex inference path accepts strict 4 Hz observation frames and emits 5 Hz recommendations using the latest held input. Diagnostic checkpoints cannot be registered until compatible physics and energy identities are admitted.
+- The complete suite passes 421 tests with one non-contiguous `torch.searchsorted` performance warning. Context7 was unavailable; established repository use and official FastF1/FastAPI documentation were used for the affected calls.
 
 ```mermaid
 flowchart LR

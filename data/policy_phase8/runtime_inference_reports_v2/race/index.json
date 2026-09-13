@@ -1,0 +1,53 @@
+{
+  "energy_prior": {
+    "additive_electric_wheel_power_fraction": 0.2,
+    "harvest_cap_j_per_lap": 5000000.0,
+    "harvest_efficiency": 0.8,
+    "motor_efficiency": 0.95,
+    "usable_store_j": 5000000.0
+  },
+  "frontend_inference": {
+    "decision_hz": 5.0,
+    "input_hz": 4.0,
+    "websocket": "/runs/{run_id}/live"
+  },
+  "limitations": [
+    "Positions, gaps and attainable performance are diagnostic proxies, not physically admitted predictions.",
+    "All 22 reference cars are policy-free and electric-free and do not react to the added ego.",
+    "Major events are source-bound; each policy row is the nearest 5 Hz decision."
+  ],
+  "physics_admission": false,
+  "status": "diagnostic_only",
+  "tracks": [
+    {
+      "event_name": "Miami Grand Prix",
+      "status": "diagnostic_only",
+      "summary": "miami/summary.json"
+    },
+    {
+      "event_name": "Canadian Grand Prix",
+      "status": "unavailable",
+      "summary": "canadian/summary.json"
+    },
+    {
+      "event_name": "Monaco Grand Prix",
+      "status": "unavailable",
+      "summary": "monaco/summary.json"
+    },
+    {
+      "event_name": "Barcelona Grand Prix",
+      "status": "diagnostic_only",
+      "summary": "barcelona/summary.json"
+    },
+    {
+      "event_name": "Austrian Grand Prix",
+      "status": "diagnostic_only",
+      "summary": "austrian/summary.json"
+    },
+    {
+      "event_name": "British Grand Prix",
+      "status": "diagnostic_only",
+      "summary": "british/summary.json"
+    }
+  ]
+}

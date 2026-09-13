@@ -1,0 +1,7 @@
+{
+  "event_name": "Monaco Grand Prix",
+  "optimizer_updates": 0,
+  "physics_admission": false,
+  "reason": "no_source_tick_contains_all_22_fixed_reference_profiles",
+  "status": "unavailable"
+}

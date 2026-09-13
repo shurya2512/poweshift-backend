@@ -3,17 +3,24 @@ name = "poweshift-backend"
 version = "0.1.0"
 requires-python = ">=3.11,<3.12"
 dependencies = [
+  "beautifulsoup4>=4.15,<4.16",
+  "fastapi>=0.141,<0.142",
   "fastf1==3.8.3",
+  "httpx>=0.28,<0.29",
   "numpy>=2.4,<2.5",
   "pandas>=2.3,<2.4",
   "pyarrow>=25,<26",
   "pydantic>=2.13,<3",
   "scipy>=1.17,<1.18",
   "torch>=2.8,<2.9",
+  "uvicorn>=0.52,<0.53",
 ]
 
 [dependency-groups]
-dev = ["pytest>=9,<10"]
+dev = [
+    "httpx2>=2.12,<2.13",
+    "pytest>=9,<10",
+]
 
 [build-system]
 requires = ["uv_build>=0.9,<0.10"]
@@ -22,3 +29,6 @@ build-backend = "uv_build"
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 pythonpath = ["src"]
+filterwarnings = [
+  "ignore:The anyio.abc.BlockingPortal alias is deprecated:DeprecationWarning:starlette.testclient",
+]

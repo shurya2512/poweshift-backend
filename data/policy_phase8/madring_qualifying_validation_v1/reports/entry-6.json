@@ -1,0 +1,19 @@
+{
+  "checkpoint_sha256": "73a301b55777b217fa325b44f48beef6e065bf186eb3c88b1ae11822ad4f7a2f",
+  "checkpoint_stage": "2026-07-05-british-entry-6",
+  "circuit": "Madring",
+  "coverage": "no_complete_accurate_qualifying_laps_for_profile",
+  "event": "2026 Spanish Grand Prix",
+  "optimizer_updates": 0,
+  "partition": "final_evaluation",
+  "physics_admission": false,
+  "profile_entry": "6",
+  "session": "Qualifying",
+  "source_manifest_sha256": "8e2e2a7e86aefc04b644dcb57b8df2b2b8d9df70be26061bb62370702e7007fb",
+  "status": "diagnostic_only",
+  "validation": {
+    "coverage": "no_complete_accurate_qualifying_laps_for_profile",
+    "status": "diagnostic_only",
+    "validation_laps": 0
+  }
+}

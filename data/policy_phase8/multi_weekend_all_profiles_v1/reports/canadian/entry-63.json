@@ -1,0 +1,4568 @@
+{
+  "checkpoint_restricted_load": true,
+  "checkpoint_sha256": "32363a8db9ff60ebe852f05d96c15ca201309474ff1737a5a17949055a2e1a11",
+  "completed_updates": 145,
+  "event_date": "2026-05-24",
+  "event_name": "Canadian Grand Prix",
+  "physics_admission": false,
+  "practice": [
+    {
+      "attack_opportunity_steps": 0.0,
+      "coverage": "complete_supported_laps",
+      "defence_threat_steps": 0.0,
+      "deployment_step_rate": 0.9982123703968537,
+      "electric_boost_fraction": 0.2,
+      "gross_deployment_j": 22191421.63758322,
+      "gross_harvest_j": 21726321.137579065,
+      "harvest_cap_j_per_lap": 5000000.0,
+      "harvest_curtailed_j": 3328.59398968995,
+      "incremental_progress_proxy_m": 33851.884229216485,
+      "mean_first_reward": 38.96520970003753,
+      "mean_last_reward": 31.113166329832303,
+      "mean_requested_deployment_fraction": 0.677644860749937,
+      "mean_total_loss": 2.188764240430749,
+      "net_battery_change_j": -4810364.727519967,
+      "race_interaction_prior": {
+        "attack_gain_weight": 1.0,
+        "attack_gap_s": 1.0,
+        "defend_gain_weight": 0.5,
+        "defend_gap_s": 0.8,
+        "deployment_cost_per_mj": 1.0,
+        "enabled": false,
+        "free_air_gain_weight": 0.1,
+        "gain_normalization": "equal_share_per_lap_step",
+        "late_race_cost_floor": 0.25,
+        "minimum_closing_ms": 0.5,
+        "missed_attack_weight": 0.05,
+        "missed_defend_weight": 0.05,
+        "reserve_shortfall_weight": 2.0,
+        "unsupported_path_weight": 0.25
+      },
+      "recurrent_state_carried": true,
+      "remaining_store_j": 189635.27247999937,
+      "reward_change": -7.85204337020523,
+      "reward_findings": [],
+      "session_id": "2026-05-24_Canadian_Grand_Prix:2026-05-22_Practice_1",
+      "source_manifest": "/Users/10doshi12/Desktop/trackshift/poweshift-backend/data/representation_phase4/practice_canadian_fp1_v1/practice_export.json",
+      "source_partition": "training",
+      "status": "diagnostic_only",
+      "updates": 23,
+      "usable_store_j": 5000000.0
+    }
+  ],
+  "profile_entry": "63",
+  "race_training": {
+    "attack_opportunity_steps": 501.0,
+    "defence_threat_steps": 979.0,
+    "deployment_step_rate": 0.9990662931839402,
+    "electric_boost_fraction": 0.2,
+    "gross_deployment_j": 8089224.060060575,
+    "gross_harvest_j": 3861530.075075705,
+    "harvest_cap_j_per_lap": 5000000.0,
+    "harvest_curtailed_j": 35149.613139073364,
+    "incremental_progress_proxy_m": 8518.634886962174,
+    "mean_first_reward": -2.4042844495045648,
+    "mean_last_reward": -0.7361177970029956,
+    "mean_requested_deployment_fraction": 0.581548811866094,
+    "mean_total_loss": 2.8983463157307017,
+    "net_battery_change_j": -5000000.00000001,
+    "race_interaction_prior": {
+      "attack_gain_weight": 1.0,
+      "attack_gap_s": 1.0,
+      "defend_gain_weight": 0.5,
+      "defend_gap_s": 0.8,
+      "deployment_cost_per_mj": 1.0,
+      "enabled": true,
+      "free_air_gain_weight": 0.1,
+      "gain_normalization": "equal_share_per_lap_step",
+      "late_race_cost_floor": 0.25,
+      "minimum_closing_ms": 0.5,
+      "missed_attack_weight": 0.05,
+      "missed_defend_weight": 0.05,
+      "reserve_shortfall_weight": 2.0,
+      "unsupported_path_weight": 0.25
+    },
+    "recurrent_state_carried": true,
+    "remaining_store_j": 0.0,
+    "reward_change": 1.668166652501569,
+    "reward_findings": [
+      "store was exhausted; 22 race updates did not yet adapt deployment to the shaped objective"
+    ],
+    "source_partition": "training",
+    "status": "diagnostic_only",
+    "updates": 22,
+    "usable_store_j": 5000000.0
+  },
+  "race_training_trace_ids": [
+    "race:63:source-lap-1",
+    "race:63:source-lap-2",
+    "race:63:source-lap-3",
+    "race:63:source-lap-4",
+    "race:63:source-lap-5",
+    "race:63:source-lap-6",
+    "race:63:source-lap-7",
+    "race:63:source-lap-8",
+    "race:63:source-lap-9",
+    "race:63:source-lap-10",
+    "race:63:source-lap-11",
+    "race:63:source-lap-12",
+    "race:63:source-lap-13",
+    "race:63:source-lap-14",
+    "race:63:source-lap-15",
+    "race:63:source-lap-16",
+    "race:63:source-lap-17",
+    "race:63:source-lap-18",
+    "race:63:source-lap-19",
+    "race:63:source-lap-20",
+    "race:63:source-lap-21",
+    "race:63:source-lap-22"
+  ],
+  "race_validation": {
+    "entry": "63",
+    "final_stored_energy_j": 0.0,
+    "gross_deployment_j": 806351.3490070496,
+    "gross_harvest_j": 1007939.1862588101,
+    "laps": [
+      {
+        "attack_opportunity_ticks": 81,
+        "attack_ticks": 27,
+        "defence_threat_ticks": 12,
+        "defend_ticks": 0,
+        "deployment_j": 128409.62513908092,
+        "end_position": 2,
+        "end_progress_m": 103487.31555366555,
+        "end_time_s": 1849.75,
+        "harvest_j": 160512.03142385185,
+        "lap": 23,
+        "maximum_motor_wheel_power_kw": 26.59319846471562,
+        "mean_requested_deployment_fraction": 0.055146046492486514,
+        "reward": -0.43389588800012646,
+        "start_position": 2,
+        "start_progress_m": 99196.969367272,
+        "start_time_s": 1773.25,
+        "stored_energy_end_j": 0.0,
+        "stored_energy_start_j": 0.0
+      },
+      {
+        "attack_opportunity_ticks": 42,
+        "attack_ticks": 14,
+        "defence_threat_ticks": 38,
+        "defend_ticks": 0,
+        "deployment_j": 140927.78550262842,
+        "end_position": 1,
+        "end_progress_m": 107798.35660605588,
+        "end_time_s": 1926.75,
+        "harvest_j": 176159.73187828576,
+        "lap": 24,
+        "maximum_motor_wheel_power_kw": 24.68023473699458,
+        "mean_requested_deployment_fraction": 0.0554383106819995,
+        "reward": -0.3507440408307164,
+        "start_position": 2,
+        "start_progress_m": 103509.39145646343,
+        "start_time_s": 1850.0,
+        "stored_energy_end_j": 0.0,
+        "stored_energy_start_j": 0.0
+      },
+      {
+        "attack_opportunity_ticks": 0,
+        "attack_ticks": 0,
+        "defence_threat_ticks": 82,
+        "defend_ticks": 0,
+        "deployment_j": 131506.78645155765,
+        "end_position": 1,
+        "end_progress_m": 112108.93244181974,
+        "end_time_s": 2003.0,
+        "harvest_j": 164383.48306444567,
+        "lap": 25,
+        "maximum_motor_wheel_power_kw": 23.399889545828938,
+        "mean_requested_deployment_fraction": 0.04996101817146677,
+        "reward": -0.2700912873822661,
+        "start_position": 1,
+        "start_progress_m": 107817.20484870435,
+        "start_time_s": 1927.0,
+        "stored_energy_end_j": 0.0,
+        "stored_energy_start_j": 0.0
+      },
+      {
+        "attack_opportunity_ticks": 0,
+        "attack_ticks": 0,
+        "defence_threat_ticks": 72,
+        "defend_ticks": 0,
+        "deployment_j": 145697.32896935195,
+        "end_position": 1,
+        "end_progress_m": 116434.86315985877,
+        "end_time_s": 2079.5,
+        "harvest_j": 182121.66121168993,
+        "lap": 26,
+        "maximum_motor_wheel_power_kw": 23.940964968546314,
+        "mean_requested_deployment_fraction": 0.056176185023550894,
+        "reward": -0.19780905869479123,
+        "start_position": 1,
+        "start_progress_m": 112124.83898035256,
+        "start_time_s": 2003.25,
+        "stored_energy_end_j": 0.0,
+        "stored_energy_start_j": 0.0
+      },
+      {
+        "attack_opportunity_ticks": 2,
+        "attack_ticks": 4,
+        "defence_threat_ticks": 75,
+        "defend_ticks": 0,
+        "deployment_j": 147368.71635663323,
+        "end_position": 1,
+        "end_progress_m": 120745.6485236987,
+        "end_time_s": 2155.75,
+        "harvest_j": 184210.89544579014,
+        "lap": 27,
+        "maximum_motor_wheel_power_kw": 41.87923456275986,
+        "mean_requested_deployment_fraction": 0.05592785116101875,
+        "reward": -0.12412993187775087,
+        "start_position": 1,
+        "start_progress_m": 116457.82950216666,
+        "start_time_s": 2079.75,
+        "stored_energy_end_j": 0.0,
+        "stored_energy_start_j": 0.0
+      },
+      {
+        "attack_opportunity_ticks": 0,
+        "attack_ticks": 1,
+        "defence_threat_ticks": 33,
+        "defend_ticks": 0,
+        "deployment_j": 112441.1065877974,
+        "end_position": 1,
+        "end_progress_m": 124357.00936016791,
+        "end_time_s": 2220.0,
+        "harvest_j": 140551.38323474675,
+        "lap": 28,
+        "maximum_motor_wheel_power_kw": 25.191384837608673,
+        "mean_requested_deployment_fraction": 0.05566028050411536,
+        "reward": -0.03347546825104564,
+        "start_position": 1,
+        "start_progress_m": 120764.57049477678,
+        "start_time_s": 2156.0,
+        "stored_energy_end_j": 0.0,
+        "stored_energy_start_j": 0.0
+      }
+    ],
+    "opportunity_episodes": [
+      {
+        "deployment_j": 0.0,
+        "end_time_s": 1775.0,
+        "harvest_j": 0.0,
+        "kind": "attack",
+        "lap": 23,
+        "maximum_uncalibrated_action_probability": 1.0,
+        "mean_delivered_deployment_fraction": 0.0,
+        "mean_requested_deployment_fraction": 0.0,
+        "peak_motor_wheel_power_kw": 0.0,
+        "selected_paths": [
+          "hold"
+        ],
+        "start_time_s": 1773.5,
+        "stored_energy_end_j": 0.0,
+        "stored_energy_start_j": 0.0,
+        "taken": false,
+        "ticks": 7
+      },
+      {
+        "deployment_j": 0.0,
+        "end_time_s": 1779.25,
+        "harvest_j": 0.0,
+        "kind": "attack",
+        "lap": 23,
+        "maximum_uncalibrated_action_probability": 1.0,
+        "mean_delivered_deployment_fraction": 0.0,
+        "mean_requested_deployment_fraction": 0.0,
+        "peak_motor_wheel_power_kw": 0.0,
+        "selected_paths": [
+          "hold"
+        ],
+        "start_time_s": 1779.0,
+        "stored_energy_end_j": 28641.523493657423,
+        "stored_energy_start_j": 28641.523493657423,
+        "taken": false,
+        "ticks": 2
+      },
+      {
+        "deployment_j": 0.0,
+        "end_time_s": 1784.5,
+        "harvest_j": 0.0,
+        "kind": "attack",
+        "lap": 23,
+        "maximum_uncalibrated_action_probability": 1.0,
+        "mean_delivered_deployment_fraction": 0.0,
+        "mean_requested_deployment_fraction": 0.0,
+        "peak_motor_wheel_power_kw": 0.0,
+        "selected_paths": [
+          "hold"
+        ],
+        "start_time_s": 1784.5,
+        "stored_energy_end_j": 0.0,
+        "stored_energy_start_j": 0.0,
+        "taken": false,
+        "ticks": 1
+      },
+      {
+        "deployment_j": 0.0,
+        "end_time_s": 1786.25,
+        "harvest_j": 0.0,
+        "kind": "attack",
+        "lap": 23,
+        "maximum_uncalibrated_action_probability": 1.0,
+        "mean_delivered_deployment_fraction": 0.0,
+        "mean_requested_deployment_fraction": 0.0,
+        "peak_motor_wheel_power_kw": 0.0,
+        "selected_paths": [
+          "hold"
+        ],
+        "start_time_s": 1785.0,
+        "stored_energy_end_j": 0.0,
+        "stored_energy_start_j": 0.0,
+        "taken": false,
+        "ticks": 6
+      },
+      {
+        "deployment_j": 0.0,
+        "end_time_s": 1791.75,
+        "harvest_j": 0.0,
+        "kind": "attack",
+        "lap": 23,
+        "maximum_uncalibrated_action_probability": 1.0,
+        "mean_delivered_deployment_fraction": 0.0,
+        "mean_requested_deployment_fraction": 0.0,
+        "peak_motor_wheel_power_kw": 0.0,
+        "selected_paths": [
+          "hold"
+        ],
+        "start_time_s": 1791.75,
+        "stored_energy_end_j": 0.0,
+        "stored_energy_start_j": 0.0,
+        "taken": false,
+        "ticks": 1
+      },
+      {
+        "deployment_j": 0.0,
+        "end_time_s": 1792.25,
+        "harvest_j": 0.0,
+        "kind": "attack",
+        "lap": 23,
+        "maximum_uncalibrated_action_probability": 1.0,
+        "mean_delivered_deployment_fraction": 0.0,
+        "mean_requested_deployment_fraction": 0.0,
+        "peak_motor_wheel_power_kw": 0.0,
+        "selected_paths": [
+          "hold"
+        ],
+        "start_time_s": 1792.25,
+        "stored_energy_end_j": 0.0,
+        "stored_energy_start_j": 0.0,
+        "taken": false,
+        "ticks": 1
+      },
+      {
+        "deployment_j": 0.0,
+        "end_time_s": 1792.75,
+        "harvest_j": 0.0,
+        "kind": "attack",
+        "lap": 23,
+        "maximum_uncalibrated_action_probability": 1.0,
+        "mean_delivered_deployment_fraction": 0.0,
+        "mean_requested_deployment_fraction": 0.0,
+        "peak_motor_wheel_power_kw": 0.0,
+        "selected_paths": [
+          "hold"
+        ],
+        "start_time_s": 1792.75,
+        "stored_energy_end_j": 0.0,
+        "stored_energy_start_j": 0.0,
+        "taken": false,
+        "ticks": 1
+      },
+      {
+        "deployment_j": 0.0,
+        "end_time_s": 1793.25,
+        "harvest_j": 0.0,
+        "kind": "attack",
+        "lap": 23,
+        "maximum_uncalibrated_action_probability": 1.0,
+        "mean_delivered_deployment_fraction": 0.0,
+        "mean_requested_deployment_fraction": 0.0,
+        "peak_motor_wheel_power_kw": 0.0,
+        "selected_paths": [
+          "hold"
+        ],
+        "start_time_s": 1793.25,
+        "stored_energy_end_j": 0.0,
+        "stored_energy_start_j": 0.0,
+        "taken": false,
+        "ticks": 1
+      },
+      {
+        "deployment_j": 0.0,
+        "end_time_s": 1795.5,
+        "harvest_j": 0.0,
+        "kind": "attack",
+        "lap": 23,
+        "maximum_uncalibrated_action_probability": 1.0,
+        "mean_delivered_deployment_fraction": 0.0,
+        "mean_requested_deployment_fraction": 0.0,
+        "peak_motor_wheel_power_kw": 0.0,
+        "selected_paths": [
+          "hold"
+        ],
+        "start_time_s": 1793.75,
+        "stored_energy_end_j": 0.0,
+        "stored_energy_start_j": 0.0,
+        "taken": false,
+        "ticks": 8
+      },
+      {
+        "deployment_j": 0.0,
+        "end_time_s": 1800.75,
+        "harvest_j": 0.0,
+        "kind": "attack",
+        "lap": 23,
+        "maximum_uncalibrated_action_probability": 1.0,
+        "mean_delivered_deployment_fraction": 0.0,
+        "mean_requested_deployment_fraction": 0.0,
+        "peak_motor_wheel_power_kw": 0.0,
+        "selected_paths": [
+          "hold"
+        ],
+        "start_time_s": 1800.75,
+        "stored_energy_end_j": 0.0,
+        "stored_energy_start_j": 0.0,
+        "taken": false,
+        "ticks": 1
+      },
+      {
+        "deployment_j": 0.0,
+        "end_time_s": 1801.75,
+        "harvest_j": 0.0,
+        "kind": "attack",
+        "lap": 23,
+        "maximum_uncalibrated_action_probability": 1.0,
+        "mean_delivered_deployment_fraction": 0.0,
+        "mean_requested_deployment_fraction": 0.0,
+        "peak_motor_wheel_power_kw": 0.0,
+        "selected_paths": [
+          "hold"
+        ],
+        "start_time_s": 1801.75,
+        "stored_energy_end_j": 0.0,
+        "stored_energy_start_j": 0.0,
+        "taken": false,
+        "ticks": 1
+      },
+      {
+        "deployment_j": 0.0,
+        "end_time_s": 1804.75,
+        "harvest_j": 0.0,
+        "kind": "attack",
+        "lap": 23,
+        "maximum_uncalibrated_action_probability": 1.0,
+        "mean_delivered_deployment_fraction": 0.0,
+        "mean_requested_deployment_fraction": 0.0,
+        "peak_motor_wheel_power_kw": 0.0,
+        "selected_paths": [
+          "hold"
+        ],
+        "start_time_s": 1804.75,
+        "stored_energy_end_j": 0.0,
+        "stored_energy_start_j": 0.0,
+        "taken": false,
+        "ticks": 1
+      },
+      {
+        "deployment_j": 0.0,
+        "end_time_s": 1806.0,
+        "harvest_j": 0.0,
+        "kind": "attack",
+        "lap": 23,
+        "maximum_uncalibrated_action_probability": 1.0,
+        "mean_delivered_deployment_fraction": 0.0,
+        "mean_requested_deployment_fraction": 0.0,
+        "peak_motor_wheel_power_kw": 0.0,
+        "selected_paths": [
+          "hold"
+        ],
+        "start_time_s": 1806.0,
+        "stored_energy_end_j": 0.0,
+        "stored_energy_start_j": 0.0,
+        "taken": false,
+        "ticks": 1
+      },
+      {
+        "deployment_j": 0.0,
+        "end_time_s": 1806.5,
+        "harvest_j": 0.0,
+        "kind": "attack",
+        "lap": 23,
+        "maximum_uncalibrated_action_probability": 1.0,
+        "mean_delivered_deployment_fraction": 0.0,
+        "mean_requested_deployment_fraction": 0.0,
+        "peak_motor_wheel_power_kw": 0.0,
+        "selected_paths": [
+          "hold"
+        ],
+        "start_time_s": 1806.5,
+        "stored_energy_end_j": 0.0,
+        "stored_energy_start_j": 0.0,
+        "taken": false,
+        "ticks": 1
+      },
+      {
+        "deployment_j": 0.0,
+        "end_time_s": 1808.5,
+        "harvest_j": 0.0,
+        "kind": "attack",
+        "lap": 23,
+        "maximum_uncalibrated_action_probability": 1.0,
+        "mean_delivered_deployment_fraction": 0.0,
+        "mean_requested_deployment_fraction": 0.0,
+        "peak_motor_wheel_power_kw": 0.0,
+        "selected_paths": [
+          "hold"
+        ],
+        "start_time_s": 1807.0,
+        "stored_energy_end_j": 0.0,
+        "stored_energy_start_j": 0.0,
+        "taken": false,
+        "ticks": 7
+      },
+      {
+        "deployment_j": 6487.091733036563,
+        "end_time_s": 1811.5,
+        "harvest_j": 0.0,
+        "kind": "attack",
+        "lap": 23,
+        "maximum_uncalibrated_action_probability": 0.6490458250045776,
+        "mean_delivered_deployment_fraction": 0.572099506855011,
+        "mean_requested_deployment_fraction": 0.572099506855011,
+        "peak_motor_wheel_power_kw": 24.65094858553835,
+        "selected_paths": [
+          "attack"
+        ],
+        "start_time_s": 1811.5,
+        "stored_energy_end_j": 9891.167196215654,
+        "stored_energy_start_j": 16378.258929252062,
+        "taken": true,
+        "ticks": 1
+      },
+      {
+        "deployment_j": 0.0,
+        "end_time_s": 1815.25,
+        "harvest_j": 0.0,
+        "kind": "attack",
+        "lap": 23,
+        "maximum_uncalibrated_action_probability": 1.0,
+        "mean_delivered_deployment_fraction": 0.0,
+        "mean_requested_deployment_fraction": 0.0,
+        "peak_motor_wheel_power_kw": 0.0,
+        "selected_paths": [
+          "hold"
+        ],
+        "start_time_s": 1815.25,
+        "stored_energy_end_j": 0.0,
+        "stored_energy_start_j": 0.0,
+        "taken": false,
+        "ticks": 1
+      },
+      {
+        "deployment_j": 0.0,
+        "end_time_s": 1816.5,
+        "harvest_j": 0.0,
+        "kind": "attack",
+        "lap": 23,
+        "maximum_uncalibrated_action_probability": 1.0,
+        "mean_delivered_deployment_fraction": 0.0,
+        "mean_requested_deployment_fraction": 0.0,
+        "peak_motor_wheel_power_kw": 0.0,
+        "selected_paths": [
+          "hold"
+        ],
+        "start_time_s": 1816.5,
+        "stored_energy_end_j": 0.0,
+        "stored_energy_start_j": 0.0,
+        "taken": false,
+        "ticks": 1
+      },
+      {
+        "deployment_j": 0.0,
+        "end_time_s": 1817.75,
+        "harvest_j": 0.0,
+        "kind": "attack",
+        "lap": 23,
+        "maximum_uncalibrated_action_probability": 1.0,
+        "mean_delivered_deployment_fraction": 0.0,
+        "mean_requested_deployment_fraction": 0.0,
+        "peak_motor_wheel_power_kw": 0.0,
+        "selected_paths": [
+          "hold"
+        ],
+        "start_time_s": 1817.0,
+        "stored_energy_end_j": 0.0,
+        "stored_energy_start_j": 0.0,
+        "taken": false,
+        "ticks": 4
+      },
+      {
+        "deployment_j": 0.0,
+        "end_time_s": 1819.75,
+        "harvest_j": 0.0,
+        "kind": "attack",
+        "lap": 23,
+        "maximum_uncalibrated_action_probability": 1.0,
+        "mean_delivered_deployment_fraction": 0.0,
+        "mean_requested_deployment_fraction": 0.0,
+        "peak_motor_wheel_power_kw": 0.0,
+        "selected_paths": [
+          "hold"
+        ],
+        "start_time_s": 1818.25,
+        "stored_energy_end_j": 0.0,
+        "stored_energy_start_j": 0.0,
+        "taken": false,
+        "ticks": 7
+      },
+      {
+        "deployment_j": 2766.5542121920735,
+        "end_time_s": 1823.75,
+        "harvest_j": 0.0,
+        "kind": "attack",
+        "lap": 23,
+        "maximum_uncalibrated_action_probability": 1.0,
+        "mean_delivered_deployment_fraction": 0.26708969473838806,
+        "mean_requested_deployment_fraction": 0.26708969473838806,
+        "peak_motor_wheel_power_kw": 10.512906006330835,
+        "selected_paths": [
+          "attack",
+          "hold"
+        ],
+        "start_time_s": 1823.5,
+        "stored_energy_end_j": 19437.985882372483,
+        "stored_energy_start_j": 22204.540094564807,
+        "taken": true,
+        "ticks": 2
+      },
+      {
+        "deployment_j": 3669.2886680671945,
+        "end_time_s": 1824.75,
+        "harvest_j": 0.0,
+        "kind": "attack",
+        "lap": 23,
+        "maximum_uncalibrated_action_probability": 0.7140769362449646,
+        "mean_delivered_deployment_fraction": 0.539385199546814,
+        "mean_requested_deployment_fraction": 0.539385199546814,
+        "peak_motor_wheel_power_kw": 13.943296938654191,
+        "selected_paths": [
+          "attack"
+        ],
+        "start_time_s": 1824.75,
+        "stored_energy_end_j": 5649.865638447225,
+        "stored_energy_start_j": 9319.154306514118,
+        "taken": true,
+        "ticks": 1
+      },
+      {
+        "deployment_j": 0.0,
+        "end_time_s": 1826.25,
+        "harvest_j": 0.0,
+        "kind": "attack",
+        "lap": 23,
+        "maximum_uncalibrated_action_probability": 1.0,
+        "mean_delivered_deployment_fraction": 0.0,
+        "mean_requested_deployment_fraction": 0.0,
+        "peak_motor_wheel_power_kw": 0.0,
+        "selected_paths": [
+          "hold"
+        ],
+        "start_time_s": 1826.25,
+        "stored_energy_end_j": 0.0,
+        "stored_energy_start_j": 0.0,
+        "taken": false,
+        "ticks": 1
+      },
+      {
+        "deployment_j": 0.0,
+        "end_time_s": 1827.25,
+        "harvest_j": 0.0,
+        "kind": "attack",
+        "lap": 23,
+        "maximum_uncalibrated_action_probability": 1.0,
+        "mean_delivered_deployment_fraction": 0.0,
+        "mean_requested_deployment_fraction": 0.0,
+        "peak_motor_wheel_power_kw": 0.0,
+        "selected_paths": [
+          "hold"
+        ],
+        "start_time_s": 1827.0,
+        "stored_energy_end_j": 0.0,
+        "stored_energy_start_j": 0.0,
+        "taken": false,
+        "ticks": 2
+      },
+      {
+        "deployment_j": 0.0,
+        "end_time_s": 1828.75,
+        "harvest_j": 0.0,
+        "kind": "attack",
+        "lap": 23,
+        "maximum_uncalibrated_action_probability": 1.0,
+        "mean_delivered_deployment_fraction": 0.0,
+        "mean_requested_deployment_fraction": 0.0,
+        "peak_motor_wheel_power_kw": 0.0,
+        "selected_paths": [
+          "hold"
+        ],
+        "start_time_s": 1828.75,
+        "stored_energy_end_j": 0.0,
+        "stored_energy_start_j": 0.0,
+        "taken": false,
+        "ticks": 1
+      },
+      {
+        "deployment_j": 0.0,
+        "end_time_s": 1829.25,
+        "harvest_j": 0.0,
+        "kind": "attack",
+        "lap": 23,
+        "maximum_uncalibrated_action_probability": 1.0,
+        "mean_delivered_deployment_fraction": 0.0,
+        "mean_requested_deployment_fraction": 0.0,
+        "peak_motor_wheel_power_kw": 0.0,
+        "selected_paths": [
+          "hold"
+        ],
+        "start_time_s": 1829.25,
+        "stored_energy_end_j": 0.0,
+        "stored_energy_start_j": 0.0,
+        "taken": false,
+        "ticks": 1
+      },
+      {
+        "deployment_j": 0.0,
+        "end_time_s": 1830.25,
+        "harvest_j": 0.0,
+        "kind": "attack",
+        "lap": 23,
+        "maximum_uncalibrated_action_probability": 1.0,
+        "mean_delivered_deployment_fraction": 0.0,
+        "mean_requested_deployment_fraction": 0.0,
+        "peak_motor_wheel_power_kw": 0.0,
+        "selected_paths": [
+          "hold"
+        ],
+        "start_time_s": 1829.75,
+        "stored_energy_end_j": 0.0,
+        "stored_energy_start_j": 0.0,
+        "taken": false,
+        "ticks": 3
+      },
+      {
+        "deployment_j": 0.0,
+        "end_time_s": 1831.0,
+        "harvest_j": 0.0,
+        "kind": "attack",
+        "lap": 23,
+        "maximum_uncalibrated_action_probability": 1.0,
+        "mean_delivered_deployment_fraction": 0.0,
+        "mean_requested_deployment_fraction": 0.0,
+        "peak_motor_wheel_power_kw": 0.0,
+        "selected_paths": [
+          "hold"
+        ],
+        "start_time_s": 1831.0,
+        "stored_energy_end_j": 0.0,
+        "stored_energy_start_j": 0.0,
+        "taken": false,
+        "ticks": 1
+      },
+      {
+        "deployment_j": 0.0,
+        "end_time_s": 1832.0,
+        "harvest_j": 0.0,
+        "kind": "attack",
+        "lap": 23,
+        "maximum_uncalibrated_action_probability": 1.0,
+        "mean_delivered_deployment_fraction": 0.0,
+        "mean_requested_deployment_fraction": 0.0,
+        "peak_motor_wheel_power_kw": 0.0,
+        "selected_paths": [
+          "hold"
+        ],
+        "start_time_s": 1832.0,
+        "stored_energy_end_j": 0.0,
+        "stored_energy_start_j": 0.0,
+        "taken": false,
+        "ticks": 1
+      },
+      {
+        "deployment_j": 0.0,
+        "end_time_s": 1832.75,
+        "harvest_j": 0.0,
+        "kind": "attack",
+        "lap": 23,
+        "maximum_uncalibrated_action_probability": 1.0,
+        "mean_delivered_deployment_fraction": 0.0,
+        "mean_requested_deployment_fraction": 0.0,
+        "peak_motor_wheel_power_kw": 0.0,
+        "selected_paths": [
+          "hold"
+        ],
+        "start_time_s": 1832.5,
+        "stored_energy_end_j": 0.0,
+        "stored_energy_start_j": 0.0,
+        "taken": false,
+        "ticks": 2
+      },
+      {
+        "deployment_j": 0.0,
+        "end_time_s": 1833.75,
+        "harvest_j": 0.0,
+        "kind": "attack",
+        "lap": 23,
+        "maximum_uncalibrated_action_probability": 1.0,
+        "mean_delivered_deployment_fraction": 0.0,
+        "mean_requested_deployment_fraction": 0.0,
+        "peak_motor_wheel_power_kw": 0.0,
+        "selected_paths": [
+          "hold"
+        ],
+        "start_time_s": 1833.75,
+        "stored_energy_end_j": 0.0,
+        "stored_energy_start_j": 0.0,
+        "taken": false,
+        "ticks": 1
+      },
+      {
+        "deployment_j": 0.0,
+        "end_time_s": 1834.25,
+        "harvest_j": 0.0,
+        "kind": "attack",
+        "lap": 23,
+        "maximum_uncalibrated_action_probability": 1.0,
+        "mean_delivered_deployment_fraction": 0.0,
+        "mean_requested_deployment_fraction": 0.0,
+        "peak_motor_wheel_power_kw": 0.0,
+        "selected_paths": [
+          "hold"
+        ],
+        "start_time_s": 1834.25,
+        "stored_energy_end_j": 0.0,
+        "stored_energy_start_j": 0.0,
+        "taken": false,
+        "ticks": 1
+      },
+      {
+        "deployment_j": 0.0,
+        "end_time_s": 1835.0,
+        "harvest_j": 0.0,
+        "kind": "attack",
+        "lap": 23,
+        "maximum_uncalibrated_action_probability": 1.0,
+        "mean_delivered_deployment_fraction": 0.0,
+        "mean_requested_deployment_fraction": 0.0,
+        "peak_motor_wheel_power_kw": 0.0,
+        "selected_paths": [
+          "hold"
+        ],
+        "start_time_s": 1835.0,
+        "stored_energy_end_j": 0.0,
+        "stored_energy_start_j": 0.0,
+        "taken": false,
+        "ticks": 1
+      },
+      {
+        "deployment_j": 0.0,
+        "end_time_s": 1836.75,
+        "harvest_j": 0.0,
+        "kind": "attack",
+        "lap": 23,
+        "maximum_uncalibrated_action_probability": 1.0,
+        "mean_delivered_deployment_fraction": 0.0,
+        "mean_requested_deployment_fraction": 0.0,
+        "peak_motor_wheel_power_kw": 0.0,
+        "selected_paths": [
+          "hold"
+        ],
+        "start_time_s": 1836.5,
+        "stored_energy_end_j": 0.0,
+        "stored_energy_start_j": 0.0,
+        "taken": false,
+        "ticks": 2
+      },
+      {
+        "deployment_j": 0.0,
+        "end_time_s": 1837.25,
+        "harvest_j": 0.0,
+        "kind": "attack",
+        "lap": 23,
+        "maximum_uncalibrated_action_probability": 1.0,
+        "mean_delivered_deployment_fraction": 0.0,
+        "mean_requested_deployment_fraction": 0.0,
+        "peak_motor_wheel_power_kw": 0.0,
+        "selected_paths": [
+          "hold"
+        ],
+        "start_time_s": 1837.25,
+        "stored_energy_end_j": 0.0,
+        "stored_energy_start_j": 0.0,
+        "taken": false,
+        "ticks": 1
+      },
+      {
+        "deployment_j": 0.0,
+        "end_time_s": 1838.25,
+        "harvest_j": 0.0,
+        "kind": "attack",
+        "lap": 23,
+        "maximum_uncalibrated_action_probability": 1.0,
+        "mean_delivered_deployment_fraction": 0.0,
+        "mean_requested_deployment_fraction": 0.0,
+        "peak_motor_wheel_power_kw": 0.0,
+        "selected_paths": [
+          "hold"
+        ],
+        "start_time_s": 1838.25,
+        "stored_energy_end_j": 0.0,
+        "stored_energy_start_j": 0.0,
+        "taken": false,
+        "ticks": 1
+      },
+      {
+        "deployment_j": 0.0,
+        "end_time_s": 1839.75,
+        "harvest_j": 0.0,
+        "kind": "attack",
+        "lap": 23,
+        "maximum_uncalibrated_action_probability": 1.0,
+        "mean_delivered_deployment_fraction": 0.0,
+        "mean_requested_deployment_fraction": 0.0,
+        "peak_motor_wheel_power_kw": 0.0,
+        "selected_paths": [
+          "hold"
+        ],
+        "start_time_s": 1838.75,
+        "stored_energy_end_j": 0.0,
+        "stored_energy_start_j": 0.0,
+        "taken": false,
+        "ticks": 5
+      },
+      {
+        "deployment_j": 0.0,
+        "end_time_s": 1851.75,
+        "harvest_j": 0.0,
+        "kind": "attack",
+        "lap": 24,
+        "maximum_uncalibrated_action_probability": 1.0,
+        "mean_delivered_deployment_fraction": 0.0,
+        "mean_requested_deployment_fraction": 0.0,
+        "peak_motor_wheel_power_kw": 0.0,
+        "selected_paths": [
+          "hold"
+        ],
+        "start_time_s": 1850.75,
+        "stored_energy_end_j": 0.0,
+        "stored_energy_start_j": 0.0,
+        "taken": false,
+        "ticks": 5
+      },
+      {
+        "deployment_j": 12747.234235328622,
+        "end_time_s": 1854.5,
+        "harvest_j": 0.0,
+        "kind": "attack",
+        "lap": 24,
+        "maximum_uncalibrated_action_probability": 1.0,
+        "mean_delivered_deployment_fraction": 0.3788671096165975,
+        "mean_requested_deployment_fraction": 0.3788671096165975,
+        "peak_motor_wheel_power_kw": 24.52031790856389,
+        "selected_paths": [
+          "attack",
+          "hold"
+        ],
+        "start_time_s": 1854.0,
+        "stored_energy_end_j": 7481.438506640707,
+        "stored_energy_start_j": 20228.67274196915,
+        "taken": true,
+        "ticks": 3
+      },
+      {
+        "deployment_j": 0.0,
+        "end_time_s": 1863.5,
+        "harvest_j": 0.0,
+        "kind": "attack",
+        "lap": 24,
+        "maximum_uncalibrated_action_probability": 1.0,
+        "mean_delivered_deployment_fraction": 0.0,
+        "mean_requested_deployment_fraction": 0.0,
+        "peak_motor_wheel_power_kw": 0.0,
+        "selected_paths": [
+          "hold"
+        ],
+        "start_time_s": 1862.0,
+        "stored_energy_end_j": 0.0,
+        "stored_energy_start_j": 0.0,
+        "taken": false,
+        "ticks": 7
+      },
+      {
+        "deployment_j": 0.0,
+        "end_time_s": 1868.25,
+        "harvest_j": 0.0,
+        "kind": "attack",
+        "lap": 24,
+        "maximum_uncalibrated_action_probability": 1.0,
+        "mean_delivered_deployment_fraction": 0.0,
+        "mean_requested_deployment_fraction": 0.0,
+        "peak_motor_wheel_power_kw": 0.0,
+        "selected_paths": [
+          "hold"
+        ],
+        "start_time_s": 1868.25,
+        "stored_energy_end_j": 0.0,
+        "stored_energy_start_j": 0.0,
+        "taken": false,
+        "ticks": 1
+      },
+      {
+        "deployment_j": 0.0,
+        "end_time_s": 1869.0,
+        "harvest_j": 0.0,
+        "kind": "attack",
+        "lap": 24,
+        "maximum_uncalibrated_action_probability": 1.0,
+        "mean_delivered_deployment_fraction": 0.0,
+        "mean_requested_deployment_fraction": 0.0,
+        "peak_motor_wheel_power_kw": 0.0,
+        "selected_paths": [
+          "hold"
+        ],
+        "start_time_s": 1869.0,
+        "stored_energy_end_j": 0.0,
+        "stored_energy_start_j": 0.0,
+        "taken": false,
+        "ticks": 1
+      },
+      {
+        "deployment_j": 0.0,
+        "end_time_s": 1871.0,
+        "harvest_j": 0.0,
+        "kind": "attack",
+        "lap": 24,
+        "maximum_uncalibrated_action_probability": 1.0,
+        "mean_delivered_deployment_fraction": 0.0,
+        "mean_requested_deployment_fraction": 0.0,
+        "peak_motor_wheel_power_kw": 0.0,
+        "selected_paths": [
+          "hold"
+        ],
+        "start_time_s": 1871.0,
+        "stored_energy_end_j": 0.0,
+        "stored_energy_start_j": 0.0,
+        "taken": false,
+        "ticks": 1
+      },
+      {
+        "deployment_j": 0.0,
+        "end_time_s": 1871.5,
+        "harvest_j": 0.0,
+        "kind": "attack",
+        "lap": 24,
+        "maximum_uncalibrated_action_probability": 1.0,
+        "mean_delivered_deployment_fraction": 0.0,
+        "mean_requested_deployment_fraction": 0.0,
+        "peak_motor_wheel_power_kw": 0.0,
+        "selected_paths": [
+          "hold"
+        ],
+        "start_time_s": 1871.5,
+        "stored_energy_end_j": 0.0,
+        "stored_energy_start_j": 0.0,
+        "taken": false,
+        "ticks": 1
+      },
+      {
+        "deployment_j": 0.0,
+        "end_time_s": 1872.75,
+        "harvest_j": 0.0,
+        "kind": "attack",
+        "lap": 24,
+        "maximum_uncalibrated_action_probability": 1.0,
+        "mean_delivered_deployment_fraction": 0.0,
+        "mean_requested_deployment_fraction": 0.0,
+        "peak_motor_wheel_power_kw": 0.0,
+        "selected_paths": [
+          "hold"
+        ],
+        "start_time_s": 1872.0,
+        "stored_energy_end_j": 0.0,
+        "stored_energy_start_j": 0.0,
+        "taken": false,
+        "ticks": 4
+      },
+      {
+        "deployment_j": 4583.147734086029,
+        "end_time_s": 1876.0,
+        "harvest_j": 0.0,
+        "kind": "attack",
+        "lap": 24,
+        "maximum_uncalibrated_action_probability": 0.606584906578064,
+        "mean_delivered_deployment_fraction": 0.5514729619026184,
+        "mean_requested_deployment_fraction": 0.5514729619026184,
+        "peak_motor_wheel_power_kw": 17.41596138952554,
+        "selected_paths": [
+          "attack"
+        ],
+        "start_time_s": 1876.0,
+        "stored_energy_end_j": 17596.374805050007,
+        "stored_energy_start_j": 22179.522539135676,
+        "taken": true,
+        "ticks": 1
+      },
+      {
+        "deployment_j": 0.0,
+        "end_time_s": 1877.5,
+        "harvest_j": 0.0,
+        "kind": "attack",
+        "lap": 24,
+        "maximum_uncalibrated_action_probability": 1.0,
+        "mean_delivered_deployment_fraction": 0.0,
+        "mean_requested_deployment_fraction": 0.0,
+        "peak_motor_wheel_power_kw": 0.0,
+        "selected_paths": [
+          "hold"
+        ],
+        "start_time_s": 1877.5,
+        "stored_energy_end_j": 0.0,
+        "stored_energy_start_j": 0.0,
+        "taken": false,
+        "ticks": 1
+      },
+      {
+        "deployment_j": 0.0,
+        "end_time_s": 1878.0,
+        "harvest_j": 0.0,
+        "kind": "attack",
+        "lap": 24,
+        "maximum_uncalibrated_action_probability": 1.0,
+        "mean_delivered_deployment_fraction": 0.0,
+        "mean_requested_deployment_fraction": 0.0,
+        "peak_motor_wheel_power_kw": 0.0,
+        "selected_paths": [
+          "hold"
+        ],
+        "start_time_s": 1878.0,
+        "stored_energy_end_j": 0.0,
+        "stored_energy_start_j": 0.0,
+        "taken": false,
+        "ticks": 1
+      },
+      {
+        "deployment_j": 0.0,
+        "end_time_s": 1879.0,
+        "harvest_j": 0.0,
+        "kind": "attack",
+        "lap": 24,
+        "maximum_uncalibrated_action_probability": 1.0,
+        "mean_delivered_deployment_fraction": 0.0,
+        "mean_requested_deployment_fraction": 0.0,
+        "peak_motor_wheel_power_kw": 0.0,
+        "selected_paths": [
+          "hold"
+        ],
+        "start_time_s": 1879.0,
+        "stored_energy_end_j": 0.0,
+        "stored_energy_start_j": 0.0,
+        "taken": false,
+        "ticks": 1
+      },
+      {
+        "deployment_j": 0.0,
+        "end_time_s": 1881.5,
+        "harvest_j": 0.0,
+        "kind": "attack",
+        "lap": 24,
+        "maximum_uncalibrated_action_probability": 1.0,
+        "mean_delivered_deployment_fraction": 0.0,
+        "mean_requested_deployment_fraction": 0.0,
+        "peak_motor_wheel_power_kw": 0.0,
+        "selected_paths": [
+          "hold"
+        ],
+        "start_time_s": 1881.5,
+        "stored_energy_end_j": 0.0,
+        "stored_energy_start_j": 0.0,
+        "taken": false,
+        "ticks": 1
+      },
+      {
+        "deployment_j": 0.0,
+        "end_time_s": 1883.75,
+        "harvest_j": 0.0,
+        "kind": "attack",
+        "lap": 24,
+        "maximum_uncalibrated_action_probability": 1.0,
+        "mean_delivered_deployment_fraction": 0.0,
+        "mean_requested_deployment_fraction": 0.0,
+        "peak_motor_wheel_power_kw": 0.0,
+        "selected_paths": [
+          "hold"
+        ],
+        "start_time_s": 1882.25,
+        "stored_energy_end_j": 0.0,
+        "stored_energy_start_j": 0.0,
+        "taken": false,
+        "ticks": 7
+      },
+      {
+        "deployment_j": 0.0,
+        "end_time_s": 1885.25,
+        "harvest_j": 0.0,
+        "kind": "attack",
+        "lap": 24,
+        "maximum_uncalibrated_action_probability": 1.0,
+        "mean_delivered_deployment_fraction": 0.0,
+        "mean_requested_deployment_fraction": 0.0,
+        "peak_motor_wheel_power_kw": 0.0,
+        "selected_paths": [
+          "hold"
+        ],
+        "start_time_s": 1884.25,
+        "stored_energy_end_j": 0.0,
+        "stored_energy_start_j": 0.0,
+        "taken": false,
+        "ticks": 5
+      },
+      {
+        "deployment_j": 0.0,
+        "end_time_s": 1914.5,
+        "harvest_j": 0.0,
+        "kind": "attack",
+        "lap": 24,
+        "maximum_uncalibrated_action_probability": 1.0,
+        "mean_delivered_deployment_fraction": 0.0,
+        "mean_requested_deployment_fraction": 0.0,
+        "peak_motor_wheel_power_kw": 0.0,
+        "selected_paths": [
+          "hold"
+        ],
+        "start_time_s": 1914.5,
+        "stored_energy_end_j": 0.0,
+        "stored_energy_start_j": 0.0,
+        "taken": false,
+        "ticks": 1
+      },
+      {
+        "deployment_j": 0.0,
+        "end_time_s": 1916.5,
+        "harvest_j": 0.0,
+        "kind": "attack",
+        "lap": 24,
+        "maximum_uncalibrated_action_probability": 1.0,
+        "mean_delivered_deployment_fraction": 0.0,
+        "mean_requested_deployment_fraction": 0.0,
+        "peak_motor_wheel_power_kw": 0.0,
+        "selected_paths": [
+          "hold"
+        ],
+        "start_time_s": 1916.5,
+        "stored_energy_end_j": 0.0,
+        "stored_energy_start_j": 0.0,
+        "taken": false,
+        "ticks": 1
+      },
+      {
+        "deployment_j": 0.0,
+        "end_time_s": 2084.0,
+        "harvest_j": 0.0,
+        "kind": "attack",
+        "lap": 27,
+        "maximum_uncalibrated_action_probability": 1.0,
+        "mean_delivered_deployment_fraction": 0.0,
+        "mean_requested_deployment_fraction": 0.0,
+        "peak_motor_wheel_power_kw": 0.0,
+        "selected_paths": [
+          "hold"
+        ],
+        "start_time_s": 2084.0,
+        "stored_energy_end_j": 28421.39090468004,
+        "stored_energy_start_j": 28421.39090468004,
+        "taken": false,
+        "ticks": 1
+      },
+      {
+        "deployment_j": 3934.744141507894,
+        "end_time_s": 2087.0,
+        "harvest_j": 0.0,
+        "kind": "attack",
+        "lap": 27,
+        "maximum_uncalibrated_action_probability": 0.5948437452316284,
+        "mean_delivered_deployment_fraction": 0.5520246624946594,
+        "mean_requested_deployment_fraction": 0.5520246624946594,
+        "peak_motor_wheel_power_kw": 14.952027737732978,
+        "selected_paths": [
+          "attack"
+        ],
+        "start_time_s": 2087.0,
+        "stored_energy_end_j": 26158.777434167758,
+        "stored_energy_start_j": 30093.521575676437,
+        "taken": true,
+        "ticks": 1
+      },
+      {
+        "deployment_j": 0.0,
+        "end_time_s": 1779.0,
+        "harvest_j": 0.0,
+        "kind": "defence",
+        "lap": 23,
+        "maximum_uncalibrated_action_probability": 1.0,
+        "mean_delivered_deployment_fraction": 0.0,
+        "mean_requested_deployment_fraction": 0.0,
+        "peak_motor_wheel_power_kw": 0.0,
+        "selected_paths": [
+          "hold"
+        ],
+        "start_time_s": 1779.0,
+        "stored_energy_end_j": 28641.523493657423,
+        "stored_energy_start_j": 28641.523493657423,
+        "taken": false,
+        "ticks": 1
+      },
+      {
+        "deployment_j": 0.0,
+        "end_time_s": 1779.75,
+        "harvest_j": 0.0,
+        "kind": "defence",
+        "lap": 23,
+        "maximum_uncalibrated_action_probability": 1.0,
+        "mean_delivered_deployment_fraction": 0.0,
+        "mean_requested_deployment_fraction": 0.0,
+        "peak_motor_wheel_power_kw": 0.0,
+        "selected_paths": [
+          "hold"
+        ],
+        "start_time_s": 1779.5,
+        "stored_energy_end_j": 28641.523493657423,
+        "stored_energy_start_j": 28641.523493657423,
+        "taken": false,
+        "ticks": 2
+      },
+      {
+        "deployment_j": 7676.162757847458,
+        "end_time_s": 1780.5,
+        "harvest_j": 0.0,
+        "kind": "defence",
+        "lap": 23,
+        "maximum_uncalibrated_action_probability": 0.37329426407814026,
+        "mean_delivered_deployment_fraction": 0.5485017597675323,
+        "mean_requested_deployment_fraction": 0.5485017597675323,
+        "peak_motor_wheel_power_kw": 15.266717839351553,
+        "selected_paths": [
+          "attack"
+        ],
+        "start_time_s": 1780.25,
+        "stored_energy_end_j": 17527.710343103125,
+        "stored_energy_start_j": 25203.87310095068,
+        "taken": false,
+        "ticks": 2
+      },
+      {
+        "deployment_j": 4783.482579094358,
+        "end_time_s": 1781.0,
+        "harvest_j": 0.0,
+        "kind": "defence",
+        "lap": 23,
+        "maximum_uncalibrated_action_probability": 0.39814403653144836,
+        "mean_delivered_deployment_fraction": 0.5633436441421509,
+        "mean_requested_deployment_fraction": 0.5633436441421509,
+        "peak_motor_wheel_power_kw": 18.17723380055873,
+        "selected_paths": [
+          "attack"
+        ],
+        "start_time_s": 1781.0,
+        "stored_energy_end_j": 8398.550481661203,
+        "stored_energy_start_j": 13182.033060755606,
+        "taken": false,
+        "ticks": 1
+      },
+      {
+        "deployment_j": 0.0,
+        "end_time_s": 1785.0,
+        "harvest_j": 0.0,
+        "kind": "defence",
+        "lap": 23,
+        "maximum_uncalibrated_action_probability": 1.0,
+        "mean_delivered_deployment_fraction": 0.0,
+        "mean_requested_deployment_fraction": 0.0,
+        "peak_motor_wheel_power_kw": 0.0,
+        "selected_paths": [
+          "hold"
+        ],
+        "start_time_s": 1785.0,
+        "stored_energy_end_j": 0.0,
+        "stored_energy_start_j": 0.0,
+        "taken": false,
+        "ticks": 1
+      },
+      {
+        "deployment_j": 0.0,
+        "end_time_s": 1786.25,
+        "harvest_j": 0.0,
+        "kind": "defence",
+        "lap": 23,
+        "maximum_uncalibrated_action_probability": 1.0,
+        "mean_delivered_deployment_fraction": 0.0,
+        "mean_requested_deployment_fraction": 0.0,
+        "peak_motor_wheel_power_kw": 0.0,
+        "selected_paths": [
+          "hold"
+        ],
+        "start_time_s": 1785.75,
+        "stored_energy_end_j": 0.0,
+        "stored_energy_start_j": 0.0,
+        "taken": false,
+        "ticks": 3
+      },
+      {
+        "deployment_j": 6531.689420797862,
+        "end_time_s": 1788.5,
+        "harvest_j": 0.0,
+        "kind": "defence",
+        "lap": 23,
+        "maximum_uncalibrated_action_probability": 0.4151255190372467,
+        "mean_delivered_deployment_fraction": 0.5641244649887085,
+        "mean_requested_deployment_fraction": 0.5641244649887085,
+        "peak_motor_wheel_power_kw": 24.820419799033324,
+        "selected_paths": [
+          "attack"
+        ],
+        "start_time_s": 1788.5,
+        "stored_energy_end_j": 10428.1853467574,
+        "stored_energy_start_j": 16959.874767555644,
+        "taken": false,
+        "ticks": 1
+      },
+      {
+        "deployment_j": 3175.7831384046003,
+        "end_time_s": 1824.0,
+        "harvest_j": 0.0,
+        "kind": "defence",
+        "lap": 23,
+        "maximum_uncalibrated_action_probability": 0.39622029662132263,
+        "mean_delivered_deployment_fraction": 0.576712965965271,
+        "mean_requested_deployment_fraction": 0.576712965965271,
+        "peak_motor_wheel_power_kw": 12.067975925939017,
+        "selected_paths": [
+          "hold"
+        ],
+        "start_time_s": 1824.0,
+        "stored_energy_end_j": 16262.202743967478,
+        "stored_energy_start_j": 19437.985882372483,
+        "taken": false,
+        "ticks": 1
+      },
+      {
+        "deployment_j": 0.0,
+        "end_time_s": 1885.5,
+        "harvest_j": 0.0,
+        "kind": "defence",
+        "lap": 24,
+        "maximum_uncalibrated_action_probability": 1.0,
+        "mean_delivered_deployment_fraction": 0.0,
+        "mean_requested_deployment_fraction": 0.0,
+        "peak_motor_wheel_power_kw": 0.0,
+        "selected_paths": [
+          "hold"
+        ],
+        "start_time_s": 1885.5,
+        "stored_energy_end_j": 0.0,
+        "stored_energy_start_j": 0.0,
+        "taken": false,
+        "ticks": 1
+      },
+      {
+        "deployment_j": 0.0,
+        "end_time_s": 1893.0,
+        "harvest_j": 0.0,
+        "kind": "defence",
+        "lap": 24,
+        "maximum_uncalibrated_action_probability": 1.0,
+        "mean_delivered_deployment_fraction": 0.0,
+        "mean_requested_deployment_fraction": 0.0,
+        "peak_motor_wheel_power_kw": 0.0,
+        "selected_paths": [
+          "hold"
+        ],
+        "start_time_s": 1893.0,
+        "stored_energy_end_j": 0.0,
+        "stored_energy_start_j": 0.0,
+        "taken": false,
+        "ticks": 1
+      },
+      {
+        "deployment_j": 0.0,
+        "end_time_s": 1894.5,
+        "harvest_j": 0.0,
+        "kind": "defence",
+        "lap": 24,
+        "maximum_uncalibrated_action_probability": 1.0,
+        "mean_delivered_deployment_fraction": 0.0,
+        "mean_requested_deployment_fraction": 0.0,
+        "peak_motor_wheel_power_kw": 0.0,
+        "selected_paths": [
+          "hold"
+        ],
+        "start_time_s": 1894.5,
+        "stored_energy_end_j": 0.0,
+        "stored_energy_start_j": 0.0,
+        "taken": false,
+        "ticks": 1
+      },
+      {
+        "deployment_j": 0.0,
+        "end_time_s": 1895.25,
+        "harvest_j": 0.0,
+        "kind": "defence",
+        "lap": 24,
+        "maximum_uncalibrated_action_probability": 1.0,
+        "mean_delivered_deployment_fraction": 0.0,
+        "mean_requested_deployment_fraction": 0.0,
+        "peak_motor_wheel_power_kw": 0.0,
+        "selected_paths": [
+          "hold"
+        ],
+        "start_time_s": 1895.25,
+        "stored_energy_end_j": 0.0,
+        "stored_energy_start_j": 0.0,
+        "taken": false,
+        "ticks": 1
+      },
+      {
+        "deployment_j": 0.0,
+        "end_time_s": 1896.75,
+        "harvest_j": 0.0,
+        "kind": "defence",
+        "lap": 24,
+        "maximum_uncalibrated_action_probability": 1.0,
+        "mean_delivered_deployment_fraction": 0.0,
+        "mean_requested_deployment_fraction": 0.0,
+        "peak_motor_wheel_power_kw": 0.0,
+        "selected_paths": [
+          "hold"
+        ],
+        "start_time_s": 1896.75,
+        "stored_energy_end_j": 0.0,
+        "stored_energy_start_j": 0.0,
+        "taken": false,
+        "ticks": 1
+      },
+      {
+        "deployment_j": 7701.80116752442,
+        "end_time_s": 1902.75,
+        "harvest_j": 0.0,
+        "kind": "defence",
+        "lap": 24,
+        "maximum_uncalibrated_action_probability": 0.42730432748794556,
+        "mean_delivered_deployment_fraction": 0.516376405954361,
+        "mean_requested_deployment_fraction": 0.516376405954361,
+        "peak_motor_wheel_power_kw": 15.469573565057006,
+        "selected_paths": [
+          "hold"
+        ],
+        "start_time_s": 1902.5,
+        "stored_energy_end_j": 9825.3429339623,
+        "stored_energy_start_j": 17527.144101486625,
+        "taken": false,
+        "ticks": 2
+      },
+      {
+        "deployment_j": 0.0,
+        "end_time_s": 1905.25,
+        "harvest_j": 0.0,
+        "kind": "defence",
+        "lap": 24,
+        "maximum_uncalibrated_action_probability": 1.0,
+        "mean_delivered_deployment_fraction": 0.0,
+        "mean_requested_deployment_fraction": 0.0,
+        "peak_motor_wheel_power_kw": 0.0,
+        "selected_paths": [
+          "hold"
+        ],
+        "start_time_s": 1905.25,
+        "stored_energy_end_j": 0.0,
+        "stored_energy_start_j": 0.0,
+        "taken": false,
+        "ticks": 1
+      },
+      {
+        "deployment_j": 0.0,
+        "end_time_s": 1906.0,
+        "harvest_j": 0.0,
+        "kind": "defence",
+        "lap": 24,
+        "maximum_uncalibrated_action_probability": 1.0,
+        "mean_delivered_deployment_fraction": 0.0,
+        "mean_requested_deployment_fraction": 0.0,
+        "peak_motor_wheel_power_kw": 0.0,
+        "selected_paths": [
+          "hold"
+        ],
+        "start_time_s": 1906.0,
+        "stored_energy_end_j": 0.0,
+        "stored_energy_start_j": 0.0,
+        "taken": false,
+        "ticks": 1
+      },
+      {
+        "deployment_j": 0.0,
+        "end_time_s": 1907.25,
+        "harvest_j": 0.0,
+        "kind": "defence",
+        "lap": 24,
+        "maximum_uncalibrated_action_probability": 1.0,
+        "mean_delivered_deployment_fraction": 0.0,
+        "mean_requested_deployment_fraction": 0.0,
+        "peak_motor_wheel_power_kw": 0.0,
+        "selected_paths": [
+          "hold"
+        ],
+        "start_time_s": 1907.25,
+        "stored_energy_end_j": 0.0,
+        "stored_energy_start_j": 0.0,
+        "taken": false,
+        "ticks": 1
+      },
+      {
+        "deployment_j": 0.0,
+        "end_time_s": 1908.0,
+        "harvest_j": 0.0,
+        "kind": "defence",
+        "lap": 24,
+        "maximum_uncalibrated_action_probability": 1.0,
+        "mean_delivered_deployment_fraction": 0.0,
+        "mean_requested_deployment_fraction": 0.0,
+        "peak_motor_wheel_power_kw": 0.0,
+        "selected_paths": [
+          "hold"
+        ],
+        "start_time_s": 1908.0,
+        "stored_energy_end_j": 0.0,
+        "stored_energy_start_j": 0.0,
+        "taken": false,
+        "ticks": 1
+      },
+      {
+        "deployment_j": 0.0,
+        "end_time_s": 1908.75,
+        "harvest_j": 0.0,
+        "kind": "defence",
+        "lap": 24,
+        "maximum_uncalibrated_action_probability": 1.0,
+        "mean_delivered_deployment_fraction": 0.0,
+        "mean_requested_deployment_fraction": 0.0,
+        "peak_motor_wheel_power_kw": 0.0,
+        "selected_paths": [
+          "hold"
+        ],
+        "start_time_s": 1908.5,
+        "stored_energy_end_j": 0.0,
+        "stored_energy_start_j": 0.0,
+        "taken": false,
+        "ticks": 2
+      },
+      {
+        "deployment_j": 0.0,
+        "end_time_s": 1909.25,
+        "harvest_j": 0.0,
+        "kind": "defence",
+        "lap": 24,
+        "maximum_uncalibrated_action_probability": 1.0,
+        "mean_delivered_deployment_fraction": 0.0,
+        "mean_requested_deployment_fraction": 0.0,
+        "peak_motor_wheel_power_kw": 0.0,
+        "selected_paths": [
+          "hold"
+        ],
+        "start_time_s": 1909.25,
+        "stored_energy_end_j": 0.0,
+        "stored_energy_start_j": 0.0,
+        "taken": false,
+        "ticks": 1
+      },
+      {
+        "deployment_j": 0.0,
+        "end_time_s": 1914.0,
+        "harvest_j": 0.0,
+        "kind": "defence",
+        "lap": 24,
+        "maximum_uncalibrated_action_probability": 1.0,
+        "mean_delivered_deployment_fraction": 0.0,
+        "mean_requested_deployment_fraction": 0.0,
+        "peak_motor_wheel_power_kw": 0.0,
+        "selected_paths": [
+          "hold"
+        ],
+        "start_time_s": 1910.75,
+        "stored_energy_end_j": 0.0,
+        "stored_energy_start_j": 0.0,
+        "taken": false,
+        "ticks": 14
+      },
+      {
+        "deployment_j": 0.0,
+        "end_time_s": 1914.75,
+        "harvest_j": 0.0,
+        "kind": "defence",
+        "lap": 24,
+        "maximum_uncalibrated_action_probability": 1.0,
+        "mean_delivered_deployment_fraction": 0.0,
+        "mean_requested_deployment_fraction": 0.0,
+        "peak_motor_wheel_power_kw": 0.0,
+        "selected_paths": [
+          "hold"
+        ],
+        "start_time_s": 1914.75,
+        "stored_energy_end_j": 0.0,
+        "stored_energy_start_j": 0.0,
+        "taken": false,
+        "ticks": 1
+      },
+      {
+        "deployment_j": 0.0,
+        "end_time_s": 1915.25,
+        "harvest_j": 0.0,
+        "kind": "defence",
+        "lap": 24,
+        "maximum_uncalibrated_action_probability": 1.0,
+        "mean_delivered_deployment_fraction": 0.0,
+        "mean_requested_deployment_fraction": 0.0,
+        "peak_motor_wheel_power_kw": 0.0,
+        "selected_paths": [
+          "hold"
+        ],
+        "start_time_s": 1915.25,
+        "stored_energy_end_j": 0.0,
+        "stored_energy_start_j": 0.0,
+        "taken": false,
+        "ticks": 1
+      },
+      {
+        "deployment_j": 0.0,
+        "end_time_s": 1915.75,
+        "harvest_j": 0.0,
+        "kind": "defence",
+        "lap": 24,
+        "maximum_uncalibrated_action_probability": 1.0,
+        "mean_delivered_deployment_fraction": 0.0,
+        "mean_requested_deployment_fraction": 0.0,
+        "peak_motor_wheel_power_kw": 0.0,
+        "selected_paths": [
+          "hold"
+        ],
+        "start_time_s": 1915.75,
+        "stored_energy_end_j": 0.0,
+        "stored_energy_start_j": 0.0,
+        "taken": false,
+        "ticks": 1
+      },
+      {
+        "deployment_j": 0.0,
+        "end_time_s": 1916.25,
+        "harvest_j": 0.0,
+        "kind": "defence",
+        "lap": 24,
+        "maximum_uncalibrated_action_probability": 1.0,
+        "mean_delivered_deployment_fraction": 0.0,
+        "mean_requested_deployment_fraction": 0.0,
+        "peak_motor_wheel_power_kw": 0.0,
+        "selected_paths": [
+          "hold"
+        ],
+        "start_time_s": 1916.25,
+        "stored_energy_end_j": 0.0,
+        "stored_energy_start_j": 0.0,
+        "taken": false,
+        "ticks": 1
+      },
+      {
+        "deployment_j": 0.0,
+        "end_time_s": 1921.75,
+        "harvest_j": 0.0,
+        "kind": "defence",
+        "lap": 24,
+        "maximum_uncalibrated_action_probability": 1.0,
+        "mean_delivered_deployment_fraction": 0.0,
+        "mean_requested_deployment_fraction": 0.0,
+        "peak_motor_wheel_power_kw": 0.0,
+        "selected_paths": [
+          "hold"
+        ],
+        "start_time_s": 1921.75,
+        "stored_energy_end_j": 0.0,
+        "stored_energy_start_j": 0.0,
+        "taken": false,
+        "ticks": 1
+      },
+      {
+        "deployment_j": 0.0,
+        "end_time_s": 1922.5,
+        "harvest_j": 0.0,
+        "kind": "defence",
+        "lap": 24,
+        "maximum_uncalibrated_action_probability": 1.0,
+        "mean_delivered_deployment_fraction": 0.0,
+        "mean_requested_deployment_fraction": 0.0,
+        "peak_motor_wheel_power_kw": 0.0,
+        "selected_paths": [
+          "hold"
+        ],
+        "start_time_s": 1922.5,
+        "stored_energy_end_j": 0.0,
+        "stored_energy_start_j": 0.0,
+        "taken": false,
+        "ticks": 1
+      },
+      {
+        "deployment_j": 0.0,
+        "end_time_s": 1923.75,
+        "harvest_j": 0.0,
+        "kind": "defence",
+        "lap": 24,
+        "maximum_uncalibrated_action_probability": 1.0,
+        "mean_delivered_deployment_fraction": 0.0,
+        "mean_requested_deployment_fraction": 0.0,
+        "peak_motor_wheel_power_kw": 0.0,
+        "selected_paths": [
+          "hold"
+        ],
+        "start_time_s": 1923.75,
+        "stored_energy_end_j": 0.0,
+        "stored_energy_start_j": 0.0,
+        "taken": false,
+        "ticks": 1
+      },
+      {
+        "deployment_j": 0.0,
+        "end_time_s": 1924.5,
+        "harvest_j": 0.0,
+        "kind": "defence",
+        "lap": 24,
+        "maximum_uncalibrated_action_probability": 1.0,
+        "mean_delivered_deployment_fraction": 0.0,
+        "mean_requested_deployment_fraction": 0.0,
+        "peak_motor_wheel_power_kw": 0.0,
+        "selected_paths": [
+          "hold"
+        ],
+        "start_time_s": 1924.5,
+        "stored_energy_end_j": 0.0,
+        "stored_energy_start_j": 0.0,
+        "taken": false,
+        "ticks": 1
+      },
+      {
+        "deployment_j": 0.0,
+        "end_time_s": 1925.75,
+        "harvest_j": 0.0,
+        "kind": "defence",
+        "lap": 24,
+        "maximum_uncalibrated_action_probability": 1.0,
+        "mean_delivered_deployment_fraction": 0.0,
+        "mean_requested_deployment_fraction": 0.0,
+        "peak_motor_wheel_power_kw": 0.0,
+        "selected_paths": [
+          "hold"
+        ],
+        "start_time_s": 1925.75,
+        "stored_energy_end_j": 0.0,
+        "stored_energy_start_j": 0.0,
+        "taken": false,
+        "ticks": 1
+      },
+      {
+        "deployment_j": 0.0,
+        "end_time_s": 1926.25,
+        "harvest_j": 0.0,
+        "kind": "defence",
+        "lap": 24,
+        "maximum_uncalibrated_action_probability": 1.0,
+        "mean_delivered_deployment_fraction": 0.0,
+        "mean_requested_deployment_fraction": 0.0,
+        "peak_motor_wheel_power_kw": 0.0,
+        "selected_paths": [
+          "hold"
+        ],
+        "start_time_s": 1926.25,
+        "stored_energy_end_j": 0.0,
+        "stored_energy_start_j": 0.0,
+        "taken": false,
+        "ticks": 1
+      },
+      {
+        "deployment_j": 0.0,
+        "end_time_s": 1928.5,
+        "harvest_j": 0.0,
+        "kind": "defence",
+        "lap": 25,
+        "maximum_uncalibrated_action_probability": 1.0,
+        "mean_delivered_deployment_fraction": 0.0,
+        "mean_requested_deployment_fraction": 0.0,
+        "peak_motor_wheel_power_kw": 0.0,
+        "selected_paths": [
+          "hold"
+        ],
+        "start_time_s": 1927.5,
+        "stored_energy_end_j": 0.0,
+        "stored_energy_start_j": 0.0,
+        "taken": false,
+        "ticks": 5
+      },
+      {
+        "deployment_j": 0.0,
+        "end_time_s": 1930.75,
+        "harvest_j": 0.0,
+        "kind": "defence",
+        "lap": 25,
+        "maximum_uncalibrated_action_probability": 1.0,
+        "mean_delivered_deployment_fraction": 0.0,
+        "mean_requested_deployment_fraction": 0.0,
+        "peak_motor_wheel_power_kw": 0.0,
+        "selected_paths": [
+          "hold"
+        ],
+        "start_time_s": 1930.75,
+        "stored_energy_end_j": 21556.172260922467,
+        "stored_energy_start_j": 21556.172260922467,
+        "taken": false,
+        "ticks": 1
+      },
+      {
+        "deployment_j": 0.0,
+        "end_time_s": 1931.5,
+        "harvest_j": 0.0,
+        "kind": "defence",
+        "lap": 25,
+        "maximum_uncalibrated_action_probability": 1.0,
+        "mean_delivered_deployment_fraction": 0.0,
+        "mean_requested_deployment_fraction": 0.0,
+        "peak_motor_wheel_power_kw": 0.0,
+        "selected_paths": [
+          "hold"
+        ],
+        "start_time_s": 1931.5,
+        "stored_energy_end_j": 21556.172260922467,
+        "stored_energy_start_j": 21556.172260922467,
+        "taken": false,
+        "ticks": 1
+      },
+      {
+        "deployment_j": 13988.88449263107,
+        "end_time_s": 1934.5,
+        "harvest_j": 0.0,
+        "kind": "defence",
+        "lap": 25,
+        "maximum_uncalibrated_action_probability": 0.4258812963962555,
+        "mean_delivered_deployment_fraction": 0.5083500742912292,
+        "mean_requested_deployment_fraction": 0.5083500742912292,
+        "peak_motor_wheel_power_kw": 14.34442259429011,
+        "selected_paths": [
+          "hold"
+        ],
+        "start_time_s": 1933.75,
+        "stored_energy_end_j": 15232.761683908984,
+        "stored_energy_start_j": 29221.64617653975,
+        "taken": false,
+        "ticks": 4
+      },
+      {
+        "deployment_j": 0.0,
+        "end_time_s": 1937.5,
+        "harvest_j": 0.0,
+        "kind": "defence",
+        "lap": 25,
+        "maximum_uncalibrated_action_probability": 1.0,
+        "mean_delivered_deployment_fraction": 0.0,
+        "mean_requested_deployment_fraction": 0.0,
+        "peak_motor_wheel_power_kw": 0.0,
+        "selected_paths": [
+          "hold"
+        ],
+        "start_time_s": 1937.5,
+        "stored_energy_end_j": 0.0,
+        "stored_energy_start_j": 0.0,
+        "taken": false,
+        "ticks": 1
+      },
+      {
+        "deployment_j": 0.0,
+        "end_time_s": 1938.0,
+        "harvest_j": 0.0,
+        "kind": "defence",
+        "lap": 25,
+        "maximum_uncalibrated_action_probability": 1.0,
+        "mean_delivered_deployment_fraction": 0.0,
+        "mean_requested_deployment_fraction": 0.0,
+        "peak_motor_wheel_power_kw": 0.0,
+        "selected_paths": [
+          "hold"
+        ],
+        "start_time_s": 1938.0,
+        "stored_energy_end_j": 0.0,
+        "stored_energy_start_j": 0.0,
+        "taken": false,
+        "ticks": 1
+      },
+      {
+        "deployment_j": 0.0,
+        "end_time_s": 1939.0,
+        "harvest_j": 0.0,
+        "kind": "defence",
+        "lap": 25,
+        "maximum_uncalibrated_action_probability": 1.0,
+        "mean_delivered_deployment_fraction": 0.0,
+        "mean_requested_deployment_fraction": 0.0,
+        "peak_motor_wheel_power_kw": 0.0,
+        "selected_paths": [
+          "hold"
+        ],
+        "start_time_s": 1938.75,
+        "stored_energy_end_j": 0.0,
+        "stored_energy_start_j": 0.0,
+        "taken": false,
+        "ticks": 2
+      },
+      {
+        "deployment_j": 0.0,
+        "end_time_s": 1939.5,
+        "harvest_j": 0.0,
+        "kind": "defence",
+        "lap": 25,
+        "maximum_uncalibrated_action_probability": 1.0,
+        "mean_delivered_deployment_fraction": 0.0,
+        "mean_requested_deployment_fraction": 0.0,
+        "peak_motor_wheel_power_kw": 0.0,
+        "selected_paths": [
+          "hold"
+        ],
+        "start_time_s": 1939.5,
+        "stored_energy_end_j": 0.0,
+        "stored_energy_start_j": 0.0,
+        "taken": false,
+        "ticks": 1
+      },
+      {
+        "deployment_j": 0.0,
+        "end_time_s": 1940.25,
+        "harvest_j": 0.0,
+        "kind": "defence",
+        "lap": 25,
+        "maximum_uncalibrated_action_probability": 1.0,
+        "mean_delivered_deployment_fraction": 0.0,
+        "mean_requested_deployment_fraction": 0.0,
+        "peak_motor_wheel_power_kw": 0.0,
+        "selected_paths": [
+          "hold"
+        ],
+        "start_time_s": 1940.0,
+        "stored_energy_end_j": 0.0,
+        "stored_energy_start_j": 0.0,
+        "taken": false,
+        "ticks": 2
+      },
+      {
+        "deployment_j": 5839.461563387886,
+        "end_time_s": 1942.5,
+        "harvest_j": 0.0,
+        "kind": "defence",
+        "lap": 25,
+        "maximum_uncalibrated_action_probability": 0.4189593493938446,
+        "mean_delivered_deployment_fraction": 0.5042133927345276,
+        "mean_requested_deployment_fraction": 0.5042133927345276,
+        "peak_motor_wheel_power_kw": 22.18995394087159,
+        "selected_paths": [
+          "hold"
+        ],
+        "start_time_s": 1942.5,
+        "stored_energy_end_j": 1102.9489796813514,
+        "stored_energy_start_j": 6942.410543068612,
+        "taken": false,
+        "ticks": 1
+      },
+      {
+        "deployment_j": 0.0,
+        "end_time_s": 1944.75,
+        "harvest_j": 0.0,
+        "kind": "defence",
+        "lap": 25,
+        "maximum_uncalibrated_action_probability": 1.0,
+        "mean_delivered_deployment_fraction": 0.0,
+        "mean_requested_deployment_fraction": 0.0,
+        "peak_motor_wheel_power_kw": 0.0,
+        "selected_paths": [
+          "hold"
+        ],
+        "start_time_s": 1944.75,
+        "stored_energy_end_j": 0.0,
+        "stored_energy_start_j": 0.0,
+        "taken": false,
+        "ticks": 1
+      },
+      {
+        "deployment_j": 0.0,
+        "end_time_s": 1945.5,
+        "harvest_j": 0.0,
+        "kind": "defence",
+        "lap": 25,
+        "maximum_uncalibrated_action_probability": 1.0,
+        "mean_delivered_deployment_fraction": 0.0,
+        "mean_requested_deployment_fraction": 0.0,
+        "peak_motor_wheel_power_kw": 0.0,
+        "selected_paths": [
+          "hold"
+        ],
+        "start_time_s": 1945.25,
+        "stored_energy_end_j": 0.0,
+        "stored_energy_start_j": 0.0,
+        "taken": false,
+        "ticks": 2
+      },
+      {
+        "deployment_j": 0.0,
+        "end_time_s": 1947.25,
+        "harvest_j": 0.0,
+        "kind": "defence",
+        "lap": 25,
+        "maximum_uncalibrated_action_probability": 1.0,
+        "mean_delivered_deployment_fraction": 0.0,
+        "mean_requested_deployment_fraction": 0.0,
+        "peak_motor_wheel_power_kw": 0.0,
+        "selected_paths": [
+          "hold"
+        ],
+        "start_time_s": 1947.25,
+        "stored_energy_end_j": 0.0,
+        "stored_energy_start_j": 0.0,
+        "taken": false,
+        "ticks": 1
+      },
+      {
+        "deployment_j": 0.0,
+        "end_time_s": 1948.0,
+        "harvest_j": 0.0,
+        "kind": "defence",
+        "lap": 25,
+        "maximum_uncalibrated_action_probability": 1.0,
+        "mean_delivered_deployment_fraction": 0.0,
+        "mean_requested_deployment_fraction": 0.0,
+        "peak_motor_wheel_power_kw": 0.0,
+        "selected_paths": [
+          "hold"
+        ],
+        "start_time_s": 1948.0,
+        "stored_energy_end_j": 0.0,
+        "stored_energy_start_j": 0.0,
+        "taken": false,
+        "ticks": 1
+      },
+      {
+        "deployment_j": 0.0,
+        "end_time_s": 1948.5,
+        "harvest_j": 0.0,
+        "kind": "defence",
+        "lap": 25,
+        "maximum_uncalibrated_action_probability": 1.0,
+        "mean_delivered_deployment_fraction": 0.0,
+        "mean_requested_deployment_fraction": 0.0,
+        "peak_motor_wheel_power_kw": 0.0,
+        "selected_paths": [
+          "hold"
+        ],
+        "start_time_s": 1948.5,
+        "stored_energy_end_j": 0.0,
+        "stored_energy_start_j": 0.0,
+        "taken": false,
+        "ticks": 1
+      },
+      {
+        "deployment_j": 0.0,
+        "end_time_s": 1949.25,
+        "harvest_j": 0.0,
+        "kind": "defence",
+        "lap": 25,
+        "maximum_uncalibrated_action_probability": 1.0,
+        "mean_delivered_deployment_fraction": 0.0,
+        "mean_requested_deployment_fraction": 0.0,
+        "peak_motor_wheel_power_kw": 0.0,
+        "selected_paths": [
+          "hold"
+        ],
+        "start_time_s": 1949.0,
+        "stored_energy_end_j": 0.0,
+        "stored_energy_start_j": 0.0,
+        "taken": false,
+        "ticks": 2
+      },
+      {
+        "deployment_j": 0.0,
+        "end_time_s": 1949.75,
+        "harvest_j": 0.0,
+        "kind": "defence",
+        "lap": 25,
+        "maximum_uncalibrated_action_probability": 1.0,
+        "mean_delivered_deployment_fraction": 0.0,
+        "mean_requested_deployment_fraction": 0.0,
+        "peak_motor_wheel_power_kw": 0.0,
+        "selected_paths": [
+          "hold"
+        ],
+        "start_time_s": 1949.75,
+        "stored_energy_end_j": 0.0,
+        "stored_energy_start_j": 0.0,
+        "taken": false,
+        "ticks": 1
+      },
+      {
+        "deployment_j": 0.0,
+        "end_time_s": 1952.5,
+        "harvest_j": 0.0,
+        "kind": "defence",
+        "lap": 25,
+        "maximum_uncalibrated_action_probability": 1.0,
+        "mean_delivered_deployment_fraction": 0.0,
+        "mean_requested_deployment_fraction": 0.0,
+        "peak_motor_wheel_power_kw": 0.0,
+        "selected_paths": [
+          "hold"
+        ],
+        "start_time_s": 1952.25,
+        "stored_energy_end_j": 17189.833560833846,
+        "stored_energy_start_j": 17189.833560833846,
+        "taken": false,
+        "ticks": 2
+      },
+      {
+        "deployment_j": 4771.931513831019,
+        "end_time_s": 1953.25,
+        "harvest_j": 0.0,
+        "kind": "defence",
+        "lap": 25,
+        "maximum_uncalibrated_action_probability": 0.4213637709617615,
+        "mean_delivered_deployment_fraction": 0.50734943151474,
+        "mean_requested_deployment_fraction": 0.50734943151474,
+        "peak_motor_wheel_power_kw": 18.13333975256029,
+        "selected_paths": [
+          "hold"
+        ],
+        "start_time_s": 1953.25,
+        "stored_energy_end_j": 3716.8108213243077,
+        "stored_energy_start_j": 8488.742335155963,
+        "taken": false,
+        "ticks": 1
+      },
+      {
+        "deployment_j": 0.0,
+        "end_time_s": 1956.5,
+        "harvest_j": 0.0,
+        "kind": "defence",
+        "lap": 25,
+        "maximum_uncalibrated_action_probability": 1.0,
+        "mean_delivered_deployment_fraction": 0.0,
+        "mean_requested_deployment_fraction": 0.0,
+        "peak_motor_wheel_power_kw": 0.0,
+        "selected_paths": [
+          "hold"
+        ],
+        "start_time_s": 1956.5,
+        "stored_energy_end_j": 0.0,
+        "stored_energy_start_j": 0.0,
+        "taken": false,
+        "ticks": 1
+      },
+      {
+        "deployment_j": 0.0,
+        "end_time_s": 1960.25,
+        "harvest_j": 0.0,
+        "kind": "defence",
+        "lap": 25,
+        "maximum_uncalibrated_action_probability": 1.0,
+        "mean_delivered_deployment_fraction": 0.0,
+        "mean_requested_deployment_fraction": 0.0,
+        "peak_motor_wheel_power_kw": 0.0,
+        "selected_paths": [
+          "hold"
+        ],
+        "start_time_s": 1960.25,
+        "stored_energy_end_j": 0.0,
+        "stored_energy_start_j": 0.0,
+        "taken": false,
+        "ticks": 1
+      },
+      {
+        "deployment_j": 0.0,
+        "end_time_s": 1961.0,
+        "harvest_j": 0.0,
+        "kind": "defence",
+        "lap": 25,
+        "maximum_uncalibrated_action_probability": 1.0,
+        "mean_delivered_deployment_fraction": 0.0,
+        "mean_requested_deployment_fraction": 0.0,
+        "peak_motor_wheel_power_kw": 0.0,
+        "selected_paths": [
+          "hold"
+        ],
+        "start_time_s": 1960.75,
+        "stored_energy_end_j": 0.0,
+        "stored_energy_start_j": 0.0,
+        "taken": false,
+        "ticks": 2
+      },
+      {
+        "deployment_j": 0.0,
+        "end_time_s": 1962.5,
+        "harvest_j": 0.0,
+        "kind": "defence",
+        "lap": 25,
+        "maximum_uncalibrated_action_probability": 1.0,
+        "mean_delivered_deployment_fraction": 0.0,
+        "mean_requested_deployment_fraction": 0.0,
+        "peak_motor_wheel_power_kw": 0.0,
+        "selected_paths": [
+          "hold"
+        ],
+        "start_time_s": 1961.5,
+        "stored_energy_end_j": 0.0,
+        "stored_energy_start_j": 0.0,
+        "taken": false,
+        "ticks": 5
+      },
+      {
+        "deployment_j": 5622.78375874646,
+        "end_time_s": 1965.75,
+        "harvest_j": 0.0,
+        "kind": "defence",
+        "lap": 25,
+        "maximum_uncalibrated_action_probability": 0.4186146855354309,
+        "mean_delivered_deployment_fraction": 0.5046728849411011,
+        "mean_requested_deployment_fraction": 0.5046728849411011,
+        "peak_motor_wheel_power_kw": 21.36657828323853,
+        "selected_paths": [
+          "hold"
+        ],
+        "start_time_s": 1965.75,
+        "stored_energy_end_j": 14608.22354422927,
+        "stored_energy_start_j": 20231.00730297625,
+        "taken": false,
+        "ticks": 1
+      },
+      {
+        "deployment_j": 0.0,
+        "end_time_s": 1966.75,
+        "harvest_j": 0.0,
+        "kind": "defence",
+        "lap": 25,
+        "maximum_uncalibrated_action_probability": 1.0,
+        "mean_delivered_deployment_fraction": 0.0,
+        "mean_requested_deployment_fraction": 0.0,
+        "peak_motor_wheel_power_kw": 0.0,
+        "selected_paths": [
+          "hold"
+        ],
+        "start_time_s": 1966.75,
+        "stored_energy_end_j": 0.0,
+        "stored_energy_start_j": 0.0,
+        "taken": false,
+        "ticks": 1
+      },
+      {
+        "deployment_j": 0.0,
+        "end_time_s": 1967.5,
+        "harvest_j": 0.0,
+        "kind": "defence",
+        "lap": 25,
+        "maximum_uncalibrated_action_probability": 1.0,
+        "mean_delivered_deployment_fraction": 0.0,
+        "mean_requested_deployment_fraction": 0.0,
+        "peak_motor_wheel_power_kw": 0.0,
+        "selected_paths": [
+          "hold"
+        ],
+        "start_time_s": 1967.5,
+        "stored_energy_end_j": 0.0,
+        "stored_energy_start_j": 0.0,
+        "taken": false,
+        "ticks": 1
+      },
+      {
+        "deployment_j": 0.0,
+        "end_time_s": 1968.5,
+        "harvest_j": 0.0,
+        "kind": "defence",
+        "lap": 25,
+        "maximum_uncalibrated_action_probability": 1.0,
+        "mean_delivered_deployment_fraction": 0.0,
+        "mean_requested_deployment_fraction": 0.0,
+        "peak_motor_wheel_power_kw": 0.0,
+        "selected_paths": [
+          "hold"
+        ],
+        "start_time_s": 1968.5,
+        "stored_energy_end_j": 0.0,
+        "stored_energy_start_j": 0.0,
+        "taken": false,
+        "ticks": 1
+      },
+      {
+        "deployment_j": 0.0,
+        "end_time_s": 1970.0,
+        "harvest_j": 0.0,
+        "kind": "defence",
+        "lap": 25,
+        "maximum_uncalibrated_action_probability": 1.0,
+        "mean_delivered_deployment_fraction": 0.0,
+        "mean_requested_deployment_fraction": 0.0,
+        "peak_motor_wheel_power_kw": 0.0,
+        "selected_paths": [
+          "hold"
+        ],
+        "start_time_s": 1970.0,
+        "stored_energy_end_j": 0.0,
+        "stored_energy_start_j": 0.0,
+        "taken": false,
+        "ticks": 1
+      },
+      {
+        "deployment_j": 0.0,
+        "end_time_s": 1972.0,
+        "harvest_j": 0.0,
+        "kind": "defence",
+        "lap": 25,
+        "maximum_uncalibrated_action_probability": 1.0,
+        "mean_delivered_deployment_fraction": 0.0,
+        "mean_requested_deployment_fraction": 0.0,
+        "peak_motor_wheel_power_kw": 0.0,
+        "selected_paths": [
+          "hold"
+        ],
+        "start_time_s": 1971.5,
+        "stored_energy_end_j": 0.0,
+        "stored_energy_start_j": 0.0,
+        "taken": false,
+        "ticks": 3
+      },
+      {
+        "deployment_j": 0.0,
+        "end_time_s": 1972.75,
+        "harvest_j": 0.0,
+        "kind": "defence",
+        "lap": 25,
+        "maximum_uncalibrated_action_probability": 1.0,
+        "mean_delivered_deployment_fraction": 0.0,
+        "mean_requested_deployment_fraction": 0.0,
+        "peak_motor_wheel_power_kw": 0.0,
+        "selected_paths": [
+          "hold"
+        ],
+        "start_time_s": 1972.5,
+        "stored_energy_end_j": 0.0,
+        "stored_energy_start_j": 0.0,
+        "taken": false,
+        "ticks": 2
+      },
+      {
+        "deployment_j": 0.0,
+        "end_time_s": 1974.0,
+        "harvest_j": 0.0,
+        "kind": "defence",
+        "lap": 25,
+        "maximum_uncalibrated_action_probability": 1.0,
+        "mean_delivered_deployment_fraction": 0.0,
+        "mean_requested_deployment_fraction": 0.0,
+        "peak_motor_wheel_power_kw": 0.0,
+        "selected_paths": [
+          "hold"
+        ],
+        "start_time_s": 1973.5,
+        "stored_energy_end_j": 0.0,
+        "stored_energy_start_j": 0.0,
+        "taken": false,
+        "ticks": 3
+      },
+      {
+        "deployment_j": 0.0,
+        "end_time_s": 1977.25,
+        "harvest_j": 0.0,
+        "kind": "defence",
+        "lap": 25,
+        "maximum_uncalibrated_action_probability": 1.0,
+        "mean_delivered_deployment_fraction": 0.0,
+        "mean_requested_deployment_fraction": 0.0,
+        "peak_motor_wheel_power_kw": 0.0,
+        "selected_paths": [
+          "hold"
+        ],
+        "start_time_s": 1977.25,
+        "stored_energy_end_j": 22026.087008660757,
+        "stored_energy_start_j": 22026.087008660757,
+        "taken": false,
+        "ticks": 1
+      },
+      {
+        "deployment_j": 0.0,
+        "end_time_s": 1978.25,
+        "harvest_j": 0.0,
+        "kind": "defence",
+        "lap": 25,
+        "maximum_uncalibrated_action_probability": 1.0,
+        "mean_delivered_deployment_fraction": 0.0,
+        "mean_requested_deployment_fraction": 0.0,
+        "peak_motor_wheel_power_kw": 0.0,
+        "selected_paths": [
+          "hold"
+        ],
+        "start_time_s": 1977.75,
+        "stored_energy_end_j": 22885.573239579175,
+        "stored_energy_start_j": 22885.573239579175,
+        "taken": false,
+        "ticks": 3
+      },
+      {
+        "deployment_j": 0.0,
+        "end_time_s": 1984.25,
+        "harvest_j": 0.0,
+        "kind": "defence",
+        "lap": 25,
+        "maximum_uncalibrated_action_probability": 1.0,
+        "mean_delivered_deployment_fraction": 0.0,
+        "mean_requested_deployment_fraction": 0.0,
+        "peak_motor_wheel_power_kw": 0.0,
+        "selected_paths": [
+          "hold"
+        ],
+        "start_time_s": 1984.25,
+        "stored_energy_end_j": 0.0,
+        "stored_energy_start_j": 0.0,
+        "taken": false,
+        "ticks": 1
+      },
+      {
+        "deployment_j": 0.0,
+        "end_time_s": 1986.0,
+        "harvest_j": 0.0,
+        "kind": "defence",
+        "lap": 25,
+        "maximum_uncalibrated_action_probability": 1.0,
+        "mean_delivered_deployment_fraction": 0.0,
+        "mean_requested_deployment_fraction": 0.0,
+        "peak_motor_wheel_power_kw": 0.0,
+        "selected_paths": [
+          "hold"
+        ],
+        "start_time_s": 1986.0,
+        "stored_energy_end_j": 0.0,
+        "stored_energy_start_j": 0.0,
+        "taken": false,
+        "ticks": 1
+      },
+      {
+        "deployment_j": 0.0,
+        "end_time_s": 1986.5,
+        "harvest_j": 0.0,
+        "kind": "defence",
+        "lap": 25,
+        "maximum_uncalibrated_action_probability": 1.0,
+        "mean_delivered_deployment_fraction": 0.0,
+        "mean_requested_deployment_fraction": 0.0,
+        "peak_motor_wheel_power_kw": 0.0,
+        "selected_paths": [
+          "hold"
+        ],
+        "start_time_s": 1986.5,
+        "stored_energy_end_j": 0.0,
+        "stored_energy_start_j": 0.0,
+        "taken": false,
+        "ticks": 1
+      },
+      {
+        "deployment_j": 0.0,
+        "end_time_s": 1987.75,
+        "harvest_j": 0.0,
+        "kind": "defence",
+        "lap": 25,
+        "maximum_uncalibrated_action_probability": 1.0,
+        "mean_delivered_deployment_fraction": 0.0,
+        "mean_requested_deployment_fraction": 0.0,
+        "peak_motor_wheel_power_kw": 0.0,
+        "selected_paths": [
+          "hold"
+        ],
+        "start_time_s": 1987.75,
+        "stored_energy_end_j": 0.0,
+        "stored_energy_start_j": 0.0,
+        "taken": false,
+        "ticks": 1
+      },
+      {
+        "deployment_j": 0.0,
+        "end_time_s": 1988.5,
+        "harvest_j": 0.0,
+        "kind": "defence",
+        "lap": 25,
+        "maximum_uncalibrated_action_probability": 1.0,
+        "mean_delivered_deployment_fraction": 0.0,
+        "mean_requested_deployment_fraction": 0.0,
+        "peak_motor_wheel_power_kw": 0.0,
+        "selected_paths": [
+          "hold"
+        ],
+        "start_time_s": 1988.25,
+        "stored_energy_end_j": 0.0,
+        "stored_energy_start_j": 0.0,
+        "taken": false,
+        "ticks": 2
+      },
+      {
+        "deployment_j": 0.0,
+        "end_time_s": 1989.5,
+        "harvest_j": 0.0,
+        "kind": "defence",
+        "lap": 25,
+        "maximum_uncalibrated_action_probability": 1.0,
+        "mean_delivered_deployment_fraction": 0.0,
+        "mean_requested_deployment_fraction": 0.0,
+        "peak_motor_wheel_power_kw": 0.0,
+        "selected_paths": [
+          "hold"
+        ],
+        "start_time_s": 1989.0,
+        "stored_energy_end_j": 0.0,
+        "stored_energy_start_j": 0.0,
+        "taken": false,
+        "ticks": 3
+      },
+      {
+        "deployment_j": 0.0,
+        "end_time_s": 1990.5,
+        "harvest_j": 0.0,
+        "kind": "defence",
+        "lap": 25,
+        "maximum_uncalibrated_action_probability": 1.0,
+        "mean_delivered_deployment_fraction": 0.0,
+        "mean_requested_deployment_fraction": 0.0,
+        "peak_motor_wheel_power_kw": 0.0,
+        "selected_paths": [
+          "hold"
+        ],
+        "start_time_s": 1990.0,
+        "stored_energy_end_j": 0.0,
+        "stored_energy_start_j": 0.0,
+        "taken": false,
+        "ticks": 3
+      },
+      {
+        "deployment_j": 0.0,
+        "end_time_s": 1992.75,
+        "harvest_j": 0.0,
+        "kind": "defence",
+        "lap": 25,
+        "maximum_uncalibrated_action_probability": 1.0,
+        "mean_delivered_deployment_fraction": 0.0,
+        "mean_requested_deployment_fraction": 0.0,
+        "peak_motor_wheel_power_kw": 0.0,
+        "selected_paths": [
+          "hold"
+        ],
+        "start_time_s": 1991.0,
+        "stored_energy_end_j": 0.0,
+        "stored_energy_start_j": 0.0,
+        "taken": false,
+        "ticks": 8
+      },
+      {
+        "deployment_j": 0.0,
+        "end_time_s": 1993.25,
+        "harvest_j": 0.0,
+        "kind": "defence",
+        "lap": 25,
+        "maximum_uncalibrated_action_probability": 1.0,
+        "mean_delivered_deployment_fraction": 0.0,
+        "mean_requested_deployment_fraction": 0.0,
+        "peak_motor_wheel_power_kw": 0.0,
+        "selected_paths": [
+          "hold"
+        ],
+        "start_time_s": 1993.25,
+        "stored_energy_end_j": 0.0,
+        "stored_energy_start_j": 0.0,
+        "taken": false,
+        "ticks": 1
+      },
+      {
+        "deployment_j": 0.0,
+        "end_time_s": 1998.75,
+        "harvest_j": 0.0,
+        "kind": "defence",
+        "lap": 25,
+        "maximum_uncalibrated_action_probability": 1.0,
+        "mean_delivered_deployment_fraction": 0.0,
+        "mean_requested_deployment_fraction": 0.0,
+        "peak_motor_wheel_power_kw": 0.0,
+        "selected_paths": [
+          "hold"
+        ],
+        "start_time_s": 1998.75,
+        "stored_energy_end_j": 0.0,
+        "stored_energy_start_j": 0.0,
+        "taken": false,
+        "ticks": 1
+      },
+      {
+        "deployment_j": 0.0,
+        "end_time_s": 2000.25,
+        "harvest_j": 0.0,
+        "kind": "defence",
+        "lap": 25,
+        "maximum_uncalibrated_action_probability": 1.0,
+        "mean_delivered_deployment_fraction": 0.0,
+        "mean_requested_deployment_fraction": 0.0,
+        "peak_motor_wheel_power_kw": 0.0,
+        "selected_paths": [
+          "hold"
+        ],
+        "start_time_s": 2000.25,
+        "stored_energy_end_j": 0.0,
+        "stored_energy_start_j": 0.0,
+        "taken": false,
+        "ticks": 1
+      },
+      {
+        "deployment_j": 0.0,
+        "end_time_s": 2003.0,
+        "harvest_j": 0.0,
+        "kind": "defence",
+        "lap": 25,
+        "maximum_uncalibrated_action_probability": 1.0,
+        "mean_delivered_deployment_fraction": 0.0,
+        "mean_requested_deployment_fraction": 0.0,
+        "peak_motor_wheel_power_kw": 0.0,
+        "selected_paths": [
+          "hold"
+        ],
+        "start_time_s": 2002.75,
+        "stored_energy_end_j": 0.0,
+        "stored_energy_start_j": 0.0,
+        "taken": false,
+        "ticks": 2
+      },
+      {
+        "deployment_j": 0.0,
+        "end_time_s": 2005.25,
+        "harvest_j": 0.0,
+        "kind": "defence",
+        "lap": 26,
+        "maximum_uncalibrated_action_probability": 1.0,
+        "mean_delivered_deployment_fraction": 0.0,
+        "mean_requested_deployment_fraction": 0.0,
+        "peak_motor_wheel_power_kw": 0.0,
+        "selected_paths": [
+          "hold"
+        ],
+        "start_time_s": 2003.5,
+        "stored_energy_end_j": 0.0,
+        "stored_energy_start_j": 0.0,
+        "taken": false,
+        "ticks": 8
+      },
+      {
+        "deployment_j": 11656.71559786424,
+        "end_time_s": 2007.75,
+        "harvest_j": 0.0,
+        "kind": "defence",
+        "lap": 26,
+        "maximum_uncalibrated_action_probability": 0.4142528176307678,
+        "mean_delivered_deployment_fraction": 0.513387143611908,
+        "mean_requested_deployment_fraction": 0.513387143611908,
+        "peak_motor_wheel_power_kw": 22.614328739623197,
+        "selected_paths": [
+          "hold"
+        ],
+        "start_time_s": 2007.5,
+        "stored_energy_end_j": 8815.117233404391,
+        "stored_energy_start_j": 20471.83283126879,
+        "taken": false,
+        "ticks": 2
+      },
+      {
+        "deployment_j": 0.0,
+        "end_time_s": 2015.5,
+        "harvest_j": 0.0,
+        "kind": "defence",
+        "lap": 26,
+        "maximum_uncalibrated_action_probability": 1.0,
+        "mean_delivered_deployment_fraction": 0.0,
+        "mean_requested_deployment_fraction": 0.0,
+        "peak_motor_wheel_power_kw": 0.0,
+        "selected_paths": [
+          "hold"
+        ],
+        "start_time_s": 2015.25,
+        "stored_energy_end_j": 0.0,
+        "stored_energy_start_j": 0.0,
+        "taken": false,
+        "ticks": 2
+      },
+      {
+        "deployment_j": 0.0,
+        "end_time_s": 2016.75,
+        "harvest_j": 0.0,
+        "kind": "defence",
+        "lap": 26,
+        "maximum_uncalibrated_action_probability": 1.0,
+        "mean_delivered_deployment_fraction": 0.0,
+        "mean_requested_deployment_fraction": 0.0,
+        "peak_motor_wheel_power_kw": 0.0,
+        "selected_paths": [
+          "hold"
+        ],
+        "start_time_s": 2016.25,
+        "stored_energy_end_j": 0.0,
+        "stored_energy_start_j": 0.0,
+        "taken": false,
+        "ticks": 3
+      },
+      {
+        "deployment_j": 5905.427457066253,
+        "end_time_s": 2018.5,
+        "harvest_j": 0.0,
+        "kind": "defence",
+        "lap": 26,
+        "maximum_uncalibrated_action_probability": 0.4180537462234497,
+        "mean_delivered_deployment_fraction": 0.5023874640464783,
+        "mean_requested_deployment_fraction": 0.5023874640464783,
+        "peak_motor_wheel_power_kw": 22.440624336852967,
+        "selected_paths": [
+          "hold"
+        ],
+        "start_time_s": 2018.5,
+        "stored_energy_end_j": 6546.74164834418,
+        "stored_energy_start_j": 12452.16910541075,
+        "taken": false,
+        "ticks": 1
+      },
+      {
+        "deployment_j": 0.0,
+        "end_time_s": 2025.75,
+        "harvest_j": 0.0,
+        "kind": "defence",
+        "lap": 26,
+        "maximum_uncalibrated_action_probability": 1.0,
+        "mean_delivered_deployment_fraction": 0.0,
+        "mean_requested_deployment_fraction": 0.0,
+        "peak_motor_wheel_power_kw": 0.0,
+        "selected_paths": [
+          "hold"
+        ],
+        "start_time_s": 2025.75,
+        "stored_energy_end_j": 0.0,
+        "stored_energy_start_j": 0.0,
+        "taken": false,
+        "ticks": 1
+      },
+      {
+        "deployment_j": 0.0,
+        "end_time_s": 2037.0,
+        "harvest_j": 0.0,
+        "kind": "defence",
+        "lap": 26,
+        "maximum_uncalibrated_action_probability": 1.0,
+        "mean_delivered_deployment_fraction": 0.0,
+        "mean_requested_deployment_fraction": 0.0,
+        "peak_motor_wheel_power_kw": 0.0,
+        "selected_paths": [
+          "hold"
+        ],
+        "start_time_s": 2036.5,
+        "stored_energy_end_j": 0.0,
+        "stored_energy_start_j": 0.0,
+        "taken": false,
+        "ticks": 3
+      },
+      {
+        "deployment_j": 0.0,
+        "end_time_s": 2038.75,
+        "harvest_j": 0.0,
+        "kind": "defence",
+        "lap": 26,
+        "maximum_uncalibrated_action_probability": 1.0,
+        "mean_delivered_deployment_fraction": 0.0,
+        "mean_requested_deployment_fraction": 0.0,
+        "peak_motor_wheel_power_kw": 0.0,
+        "selected_paths": [
+          "hold"
+        ],
+        "start_time_s": 2037.5,
+        "stored_energy_end_j": 0.0,
+        "stored_energy_start_j": 0.0,
+        "taken": false,
+        "ticks": 6
+      },
+      {
+        "deployment_j": 0.0,
+        "end_time_s": 2046.25,
+        "harvest_j": 0.0,
+        "kind": "defence",
+        "lap": 26,
+        "maximum_uncalibrated_action_probability": 1.0,
+        "mean_delivered_deployment_fraction": 0.0,
+        "mean_requested_deployment_fraction": 0.0,
+        "peak_motor_wheel_power_kw": 0.0,
+        "selected_paths": [
+          "hold"
+        ],
+        "start_time_s": 2046.25,
+        "stored_energy_end_j": 0.0,
+        "stored_energy_start_j": 0.0,
+        "taken": false,
+        "ticks": 1
+      },
+      {
+        "deployment_j": 0.0,
+        "end_time_s": 2047.5,
+        "harvest_j": 0.0,
+        "kind": "defence",
+        "lap": 26,
+        "maximum_uncalibrated_action_probability": 1.0,
+        "mean_delivered_deployment_fraction": 0.0,
+        "mean_requested_deployment_fraction": 0.0,
+        "peak_motor_wheel_power_kw": 0.0,
+        "selected_paths": [
+          "hold"
+        ],
+        "start_time_s": 2047.5,
+        "stored_energy_end_j": 0.0,
+        "stored_energy_start_j": 0.0,
+        "taken": false,
+        "ticks": 1
+      },
+      {
+        "deployment_j": 0.0,
+        "end_time_s": 2048.0,
+        "harvest_j": 0.0,
+        "kind": "defence",
+        "lap": 26,
+        "maximum_uncalibrated_action_probability": 1.0,
+        "mean_delivered_deployment_fraction": 0.0,
+        "mean_requested_deployment_fraction": 0.0,
+        "peak_motor_wheel_power_kw": 0.0,
+        "selected_paths": [
+          "hold"
+        ],
+        "start_time_s": 2048.0,
+        "stored_energy_end_j": 0.0,
+        "stored_energy_start_j": 0.0,
+        "taken": false,
+        "ticks": 1
+      },
+      {
+        "deployment_j": 0.0,
+        "end_time_s": 2048.75,
+        "harvest_j": 0.0,
+        "kind": "defence",
+        "lap": 26,
+        "maximum_uncalibrated_action_probability": 1.0,
+        "mean_delivered_deployment_fraction": 0.0,
+        "mean_requested_deployment_fraction": 0.0,
+        "peak_motor_wheel_power_kw": 0.0,
+        "selected_paths": [
+          "hold"
+        ],
+        "start_time_s": 2048.5,
+        "stored_energy_end_j": 0.0,
+        "stored_energy_start_j": 0.0,
+        "taken": false,
+        "ticks": 2
+      },
+      {
+        "deployment_j": 0.0,
+        "end_time_s": 2049.5,
+        "harvest_j": 0.0,
+        "kind": "defence",
+        "lap": 26,
+        "maximum_uncalibrated_action_probability": 1.0,
+        "mean_delivered_deployment_fraction": 0.0,
+        "mean_requested_deployment_fraction": 0.0,
+        "peak_motor_wheel_power_kw": 0.0,
+        "selected_paths": [
+          "hold"
+        ],
+        "start_time_s": 2049.5,
+        "stored_energy_end_j": 0.0,
+        "stored_energy_start_j": 0.0,
+        "taken": false,
+        "ticks": 1
+      },
+      {
+        "deployment_j": 3841.5014635454863,
+        "end_time_s": 2055.5,
+        "harvest_j": 0.0,
+        "kind": "defence",
+        "lap": 26,
+        "maximum_uncalibrated_action_probability": 0.42254936695098877,
+        "mean_delivered_deployment_fraction": 0.5088819861412048,
+        "mean_requested_deployment_fraction": 0.5088819861412048,
+        "peak_motor_wheel_power_kw": 14.597705561470658,
+        "selected_paths": [
+          "hold"
+        ],
+        "start_time_s": 2055.5,
+        "stored_energy_end_j": 22448.98804806125,
+        "stored_energy_start_j": 26290.48951160616,
+        "taken": false,
+        "ticks": 1
+      },
+      {
+        "deployment_j": 0.0,
+        "end_time_s": 2062.0,
+        "harvest_j": 0.0,
+        "kind": "defence",
+        "lap": 26,
+        "maximum_uncalibrated_action_probability": 1.0,
+        "mean_delivered_deployment_fraction": 0.0,
+        "mean_requested_deployment_fraction": 0.0,
+        "peak_motor_wheel_power_kw": 0.0,
+        "selected_paths": [
+          "hold"
+        ],
+        "start_time_s": 2062.0,
+        "stored_energy_end_j": 0.0,
+        "stored_energy_start_j": 0.0,
+        "taken": false,
+        "ticks": 1
+      },
+      {
+        "deployment_j": 0.0,
+        "end_time_s": 2062.5,
+        "harvest_j": 0.0,
+        "kind": "defence",
+        "lap": 26,
+        "maximum_uncalibrated_action_probability": 1.0,
+        "mean_delivered_deployment_fraction": 0.0,
+        "mean_requested_deployment_fraction": 0.0,
+        "peak_motor_wheel_power_kw": 0.0,
+        "selected_paths": [
+          "hold"
+        ],
+        "start_time_s": 2062.5,
+        "stored_energy_end_j": 0.0,
+        "stored_energy_start_j": 0.0,
+        "taken": false,
+        "ticks": 1
+      },
+      {
+        "deployment_j": 0.0,
+        "end_time_s": 2069.5,
+        "harvest_j": 0.0,
+        "kind": "defence",
+        "lap": 26,
+        "maximum_uncalibrated_action_probability": 1.0,
+        "mean_delivered_deployment_fraction": 0.0,
+        "mean_requested_deployment_fraction": 0.0,
+        "peak_motor_wheel_power_kw": 0.0,
+        "selected_paths": [
+          "hold"
+        ],
+        "start_time_s": 2063.25,
+        "stored_energy_end_j": 0.0,
+        "stored_energy_start_j": 0.0,
+        "taken": false,
+        "ticks": 26
+      },
+      {
+        "deployment_j": 0.0,
+        "end_time_s": 2074.5,
+        "harvest_j": 0.0,
+        "kind": "defence",
+        "lap": 26,
+        "maximum_uncalibrated_action_probability": 1.0,
+        "mean_delivered_deployment_fraction": 0.0,
+        "mean_requested_deployment_fraction": 0.0,
+        "peak_motor_wheel_power_kw": 0.0,
+        "selected_paths": [
+          "hold"
+        ],
+        "start_time_s": 2074.5,
+        "stored_energy_end_j": 0.0,
+        "stored_energy_start_j": 0.0,
+        "taken": false,
+        "ticks": 1
+      },
+      {
+        "deployment_j": 0.0,
+        "end_time_s": 2078.75,
+        "harvest_j": 0.0,
+        "kind": "defence",
+        "lap": 26,
+        "maximum_uncalibrated_action_probability": 1.0,
+        "mean_delivered_deployment_fraction": 0.0,
+        "mean_requested_deployment_fraction": 0.0,
+        "peak_motor_wheel_power_kw": 0.0,
+        "selected_paths": [
+          "hold"
+        ],
+        "start_time_s": 2077.0,
+        "stored_energy_end_j": 0.0,
+        "stored_energy_start_j": 0.0,
+        "taken": false,
+        "ticks": 8
+      },
+      {
+        "deployment_j": 0.0,
+        "end_time_s": 2079.5,
+        "harvest_j": 0.0,
+        "kind": "defence",
+        "lap": 26,
+        "maximum_uncalibrated_action_probability": 1.0,
+        "mean_delivered_deployment_fraction": 0.0,
+        "mean_requested_deployment_fraction": 0.0,
+        "peak_motor_wheel_power_kw": 0.0,
+        "selected_paths": [
+          "hold"
+        ],
+        "start_time_s": 2079.25,
+        "stored_energy_end_j": 0.0,
+        "stored_energy_start_j": 0.0,
+        "taken": false,
+        "ticks": 2
+      },
+      {
+        "deployment_j": 0.0,
+        "end_time_s": 2081.25,
+        "harvest_j": 0.0,
+        "kind": "defence",
+        "lap": 27,
+        "maximum_uncalibrated_action_probability": 1.0,
+        "mean_delivered_deployment_fraction": 0.0,
+        "mean_requested_deployment_fraction": 0.0,
+        "peak_motor_wheel_power_kw": 0.0,
+        "selected_paths": [
+          "hold"
+        ],
+        "start_time_s": 2080.0,
+        "stored_energy_end_j": 0.0,
+        "stored_energy_start_j": 0.0,
+        "taken": false,
+        "ticks": 6
+      },
+      {
+        "deployment_j": 4143.148674728349,
+        "end_time_s": 2087.25,
+        "harvest_j": 0.0,
+        "kind": "defence",
+        "lap": 27,
+        "maximum_uncalibrated_action_probability": 0.4215579926967621,
+        "mean_delivered_deployment_fraction": 0.560577392578125,
+        "mean_requested_deployment_fraction": 0.560577392578125,
+        "peak_motor_wheel_power_kw": 15.743964963964872,
+        "selected_paths": [
+          "hold"
+        ],
+        "start_time_s": 2087.25,
+        "stored_energy_end_j": 22015.62875944016,
+        "stored_energy_start_j": 26158.777434167758,
+        "taken": false,
+        "ticks": 1
+      },
+      {
+        "deployment_j": 0.0,
+        "end_time_s": 2088.75,
+        "harvest_j": 0.0,
+        "kind": "defence",
+        "lap": 27,
+        "maximum_uncalibrated_action_probability": 1.0,
+        "mean_delivered_deployment_fraction": 0.0,
+        "mean_requested_deployment_fraction": 0.0,
+        "peak_motor_wheel_power_kw": 0.0,
+        "selected_paths": [
+          "hold"
+        ],
+        "start_time_s": 2088.75,
+        "stored_energy_end_j": 0.0,
+        "stored_energy_start_j": 0.0,
+        "taken": false,
+        "ticks": 1
+      },
+      {
+        "deployment_j": 0.0,
+        "end_time_s": 2091.75,
+        "harvest_j": 0.0,
+        "kind": "defence",
+        "lap": 27,
+        "maximum_uncalibrated_action_probability": 1.0,
+        "mean_delivered_deployment_fraction": 0.0,
+        "mean_requested_deployment_fraction": 0.0,
+        "peak_motor_wheel_power_kw": 0.0,
+        "selected_paths": [
+          "hold"
+        ],
+        "start_time_s": 2091.5,
+        "stored_energy_end_j": 0.0,
+        "stored_energy_start_j": 0.0,
+        "taken": false,
+        "ticks": 2
+      },
+      {
+        "deployment_j": 0.0,
+        "end_time_s": 2092.75,
+        "harvest_j": 0.0,
+        "kind": "defence",
+        "lap": 27,
+        "maximum_uncalibrated_action_probability": 1.0,
+        "mean_delivered_deployment_fraction": 0.0,
+        "mean_requested_deployment_fraction": 0.0,
+        "peak_motor_wheel_power_kw": 0.0,
+        "selected_paths": [
+          "hold"
+        ],
+        "start_time_s": 2092.75,
+        "stored_energy_end_j": 0.0,
+        "stored_energy_start_j": 0.0,
+        "taken": false,
+        "ticks": 1
+      },
+      {
+        "deployment_j": 5764.600549122319,
+        "end_time_s": 2095.0,
+        "harvest_j": 0.0,
+        "kind": "defence",
+        "lap": 27,
+        "maximum_uncalibrated_action_probability": 0.4188686013221741,
+        "mean_delivered_deployment_fraction": 0.5033695697784424,
+        "mean_requested_deployment_fraction": 0.5033695697784424,
+        "peak_motor_wheel_power_kw": 21.905482086665653,
+        "selected_paths": [
+          "hold"
+        ],
+        "start_time_s": 2095.0,
+        "stored_energy_end_j": 7226.438411689345,
+        "stored_energy_start_j": 12991.038960811886,
+        "taken": false,
+        "ticks": 1
+      },
+      {
+        "deployment_j": 1544.4936337210238,
+        "end_time_s": 2095.5,
+        "harvest_j": 0.0,
+        "kind": "defence",
+        "lap": 27,
+        "maximum_uncalibrated_action_probability": 0.41769203543663025,
+        "mean_delivered_deployment_fraction": 0.13317629341669648,
+        "mean_requested_deployment_fraction": 0.5040197968482971,
+        "peak_motor_wheel_power_kw": 5.869075808141145,
+        "selected_paths": [
+          "hold"
+        ],
+        "start_time_s": 2095.5,
+        "stored_energy_end_j": 0.0,
+        "stored_energy_start_j": 1544.493633721354,
+        "taken": false,
+        "ticks": 1
+      },
+      {
+        "deployment_j": 0.0,
+        "end_time_s": 2097.0,
+        "harvest_j": 0.0,
+        "kind": "defence",
+        "lap": 27,
+        "maximum_uncalibrated_action_probability": 1.0,
+        "mean_delivered_deployment_fraction": 0.0,
+        "mean_requested_deployment_fraction": 0.0,
+        "peak_motor_wheel_power_kw": 0.0,
+        "selected_paths": [
+          "hold"
+        ],
+        "start_time_s": 2097.0,
+        "stored_energy_end_j": 0.0,
+        "stored_energy_start_j": 0.0,
+        "taken": false,
+        "ticks": 1
+      },
+      {
+        "deployment_j": 0.0,
+        "end_time_s": 2099.0,
+        "harvest_j": 0.0,
+        "kind": "defence",
+        "lap": 27,
+        "maximum_uncalibrated_action_probability": 1.0,
+        "mean_delivered_deployment_fraction": 0.0,
+        "mean_requested_deployment_fraction": 0.0,
+        "peak_motor_wheel_power_kw": 0.0,
+        "selected_paths": [
+          "hold"
+        ],
+        "start_time_s": 2099.0,
+        "stored_energy_end_j": 0.0,
+        "stored_energy_start_j": 0.0,
+        "taken": false,
+        "ticks": 1
+      },
+      {
+        "deployment_j": 0.0,
+        "end_time_s": 2099.5,
+        "harvest_j": 0.0,
+        "kind": "defence",
+        "lap": 27,
+        "maximum_uncalibrated_action_probability": 1.0,
+        "mean_delivered_deployment_fraction": 0.0,
+        "mean_requested_deployment_fraction": 0.0,
+        "peak_motor_wheel_power_kw": 0.0,
+        "selected_paths": [
+          "hold"
+        ],
+        "start_time_s": 2099.5,
+        "stored_energy_end_j": 0.0,
+        "stored_energy_start_j": 0.0,
+        "taken": false,
+        "ticks": 1
+      },
+      {
+        "deployment_j": 0.0,
+        "end_time_s": 2100.0,
+        "harvest_j": 0.0,
+        "kind": "defence",
+        "lap": 27,
+        "maximum_uncalibrated_action_probability": 1.0,
+        "mean_delivered_deployment_fraction": 0.0,
+        "mean_requested_deployment_fraction": 0.0,
+        "peak_motor_wheel_power_kw": 0.0,
+        "selected_paths": [
+          "hold"
+        ],
+        "start_time_s": 2100.0,
+        "stored_energy_end_j": 0.0,
+        "stored_energy_start_j": 0.0,
+        "taken": false,
+        "ticks": 1
+      },
+      {
+        "deployment_j": 0.0,
+        "end_time_s": 2100.5,
+        "harvest_j": 0.0,
+        "kind": "defence",
+        "lap": 27,
+        "maximum_uncalibrated_action_probability": 1.0,
+        "mean_delivered_deployment_fraction": 0.0,
+        "mean_requested_deployment_fraction": 0.0,
+        "peak_motor_wheel_power_kw": 0.0,
+        "selected_paths": [
+          "hold"
+        ],
+        "start_time_s": 2100.5,
+        "stored_energy_end_j": 0.0,
+        "stored_energy_start_j": 0.0,
+        "taken": false,
+        "ticks": 1
+      },
+      {
+        "deployment_j": 0.0,
+        "end_time_s": 2101.75,
+        "harvest_j": 0.0,
+        "kind": "defence",
+        "lap": 27,
+        "maximum_uncalibrated_action_probability": 1.0,
+        "mean_delivered_deployment_fraction": 0.0,
+        "mean_requested_deployment_fraction": 0.0,
+        "peak_motor_wheel_power_kw": 0.0,
+        "selected_paths": [
+          "hold"
+        ],
+        "start_time_s": 2101.75,
+        "stored_energy_end_j": 0.0,
+        "stored_energy_start_j": 0.0,
+        "taken": false,
+        "ticks": 1
+      },
+      {
+        "deployment_j": 0.0,
+        "end_time_s": 2102.25,
+        "harvest_j": 0.0,
+        "kind": "defence",
+        "lap": 27,
+        "maximum_uncalibrated_action_probability": 1.0,
+        "mean_delivered_deployment_fraction": 0.0,
+        "mean_requested_deployment_fraction": 0.0,
+        "peak_motor_wheel_power_kw": 0.0,
+        "selected_paths": [
+          "hold"
+        ],
+        "start_time_s": 2102.25,
+        "stored_energy_end_j": 0.0,
+        "stored_energy_start_j": 0.0,
+        "taken": false,
+        "ticks": 1
+      },
+      {
+        "deployment_j": 0.0,
+        "end_time_s": 2109.5,
+        "harvest_j": 0.0,
+        "kind": "defence",
+        "lap": 27,
+        "maximum_uncalibrated_action_probability": 1.0,
+        "mean_delivered_deployment_fraction": 0.0,
+        "mean_requested_deployment_fraction": 0.0,
+        "peak_motor_wheel_power_kw": 0.0,
+        "selected_paths": [
+          "hold"
+        ],
+        "start_time_s": 2109.25,
+        "stored_energy_end_j": 0.0,
+        "stored_energy_start_j": 0.0,
+        "taken": false,
+        "ticks": 2
+      },
+      {
+        "deployment_j": 0.0,
+        "end_time_s": 2110.5,
+        "harvest_j": 0.0,
+        "kind": "defence",
+        "lap": 27,
+        "maximum_uncalibrated_action_probability": 1.0,
+        "mean_delivered_deployment_fraction": 0.0,
+        "mean_requested_deployment_fraction": 0.0,
+        "peak_motor_wheel_power_kw": 0.0,
+        "selected_paths": [
+          "hold"
+        ],
+        "start_time_s": 2110.5,
+        "stored_energy_end_j": 0.0,
+        "stored_energy_start_j": 0.0,
+        "taken": false,
+        "ticks": 1
+      },
+      {
+        "deployment_j": 0.0,
+        "end_time_s": 2111.25,
+        "harvest_j": 0.0,
+        "kind": "defence",
+        "lap": 27,
+        "maximum_uncalibrated_action_probability": 1.0,
+        "mean_delivered_deployment_fraction": 0.0,
+        "mean_requested_deployment_fraction": 0.0,
+        "peak_motor_wheel_power_kw": 0.0,
+        "selected_paths": [
+          "hold"
+        ],
+        "start_time_s": 2111.25,
+        "stored_energy_end_j": 0.0,
+        "stored_energy_start_j": 0.0,
+        "taken": false,
+        "ticks": 1
+      },
+      {
+        "deployment_j": 0.0,
+        "end_time_s": 2112.0,
+        "harvest_j": 0.0,
+        "kind": "defence",
+        "lap": 27,
+        "maximum_uncalibrated_action_probability": 1.0,
+        "mean_delivered_deployment_fraction": 0.0,
+        "mean_requested_deployment_fraction": 0.0,
+        "peak_motor_wheel_power_kw": 0.0,
+        "selected_paths": [
+          "hold"
+        ],
+        "start_time_s": 2112.0,
+        "stored_energy_end_j": 0.0,
+        "stored_energy_start_j": 0.0,
+        "taken": false,
+        "ticks": 1
+      },
+      {
+        "deployment_j": 0.0,
+        "end_time_s": 2112.5,
+        "harvest_j": 0.0,
+        "kind": "defence",
+        "lap": 27,
+        "maximum_uncalibrated_action_probability": 1.0,
+        "mean_delivered_deployment_fraction": 0.0,
+        "mean_requested_deployment_fraction": 0.0,
+        "peak_motor_wheel_power_kw": 0.0,
+        "selected_paths": [
+          "hold"
+        ],
+        "start_time_s": 2112.5,
+        "stored_energy_end_j": 0.0,
+        "stored_energy_start_j": 0.0,
+        "taken": false,
+        "ticks": 1
+      },
+      {
+        "deployment_j": 0.0,
+        "end_time_s": 2113.25,
+        "harvest_j": 0.0,
+        "kind": "defence",
+        "lap": 27,
+        "maximum_uncalibrated_action_probability": 1.0,
+        "mean_delivered_deployment_fraction": 0.0,
+        "mean_requested_deployment_fraction": 0.0,
+        "peak_motor_wheel_power_kw": 0.0,
+        "selected_paths": [
+          "hold"
+        ],
+        "start_time_s": 2113.25,
+        "stored_energy_end_j": 0.0,
+        "stored_energy_start_j": 0.0,
+        "taken": false,
+        "ticks": 1
+      },
+      {
+        "deployment_j": 0.0,
+        "end_time_s": 2113.75,
+        "harvest_j": 0.0,
+        "kind": "defence",
+        "lap": 27,
+        "maximum_uncalibrated_action_probability": 1.0,
+        "mean_delivered_deployment_fraction": 0.0,
+        "mean_requested_deployment_fraction": 0.0,
+        "peak_motor_wheel_power_kw": 0.0,
+        "selected_paths": [
+          "hold"
+        ],
+        "start_time_s": 2113.75,
+        "stored_energy_end_j": 0.0,
+        "stored_energy_start_j": 0.0,
+        "taken": false,
+        "ticks": 1
+      },
+      {
+        "deployment_j": 0.0,
+        "end_time_s": 2115.0,
+        "harvest_j": 0.0,
+        "kind": "defence",
+        "lap": 27,
+        "maximum_uncalibrated_action_probability": 1.0,
+        "mean_delivered_deployment_fraction": 0.0,
+        "mean_requested_deployment_fraction": 0.0,
+        "peak_motor_wheel_power_kw": 0.0,
+        "selected_paths": [
+          "hold"
+        ],
+        "start_time_s": 2114.25,
+        "stored_energy_end_j": 0.0,
+        "stored_energy_start_j": 0.0,
+        "taken": false,
+        "ticks": 4
+      },
+      {
+        "deployment_j": 0.0,
+        "end_time_s": 2119.5,
+        "harvest_j": 0.0,
+        "kind": "defence",
+        "lap": 27,
+        "maximum_uncalibrated_action_probability": 1.0,
+        "mean_delivered_deployment_fraction": 0.0,
+        "mean_requested_deployment_fraction": 0.0,
+        "peak_motor_wheel_power_kw": 0.0,
+        "selected_paths": [
+          "hold"
+        ],
+        "start_time_s": 2119.5,
+        "stored_energy_end_j": 0.0,
+        "stored_energy_start_j": 0.0,
+        "taken": false,
+        "ticks": 1
+      },
+      {
+        "deployment_j": 0.0,
+        "end_time_s": 2121.25,
+        "harvest_j": 0.0,
+        "kind": "defence",
+        "lap": 27,
+        "maximum_uncalibrated_action_probability": 1.0,
+        "mean_delivered_deployment_fraction": 0.0,
+        "mean_requested_deployment_fraction": 0.0,
+        "peak_motor_wheel_power_kw": 0.0,
+        "selected_paths": [
+          "hold"
+        ],
+        "start_time_s": 2121.25,
+        "stored_energy_end_j": 0.0,
+        "stored_energy_start_j": 0.0,
+        "taken": false,
+        "ticks": 1
+      },
+      {
+        "deployment_j": 0.0,
+        "end_time_s": 2122.75,
+        "harvest_j": 0.0,
+        "kind": "defence",
+        "lap": 27,
+        "maximum_uncalibrated_action_probability": 1.0,
+        "mean_delivered_deployment_fraction": 0.0,
+        "mean_requested_deployment_fraction": 0.0,
+        "peak_motor_wheel_power_kw": 0.0,
+        "selected_paths": [
+          "hold"
+        ],
+        "start_time_s": 2122.75,
+        "stored_energy_end_j": 0.0,
+        "stored_energy_start_j": 0.0,
+        "taken": false,
+        "ticks": 1
+      },
+      {
+        "deployment_j": 0.0,
+        "end_time_s": 2124.0,
+        "harvest_j": 0.0,
+        "kind": "defence",
+        "lap": 27,
+        "maximum_uncalibrated_action_probability": 1.0,
+        "mean_delivered_deployment_fraction": 0.0,
+        "mean_requested_deployment_fraction": 0.0,
+        "peak_motor_wheel_power_kw": 0.0,
+        "selected_paths": [
+          "hold"
+        ],
+        "start_time_s": 2124.0,
+        "stored_energy_end_j": 0.0,
+        "stored_energy_start_j": 0.0,
+        "taken": false,
+        "ticks": 1
+      },
+      {
+        "deployment_j": 0.0,
+        "end_time_s": 2124.5,
+        "harvest_j": 0.0,
+        "kind": "defence",
+        "lap": 27,
+        "maximum_uncalibrated_action_probability": 1.0,
+        "mean_delivered_deployment_fraction": 0.0,
+        "mean_requested_deployment_fraction": 0.0,
+        "peak_motor_wheel_power_kw": 0.0,
+        "selected_paths": [
+          "hold"
+        ],
+        "start_time_s": 2124.5,
+        "stored_energy_end_j": 0.0,
+        "stored_energy_start_j": 0.0,
+        "taken": false,
+        "ticks": 1
+      },
+      {
+        "deployment_j": 0.0,
+        "end_time_s": 2125.5,
+        "harvest_j": 0.0,
+        "kind": "defence",
+        "lap": 27,
+        "maximum_uncalibrated_action_probability": 1.0,
+        "mean_delivered_deployment_fraction": 0.0,
+        "mean_requested_deployment_fraction": 0.0,
+        "peak_motor_wheel_power_kw": 0.0,
+        "selected_paths": [
+          "hold"
+        ],
+        "start_time_s": 2125.5,
+        "stored_energy_end_j": 0.0,
+        "stored_energy_start_j": 0.0,
+        "taken": false,
+        "ticks": 1
+      },
+      {
+        "deployment_j": 11020.851200725883,
+        "end_time_s": 2126.75,
+        "harvest_j": 0.0,
+        "kind": "defence",
+        "lap": 27,
+        "maximum_uncalibrated_action_probability": 0.54256671667099,
+        "mean_delivered_deployment_fraction": 0.4664478835853445,
+        "mean_requested_deployment_fraction": 0.6144745945930481,
+        "peak_motor_wheel_power_kw": 41.87923456275986,
+        "selected_paths": [
+          "attack"
+        ],
+        "start_time_s": 2126.75,
+        "stored_energy_end_j": 0.0,
+        "stored_energy_start_j": 11020.85120072628,
+        "taken": false,
+        "ticks": 1
+      },
+      {
+        "deployment_j": 0.0,
+        "end_time_s": 2135.75,
+        "harvest_j": 0.0,
+        "kind": "defence",
+        "lap": 27,
+        "maximum_uncalibrated_action_probability": 1.0,
+        "mean_delivered_deployment_fraction": 0.0,
+        "mean_requested_deployment_fraction": 0.0,
+        "peak_motor_wheel_power_kw": 0.0,
+        "selected_paths": [
+          "hold"
+        ],
+        "start_time_s": 2135.75,
+        "stored_energy_end_j": 0.0,
+        "stored_energy_start_j": 0.0,
+        "taken": false,
+        "ticks": 1
+      },
+      {
+        "deployment_j": 0.0,
+        "end_time_s": 2137.25,
+        "harvest_j": 0.0,
+        "kind": "defence",
+        "lap": 27,
+        "maximum_uncalibrated_action_probability": 1.0,
+        "mean_delivered_deployment_fraction": 0.0,
+        "mean_requested_deployment_fraction": 0.0,
+        "peak_motor_wheel_power_kw": 0.0,
+        "selected_paths": [
+          "hold"
+        ],
+        "start_time_s": 2137.25,
+        "stored_energy_end_j": 0.0,
+        "stored_energy_start_j": 0.0,
+        "taken": false,
+        "ticks": 1
+      },
+      {
+        "deployment_j": 0.0,
+        "end_time_s": 2138.0,
+        "harvest_j": 0.0,
+        "kind": "defence",
+        "lap": 27,
+        "maximum_uncalibrated_action_probability": 1.0,
+        "mean_delivered_deployment_fraction": 0.0,
+        "mean_requested_deployment_fraction": 0.0,
+        "peak_motor_wheel_power_kw": 0.0,
+        "selected_paths": [
+          "hold"
+        ],
+        "start_time_s": 2137.75,
+        "stored_energy_end_j": 0.0,
+        "stored_energy_start_j": 0.0,
+        "taken": false,
+        "ticks": 2
+      },
+      {
+        "deployment_j": 0.0,
+        "end_time_s": 2138.5,
+        "harvest_j": 0.0,
+        "kind": "defence",
+        "lap": 27,
+        "maximum_uncalibrated_action_probability": 1.0,
+        "mean_delivered_deployment_fraction": 0.0,
+        "mean_requested_deployment_fraction": 0.0,
+        "peak_motor_wheel_power_kw": 0.0,
+        "selected_paths": [
+          "hold"
+        ],
+        "start_time_s": 2138.5,
+        "stored_energy_end_j": 0.0,
+        "stored_energy_start_j": 0.0,
+        "taken": false,
+        "ticks": 1
+      },
+      {
+        "deployment_j": 0.0,
+        "end_time_s": 2139.25,
+        "harvest_j": 0.0,
+        "kind": "defence",
+        "lap": 27,
+        "maximum_uncalibrated_action_probability": 1.0,
+        "mean_delivered_deployment_fraction": 0.0,
+        "mean_requested_deployment_fraction": 0.0,
+        "peak_motor_wheel_power_kw": 0.0,
+        "selected_paths": [
+          "hold"
+        ],
+        "start_time_s": 2139.0,
+        "stored_energy_end_j": 0.0,
+        "stored_energy_start_j": 0.0,
+        "taken": false,
+        "ticks": 2
+      },
+      {
+        "deployment_j": 0.0,
+        "end_time_s": 2140.0,
+        "harvest_j": 0.0,
+        "kind": "defence",
+        "lap": 27,
+        "maximum_uncalibrated_action_probability": 1.0,
+        "mean_delivered_deployment_fraction": 0.0,
+        "mean_requested_deployment_fraction": 0.0,
+        "peak_motor_wheel_power_kw": 0.0,
+        "selected_paths": [
+          "hold"
+        ],
+        "start_time_s": 2139.75,
+        "stored_energy_end_j": 0.0,
+        "stored_energy_start_j": 0.0,
+        "taken": false,
+        "ticks": 2
+      },
+      {
+        "deployment_j": 0.0,
+        "end_time_s": 2140.75,
+        "harvest_j": 0.0,
+        "kind": "defence",
+        "lap": 27,
+        "maximum_uncalibrated_action_probability": 1.0,
+        "mean_delivered_deployment_fraction": 0.0,
+        "mean_requested_deployment_fraction": 0.0,
+        "peak_motor_wheel_power_kw": 0.0,
+        "selected_paths": [
+          "hold"
+        ],
+        "start_time_s": 2140.5,
+        "stored_energy_end_j": 0.0,
+        "stored_energy_start_j": 0.0,
+        "taken": false,
+        "ticks": 2
+      },
+      {
+        "deployment_j": 0.0,
+        "end_time_s": 2141.5,
+        "harvest_j": 0.0,
+        "kind": "defence",
+        "lap": 27,
+        "maximum_uncalibrated_action_probability": 1.0,
+        "mean_delivered_deployment_fraction": 0.0,
+        "mean_requested_deployment_fraction": 0.0,
+        "peak_motor_wheel_power_kw": 0.0,
+        "selected_paths": [
+          "hold"
+        ],
+        "start_time_s": 2141.25,
+        "stored_energy_end_j": 0.0,
+        "stored_energy_start_j": 0.0,
+        "taken": false,
+        "ticks": 2
+      },
+      {
+        "deployment_j": 0.0,
+        "end_time_s": 2143.75,
+        "harvest_j": 0.0,
+        "kind": "defence",
+        "lap": 27,
+        "maximum_uncalibrated_action_probability": 1.0,
+        "mean_delivered_deployment_fraction": 0.0,
+        "mean_requested_deployment_fraction": 0.0,
+        "peak_motor_wheel_power_kw": 0.0,
+        "selected_paths": [
+          "hold"
+        ],
+        "start_time_s": 2142.0,
+        "stored_energy_end_j": 0.0,
+        "stored_energy_start_j": 0.0,
+        "taken": false,
+        "ticks": 8
+      },
+      {
+        "deployment_j": 0.0,
+        "end_time_s": 2145.0,
+        "harvest_j": 0.0,
+        "kind": "defence",
+        "lap": 27,
+        "maximum_uncalibrated_action_probability": 1.0,
+        "mean_delivered_deployment_fraction": 0.0,
+        "mean_requested_deployment_fraction": 0.0,
+        "peak_motor_wheel_power_kw": 0.0,
+        "selected_paths": [
+          "hold"
+        ],
+        "start_time_s": 2144.25,
+        "stored_energy_end_j": 0.0,
+        "stored_energy_start_j": 0.0,
+        "taken": false,
+        "ticks": 4
+      },
+      {
+        "deployment_j": 0.0,
+        "end_time_s": 2145.5,
+        "harvest_j": 0.0,
+        "kind": "defence",
+        "lap": 27,
+        "maximum_uncalibrated_action_probability": 1.0,
+        "mean_delivered_deployment_fraction": 0.0,
+        "mean_requested_deployment_fraction": 0.0,
+        "peak_motor_wheel_power_kw": 0.0,
+        "selected_paths": [
+          "hold"
+        ],
+        "start_time_s": 2145.5,
+        "stored_energy_end_j": 0.0,
+        "stored_energy_start_j": 0.0,
+        "taken": false,
+        "ticks": 1
+      },
+      {
+        "deployment_j": 5432.641423463821,
+        "end_time_s": 2149.0,
+        "harvest_j": 0.0,
+        "kind": "defence",
+        "lap": 27,
+        "maximum_uncalibrated_action_probability": 0.41445478796958923,
+        "mean_delivered_deployment_fraction": 0.45945893865667164,
+        "mean_requested_deployment_fraction": 0.5105248093605042,
+        "peak_motor_wheel_power_kw": 20.644037409161257,
+        "selected_paths": [
+          "hold"
+        ],
+        "start_time_s": 2149.0,
+        "stored_energy_end_j": 0.0,
+        "stored_energy_start_j": 5432.641423463489,
+        "taken": false,
+        "ticks": 1
+      },
+      {
+        "deployment_j": 0.0,
+        "end_time_s": 2150.75,
+        "harvest_j": 0.0,
+        "kind": "defence",
+        "lap": 27,
+        "maximum_uncalibrated_action_probability": 1.0,
+        "mean_delivered_deployment_fraction": 0.0,
+        "mean_requested_deployment_fraction": 0.0,
+        "peak_motor_wheel_power_kw": 0.0,
+        "selected_paths": [
+          "hold"
+        ],
+        "start_time_s": 2150.75,
+        "stored_energy_end_j": 0.0,
+        "stored_energy_start_j": 0.0,
+        "taken": false,
+        "ticks": 1
+      },
+      {
+        "deployment_j": 0.0,
+        "end_time_s": 2152.0,
+        "harvest_j": 0.0,
+        "kind": "defence",
+        "lap": 27,
+        "maximum_uncalibrated_action_probability": 1.0,
+        "mean_delivered_deployment_fraction": 0.0,
+        "mean_requested_deployment_fraction": 0.0,
+        "peak_motor_wheel_power_kw": 0.0,
+        "selected_paths": [
+          "hold"
+        ],
+        "start_time_s": 2152.0,
+        "stored_energy_end_j": 0.0,
+        "stored_energy_start_j": 0.0,
+        "taken": false,
+        "ticks": 1
+      },
+      {
+        "deployment_j": 0.0,
+        "end_time_s": 2152.5,
+        "harvest_j": 0.0,
+        "kind": "defence",
+        "lap": 27,
+        "maximum_uncalibrated_action_probability": 1.0,
+        "mean_delivered_deployment_fraction": 0.0,
+        "mean_requested_deployment_fraction": 0.0,
+        "peak_motor_wheel_power_kw": 0.0,
+        "selected_paths": [
+          "hold"
+        ],
+        "start_time_s": 2152.5,
+        "stored_energy_end_j": 0.0,
+        "stored_energy_start_j": 0.0,
+        "taken": false,
+        "ticks": 1
+      },
+      {
+        "deployment_j": 0.0,
+        "end_time_s": 2154.75,
+        "harvest_j": 0.0,
+        "kind": "defence",
+        "lap": 27,
+        "maximum_uncalibrated_action_probability": 1.0,
+        "mean_delivered_deployment_fraction": 0.0,
+        "mean_requested_deployment_fraction": 0.0,
+        "peak_motor_wheel_power_kw": 0.0,
+        "selected_paths": [
+          "hold"
+        ],
+        "start_time_s": 2153.75,
+        "stored_energy_end_j": 0.0,
+        "stored_energy_start_j": 0.0,
+        "taken": false,
+        "ticks": 5
+      },
+      {
+        "deployment_j": 0.0,
+        "end_time_s": 2155.75,
+        "harvest_j": 0.0,
+        "kind": "defence",
+        "lap": 27,
+        "maximum_uncalibrated_action_probability": 1.0,
+        "mean_delivered_deployment_fraction": 0.0,
+        "mean_requested_deployment_fraction": 0.0,
+        "peak_motor_wheel_power_kw": 0.0,
+        "selected_paths": [
+          "hold"
+        ],
+        "start_time_s": 2155.75,
+        "stored_energy_end_j": 0.0,
+        "stored_energy_start_j": 0.0,
+        "taken": false,
+        "ticks": 1
+      },
+      {
+        "deployment_j": 0.0,
+        "end_time_s": 2156.75,
+        "harvest_j": 0.0,
+        "kind": "defence",
+        "lap": 28,
+        "maximum_uncalibrated_action_probability": 1.0,
+        "mean_delivered_deployment_fraction": 0.0,
+        "mean_requested_deployment_fraction": 0.0,
+        "peak_motor_wheel_power_kw": 0.0,
+        "selected_paths": [
+          "hold"
+        ],
+        "start_time_s": 2156.25,
+        "stored_energy_end_j": 0.0,
+        "stored_energy_start_j": 0.0,
+        "taken": false,
+        "ticks": 3
+      },
+      {
+        "deployment_j": 0.0,
+        "end_time_s": 2157.25,
+        "harvest_j": 0.0,
+        "kind": "defence",
+        "lap": 28,
+        "maximum_uncalibrated_action_probability": 1.0,
+        "mean_delivered_deployment_fraction": 0.0,
+        "mean_requested_deployment_fraction": 0.0,
+        "peak_motor_wheel_power_kw": 0.0,
+        "selected_paths": [
+          "hold"
+        ],
+        "start_time_s": 2157.25,
+        "stored_energy_end_j": 0.0,
+        "stored_energy_start_j": 0.0,
+        "taken": false,
+        "ticks": 1
+      },
+      {
+        "deployment_j": 0.0,
+        "end_time_s": 2167.75,
+        "harvest_j": 0.0,
+        "kind": "defence",
+        "lap": 28,
+        "maximum_uncalibrated_action_probability": 1.0,
+        "mean_delivered_deployment_fraction": 0.0,
+        "mean_requested_deployment_fraction": 0.0,
+        "peak_motor_wheel_power_kw": 0.0,
+        "selected_paths": [
+          "hold"
+        ],
+        "start_time_s": 2167.75,
+        "stored_energy_end_j": 0.0,
+        "stored_energy_start_j": 0.0,
+        "taken": false,
+        "ticks": 1
+      },
+      {
+        "deployment_j": 0.0,
+        "end_time_s": 2168.25,
+        "harvest_j": 0.0,
+        "kind": "defence",
+        "lap": 28,
+        "maximum_uncalibrated_action_probability": 1.0,
+        "mean_delivered_deployment_fraction": 0.0,
+        "mean_requested_deployment_fraction": 0.0,
+        "peak_motor_wheel_power_kw": 0.0,
+        "selected_paths": [
+          "hold"
+        ],
+        "start_time_s": 2168.25,
+        "stored_energy_end_j": 0.0,
+        "stored_energy_start_j": 0.0,
+        "taken": false,
+        "ticks": 1
+      },
+      {
+        "deployment_j": 0.0,
+        "end_time_s": 2169.0,
+        "harvest_j": 0.0,
+        "kind": "defence",
+        "lap": 28,
+        "maximum_uncalibrated_action_probability": 1.0,
+        "mean_delivered_deployment_fraction": 0.0,
+        "mean_requested_deployment_fraction": 0.0,
+        "peak_motor_wheel_power_kw": 0.0,
+        "selected_paths": [
+          "hold"
+        ],
+        "start_time_s": 2168.75,
+        "stored_energy_end_j": 0.0,
+        "stored_energy_start_j": 0.0,
+        "taken": false,
+        "ticks": 2
+      },
+      {
+        "deployment_j": 0.0,
+        "end_time_s": 2186.25,
+        "harvest_j": 0.0,
+        "kind": "defence",
+        "lap": 28,
+        "maximum_uncalibrated_action_probability": 1.0,
+        "mean_delivered_deployment_fraction": 0.0,
+        "mean_requested_deployment_fraction": 0.0,
+        "peak_motor_wheel_power_kw": 0.0,
+        "selected_paths": [
+          "hold"
+        ],
+        "start_time_s": 2186.25,
+        "stored_energy_end_j": 0.0,
+        "stored_energy_start_j": 0.0,
+        "taken": false,
+        "ticks": 1
+      },
+      {
+        "deployment_j": 0.0,
+        "end_time_s": 2189.0,
+        "harvest_j": 0.0,
+        "kind": "defence",
+        "lap": 28,
+        "maximum_uncalibrated_action_probability": 1.0,
+        "mean_delivered_deployment_fraction": 0.0,
+        "mean_requested_deployment_fraction": 0.0,
+        "peak_motor_wheel_power_kw": 0.0,
+        "selected_paths": [
+          "hold"
+        ],
+        "start_time_s": 2189.0,
+        "stored_energy_end_j": 0.0,
+        "stored_energy_start_j": 0.0,
+        "taken": false,
+        "ticks": 1
+      },
+      {
+        "deployment_j": 0.0,
+        "end_time_s": 2189.5,
+        "harvest_j": 0.0,
+        "kind": "defence",
+        "lap": 28,
+        "maximum_uncalibrated_action_probability": 1.0,
+        "mean_delivered_deployment_fraction": 0.0,
+        "mean_requested_deployment_fraction": 0.0,
+        "peak_motor_wheel_power_kw": 0.0,
+        "selected_paths": [
+          "hold"
+        ],
+        "start_time_s": 2189.5,
+        "stored_energy_end_j": 0.0,
+        "stored_energy_start_j": 0.0,
+        "taken": false,
+        "ticks": 1
+      },
+      {
+        "deployment_j": 0.0,
+        "end_time_s": 2190.25,
+        "harvest_j": 0.0,
+        "kind": "defence",
+        "lap": 28,
+        "maximum_uncalibrated_action_probability": 1.0,
+        "mean_delivered_deployment_fraction": 0.0,
+        "mean_requested_deployment_fraction": 0.0,
+        "peak_motor_wheel_power_kw": 0.0,
+        "selected_paths": [
+          "hold"
+        ],
+        "start_time_s": 2190.0,
+        "stored_energy_end_j": 0.0,
+        "stored_energy_start_j": 0.0,
+        "taken": false,
+        "ticks": 2
+      },
+      {
+        "deployment_j": 0.0,
+        "end_time_s": 2191.0,
+        "harvest_j": 0.0,
+        "kind": "defence",
+        "lap": 28,
+        "maximum_uncalibrated_action_probability": 1.0,
+        "mean_delivered_deployment_fraction": 0.0,
+        "mean_requested_deployment_fraction": 0.0,
+        "peak_motor_wheel_power_kw": 0.0,
+        "selected_paths": [
+          "hold"
+        ],
+        "start_time_s": 2190.75,
+        "stored_energy_end_j": 0.0,
+        "stored_energy_start_j": 0.0,
+        "taken": false,
+        "ticks": 2
+      },
+      {
+        "deployment_j": 8526.124505393207,
+        "end_time_s": 2207.75,
+        "harvest_j": 0.0,
+        "kind": "defence",
+        "lap": 28,
+        "maximum_uncalibrated_action_probability": 0.3849455416202545,
+        "mean_delivered_deployment_fraction": 0.5467563569545746,
+        "mean_requested_deployment_fraction": 0.5467563569545746,
+        "peak_motor_wheel_power_kw": 17.043749554290837,
+        "selected_paths": [
+          "hold"
+        ],
+        "start_time_s": 2207.5,
+        "stored_energy_end_j": 1217.9967746211296,
+        "stored_energy_start_j": 9744.121280014517,
+        "taken": false,
+        "ticks": 2
+      },
+      {
+        "deployment_j": 0.0,
+        "end_time_s": 2211.0,
+        "harvest_j": 0.0,
+        "kind": "defence",
+        "lap": 28,
+        "maximum_uncalibrated_action_probability": 1.0,
+        "mean_delivered_deployment_fraction": 0.0,
+        "mean_requested_deployment_fraction": 0.0,
+        "peak_motor_wheel_power_kw": 0.0,
+        "selected_paths": [
+          "hold"
+        ],
+        "start_time_s": 2211.0,
+        "stored_energy_end_j": 0.0,
+        "stored_energy_start_j": 0.0,
+        "taken": false,
+        "ticks": 1
+      },
+      {
+        "deployment_j": 0.0,
+        "end_time_s": 2213.0,
+        "harvest_j": 0.0,
+        "kind": "defence",
+        "lap": 28,
+        "maximum_uncalibrated_action_probability": 1.0,
+        "mean_delivered_deployment_fraction": 0.0,
+        "mean_requested_deployment_fraction": 0.0,
+        "peak_motor_wheel_power_kw": 0.0,
+        "selected_paths": [
+          "hold"
+        ],
+        "start_time_s": 2213.0,
+        "stored_energy_end_j": 0.0,
+        "stored_energy_start_j": 0.0,
+        "taken": false,
+        "ticks": 1
+      },
+      {
+        "deployment_j": 0.0,
+        "end_time_s": 2214.0,
+        "harvest_j": 0.0,
+        "kind": "defence",
+        "lap": 28,
+        "maximum_uncalibrated_action_probability": 1.0,
+        "mean_delivered_deployment_fraction": 0.0,
+        "mean_requested_deployment_fraction": 0.0,
+        "peak_motor_wheel_power_kw": 0.0,
+        "selected_paths": [
+          "hold"
+        ],
+        "start_time_s": 2214.0,
+        "stored_energy_end_j": 0.0,
+        "stored_energy_start_j": 0.0,
+        "taken": false,
+        "ticks": 1
+      },
+      {
+        "deployment_j": 0.0,
+        "end_time_s": 2217.25,
+        "harvest_j": 0.0,
+        "kind": "defence",
+        "lap": 28,
+        "maximum_uncalibrated_action_probability": 1.0,
+        "mean_delivered_deployment_fraction": 0.0,
+        "mean_requested_deployment_fraction": 0.0,
+        "peak_motor_wheel_power_kw": 0.0,
+        "selected_paths": [
+          "hold"
+        ],
+        "start_time_s": 2216.25,
+        "stored_energy_end_j": 0.0,
+        "stored_energy_start_j": 0.0,
+        "taken": false,
+        "ticks": 5
+      },
+      {
+        "deployment_j": 0.0,
+        "end_time_s": 2218.0,
+        "harvest_j": 0.0,
+        "kind": "defence",
+        "lap": 28,
+        "maximum_uncalibrated_action_probability": 1.0,
+        "mean_delivered_deployment_fraction": 0.0,
+        "mean_requested_deployment_fraction": 0.0,
+        "peak_motor_wheel_power_kw": 0.0,
+        "selected_paths": [
+          "hold"
+        ],
+        "start_time_s": 2217.75,
+        "stored_energy_end_j": 0.0,
+        "stored_energy_start_j": 0.0,
+        "taken": false,
+        "ticks": 2
+      },
+      {
+        "deployment_j": 0.0,
+        "end_time_s": 2218.5,
+        "harvest_j": 0.0,
+        "kind": "defence",
+        "lap": 28,
+        "maximum_uncalibrated_action_probability": 1.0,
+        "mean_delivered_deployment_fraction": 0.0,
+        "mean_requested_deployment_fraction": 0.0,
+        "peak_motor_wheel_power_kw": 0.0,
+        "selected_paths": [
+          "hold"
+        ],
+        "start_time_s": 2218.5,
+        "stored_energy_end_j": 0.0,
+        "stored_energy_start_j": 0.0,
+        "taken": false,
+        "ticks": 1
+      },
+      {
+        "deployment_j": 0.0,
+        "end_time_s": 2220.0,
+        "harvest_j": 0.0,
+        "kind": "defence",
+        "lap": 28,
+        "maximum_uncalibrated_action_probability": 1.0,
+        "mean_delivered_deployment_fraction": 0.0,
+        "mean_requested_deployment_fraction": 0.0,
+        "peak_motor_wheel_power_kw": 0.0,
+        "selected_paths": [
+          "hold"
+        ],
+        "start_time_s": 2219.0,
+        "stored_energy_end_j": 0.0,
+        "stored_energy_start_j": 0.0,
+        "taken": false,
+        "ticks": 5
+      }
+    ],
+    "opportunity_totals": {
+      "attack_episodes": 56,
+      "attack_missed": 50,
+      "attack_taken": 6,
+      "defence_episodes": 160,
+      "defence_missed": 160,
+      "defence_taken": 0
+    },
+    "policy_action_episodes": [
+      {
+        "attack_opportunity_present": false,
+        "defence_threat_present": true,
+        "deployment_j": 28641.52349365689,
+        "end_time_s": 1781.5,
+        "harvest_j": 0.0,
+        "lap": 23,
+        "maximum_uncalibrated_action_probability": 0.5813642740249634,
+        "path": "attack",
+        "peak_motor_wheel_power_kw": 19.659235593951184,
+        "start_time_s": 1780.0,
+        "ticks": 7
+      },
+      {
+        "attack_opportunity_present": false,
+        "defence_threat_present": true,
+        "deployment_j": 16959.874767555855,
+        "end_time_s": 1789.0,
+        "harvest_j": 0.0,
+        "lap": 23,
+        "maximum_uncalibrated_action_probability": 0.6222299337387085,
+        "path": "attack",
+        "peak_motor_wheel_power_kw": 26.59319846471562,
+        "start_time_s": 1788.5,
+        "ticks": 3
+      },
+      {
+        "attack_opportunity_present": false,
+        "defence_threat_present": false,
+        "deployment_j": 20947.520029139705,
+        "end_time_s": 1799.5,
+        "harvest_j": 0.0,
+        "lap": 23,
+        "maximum_uncalibrated_action_probability": 0.6330596804618835,
+        "path": "attack",
+        "peak_motor_wheel_power_kw": 21.3775180669292,
+        "start_time_s": 1798.5,
+        "ticks": 5
+      },
+      {
+        "attack_opportunity_present": true,
+        "defence_threat_present": false,
+        "deployment_j": 22643.178716799244,
+        "end_time_s": 1812.0,
+        "harvest_j": 0.0,
+        "lap": 23,
+        "maximum_uncalibrated_action_probability": 0.663837194442749,
+        "path": "attack",
+        "peak_motor_wheel_power_kw": 26.515580602119424,
+        "start_time_s": 1811.25,
+        "ticks": 4
+      },
+      {
+        "attack_opportunity_present": true,
+        "defence_threat_present": false,
+        "deployment_j": 2766.5542121920735,
+        "end_time_s": 1823.75,
+        "harvest_j": 0.0,
+        "lap": 23,
+        "maximum_uncalibrated_action_probability": 0.630350649356842,
+        "path": "attack",
+        "peak_motor_wheel_power_kw": 10.512906006330835,
+        "start_time_s": 1823.75,
+        "ticks": 1
+      },
+      {
+        "attack_opportunity_present": true,
+        "defence_threat_present": false,
+        "deployment_j": 9319.154306514189,
+        "end_time_s": 1825.25,
+        "harvest_j": 0.0,
+        "lap": 23,
+        "maximum_uncalibrated_action_probability": 0.7140769362449646,
+        "path": "attack",
+        "peak_motor_wheel_power_kw": 16.038431662633204,
+        "start_time_s": 1824.75,
+        "ticks": 3
+      },
+      {
+        "attack_opportunity_present": false,
+        "defence_threat_present": false,
+        "deployment_j": 17012.988037364557,
+        "end_time_s": 1843.75,
+        "harvest_j": 0.0,
+        "lap": 23,
+        "maximum_uncalibrated_action_probability": 0.635629415512085,
+        "path": "attack",
+        "peak_motor_wheel_power_kw": 20.00975821876394,
+        "start_time_s": 1843.0,
+        "ticks": 4
+      },
+      {
+        "attack_opportunity_present": true,
+        "defence_threat_present": false,
+        "deployment_j": 12747.234235328622,
+        "end_time_s": 1854.5,
+        "harvest_j": 0.0,
+        "lap": 24,
+        "maximum_uncalibrated_action_probability": 0.6322514414787292,
+        "path": "attack",
+        "peak_motor_wheel_power_kw": 24.52031790856389,
+        "start_time_s": 1854.25,
+        "ticks": 2
+      },
+      {
+        "attack_opportunity_present": false,
+        "defence_threat_present": false,
+        "deployment_j": 16384.57016604487,
+        "end_time_s": 1857.75,
+        "harvest_j": 0.0,
+        "lap": 24,
+        "maximum_uncalibrated_action_probability": 0.5712528228759766,
+        "path": "attack",
+        "peak_motor_wheel_power_kw": 14.671324605968845,
+        "start_time_s": 1856.75,
+        "ticks": 5
+      },
+      {
+        "attack_opportunity_present": false,
+        "defence_threat_present": false,
+        "deployment_j": 12656.821480617858,
+        "end_time_s": 1866.0,
+        "harvest_j": 0.0,
+        "lap": 24,
+        "maximum_uncalibrated_action_probability": 0.586758553981781,
+        "path": "attack",
+        "peak_motor_wheel_power_kw": 24.68023473699458,
+        "start_time_s": 1865.75,
+        "ticks": 2
+      },
+      {
+        "attack_opportunity_present": true,
+        "defence_threat_present": false,
+        "deployment_j": 22179.52253913693,
+        "end_time_s": 1877.0,
+        "harvest_j": 0.0,
+        "lap": 24,
+        "maximum_uncalibrated_action_probability": 0.6479140520095825,
+        "path": "attack",
+        "peak_motor_wheel_power_kw": 22.2968954917111,
+        "start_time_s": 1876.0,
+        "ticks": 5
+      },
+      {
+        "attack_opportunity_present": true,
+        "defence_threat_present": false,
+        "deployment_j": 11062.55200694874,
+        "end_time_s": 2087.0,
+        "harvest_j": 0.0,
+        "lap": 27,
+        "maximum_uncalibrated_action_probability": 0.5948437452316284,
+        "path": "attack",
+        "peak_motor_wheel_power_kw": 14.952027737732978,
+        "start_time_s": 2086.5,
+        "ticks": 3
+      },
+      {
+        "attack_opportunity_present": false,
+        "defence_threat_present": true,
+        "deployment_j": 11020.851200725883,
+        "end_time_s": 2126.75,
+        "harvest_j": 0.0,
+        "lap": 27,
+        "maximum_uncalibrated_action_probability": 0.54256671667099,
+        "path": "attack",
+        "peak_motor_wheel_power_kw": 41.87923456275986,
+        "start_time_s": 2126.75,
+        "ticks": 1
+      },
+      {
+        "attack_opportunity_present": false,
+        "defence_threat_present": false,
+        "deployment_j": 5058.208868505433,
+        "end_time_s": 2194.75,
+        "harvest_j": 0.0,
+        "lap": 28,
+        "maximum_uncalibrated_action_probability": 0.5000020861625671,
+        "path": "attack",
+        "peak_motor_wheel_power_kw": 19.22119370032028,
+        "start_time_s": 2194.75,
+        "ticks": 1
+      }
+    ],
+    "probability_semantics": "uncalibrated_action_selection_probability",
+    "status": "diagnostic_only",
+    "validation_laps": 6,
+    "warmup_laps": 22
+  },
+  "race_validation_trace_ids": [
+    "race:63:source-lap-23",
+    "race:63:source-lap-24",
+    "race:63:source-lap-25",
+    "race:63:source-lap-26",
+    "race:63:source-lap-27",
+    "race:63:source-lap-28"
+  ],
+  "sources": {
+    "curriculum_manifest": "3dab05c40b73ea3de97ed668043bf92a2d2f8f6a1c1b4850728c709d34cf5b40",
+    "practice_1": "5a2928cfa4b3d7fcd831de7c960d3893f487d2d9fc1fa892a7894bf4a8574a47",
+    "previous_checkpoint": "f97256cb8d732b9b564755e33f8e4e98ed26f84e9dd5645090ee31b328cc5a91",
+    "race_artifact": "27d33a255fa7836050239772835a5e77c73d735334c927fb3ab2e28b091391ab",
+    "race_source_binding": "dfc8d3ce496c3cbf783219da95267e420f6e843dca8d8345d3d1b1928c342665"
+  },
+  "status": "diagnostic_only"
+}
